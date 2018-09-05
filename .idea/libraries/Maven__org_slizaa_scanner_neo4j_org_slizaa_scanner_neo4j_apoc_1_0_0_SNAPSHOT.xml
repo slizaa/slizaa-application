@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.slizaa.scanner.neo4j:org.slizaa.scanner.neo4j.apoc:1.0.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slizaa/scanner/neo4j/org.slizaa.scanner.neo4j.apoc/1.0.0-SNAPSHOT/org.slizaa.scanner.neo4j.apoc-1.0.0-20180827.194218-26.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slizaa/scanner/neo4j/org.slizaa.scanner.neo4j.apoc/1.0.0-SNAPSHOT/org.slizaa.scanner.neo4j.apoc-1.0.0-20180827.194218-26-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slizaa/scanner/neo4j/org.slizaa.scanner.neo4j.apoc/1.0.0-SNAPSHOT/org.slizaa.scanner.neo4j.apoc-1.0.0-20180827.194218-26-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

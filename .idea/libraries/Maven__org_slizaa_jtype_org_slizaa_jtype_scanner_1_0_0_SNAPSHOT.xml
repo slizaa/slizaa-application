@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.slizaa.jtype:org.slizaa.jtype.scanner:1.0.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slizaa/jtype/org.slizaa.jtype.scanner/1.0.0-SNAPSHOT/org.slizaa.jtype.scanner-1.0.0-20180828.204339-31.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slizaa/jtype/org.slizaa.jtype.scanner/1.0.0-SNAPSHOT/org.slizaa.jtype.scanner-1.0.0-20180828.204339-31-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slizaa/jtype/org.slizaa.jtype.scanner/1.0.0-SNAPSHOT/org.slizaa.jtype.scanner-1.0.0-20180828.204339-31-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
