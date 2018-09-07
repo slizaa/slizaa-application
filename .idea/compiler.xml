@@ -9,23 +9,5 @@
         <module name="org.slizaa.application.server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="org.slizaa.application.server" target="1.8" />
-      <module name="org.slizaa.jtype.hierarchicalgraph" target="1.8" />
-      <module name="org.slizaa.jtype.hierarchicalgraph (1)" target="1.8" />
-      <module name="org.slizaa.jtype.hierarchicalgraph (2)" target="1.8" />
-      <module name="org.slizaa.jtype.itest-osgi" target="1.8" />
-      <module name="org.slizaa.jtype.itest-osgi (1)" target="1.8" />
-      <module name="org.slizaa.jtype.itest-osgi (2)" target="1.8" />
-      <module name="org.slizaa.jtype.p2-repo" target="1.8" />
-      <module name="org.slizaa.jtype.parent" target="1.8" />
-      <module name="org.slizaa.jtype.scanner" target="1.8" />
-      <module name="org.slizaa.jtype.scanner (1)" target="1.8" />
-      <module name="org.slizaa.jtype.scanner (2)" target="1.8" />
-      <module name="org.slizaa.jtype.scanner (3)" target="1.8" />
-      <module name="org.slizaa.jtype.scanner.apoc" target="1.8" />
-      <module name="org.slizaa.jtype.scanner.apoc (1)" target="1.8" />
-      <module name="org.slizaa.jtype.scanner.apoc (2)" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
