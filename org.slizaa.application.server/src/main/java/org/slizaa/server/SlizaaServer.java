@@ -4,8 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * <p>
- * </p>
  *
  * @author Gerd W&uuml;therich (gerd@gerd-wuetherich.de)
  */
@@ -13,8 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SlizaaServer {
 
   /**
-   * <p>
-   * </p>
    *
    * @param args
    */
