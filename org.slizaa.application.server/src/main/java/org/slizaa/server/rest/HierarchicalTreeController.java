@@ -21,6 +21,7 @@ import org.slizaa.server.rest.model.AggregatedDependency;
 import org.slizaa.server.rest.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,7 +35,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Gerd W&uuml;therich (gerd@gerd-wuetherich.de)
  */
 @Component
-@Path("/rest")
+@Path("/")
+@CrossOrigin(origins = "http://localhost:3000")
 public class HierarchicalTreeController {
 
   /**
@@ -102,6 +104,15 @@ public class HierarchicalTreeController {
     //
     return getAggregatedDependencies(fromIds, toIds, (sourceNode, targetNodes) -> sourceNode.getOutgoingDependenciesTo(targetNodes));
   }
+
+//  @GET
+//  @Path("/node/{id}/outgoingDependencies")
+//  @Produces("application/json")
+//  public AggregatedDependencies outgoingDependencies(@PathParam("id") String fromIds) {
+//
+//    //
+//    return getAggregatedDependencies(fromIds, (sourceNode, targetNodes) -> sourceNode.getOutgoingDependenciesTo(targetNodes));
+//  }
 
   /**
    * <p>

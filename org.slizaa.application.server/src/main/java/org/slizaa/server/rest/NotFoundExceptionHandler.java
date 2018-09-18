@@ -11,7 +11,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.List;
 
-@Provider
+//@Provider
 public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundException> {
 
     @Context

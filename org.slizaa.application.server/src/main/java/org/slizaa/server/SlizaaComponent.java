@@ -227,7 +227,9 @@ public class SlizaaComponent {
 
     //
     MvnBasedContentDefinitionProvider contentDefinitionProvider = new MvnBasedContentDefinitionProvider();
-    contentDefinitionProvider.addArtifact("org.slizaa.jtype", "org.slizaa.jtype.scanner", "1.0.0-SNAPSHOT");
+    contentDefinitionProvider.addArtifact("org.springframework", "spring-core", "5.0.9.RELEASE");
+    contentDefinitionProvider.addArtifact("org.springframework", "spring-context", "5.0.9.RELEASE");
+    contentDefinitionProvider.addArtifact("org.springframework", "spring-beans", "5.0.9.RELEASE");
 
     // delete all contained files
     Files.walk(this._databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())

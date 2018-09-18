@@ -8,6 +8,7 @@ public class JerseyConfig extends ResourceConfig {
 
   public JerseyConfig() {
     register(HierarchicalTreeController.class);
-    register(NotFoundExceptionHandler.class);
+    register(CORSFilter.class);
+    //register(NotFoundExceptionHandler.class);
   }
 }
