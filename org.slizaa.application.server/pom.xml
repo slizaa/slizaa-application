@@ -39,11 +39,6 @@
         </dependency>
         <dependency>
             <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.classpathscanner</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.core</groupId>
             <artifactId>org.slizaa.core.boltclient</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
@@ -63,14 +58,14 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.classpathscanner</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.slizaa.hierarchicalgraph.graphdb</groupId>
             <artifactId>org.slizaa.hierarchicalgraph.graphdb.mapping.service</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.1.7</version>
         </dependency>
 
         <!-- TEST -->

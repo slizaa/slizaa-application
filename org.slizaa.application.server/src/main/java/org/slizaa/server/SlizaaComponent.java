@@ -1,29 +1,7 @@
 package org.slizaa.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import org.slizaa.core.boltclient.IBoltClient;
 import org.slizaa.core.boltclient.IBoltClientFactory;
-import org.slizaa.core.classpathscanner.ClasspathScannerFactoryBuilder;
-import org.slizaa.core.classpathscanner.IClasspathScanner;
-import org.slizaa.core.classpathscanner.IClasspathScannerFactory;
 import org.slizaa.core.mvnresolver.MvnResolverServiceFactoryFactory;
 import org.slizaa.core.mvnresolver.api.IMvnResolverService;
 import org.slizaa.core.mvnresolver.api.IMvnResolverServiceFactory;
@@ -38,11 +16,25 @@ import org.slizaa.scanner.core.api.graphdb.IGraphDbFactory;
 import org.slizaa.scanner.core.api.importer.IModelImporter;
 import org.slizaa.scanner.core.api.importer.IModelImporterFactory;
 import org.slizaa.scanner.core.contentdefinition.MvnBasedContentDefinitionProvider;
+import org.slizaa.scanner.core.cypherregistry.CypherRegistryUtils;
 import org.slizaa.scanner.core.cypherregistry.CypherStatementRegistry;
-import org.slizaa.scanner.core.cypherregistry.SlizaaCypherFileParser;
 import org.slizaa.scanner.core.spi.parser.IParserFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -143,20 +135,7 @@ public class SlizaaComponent {
     // System.out.println(this._mappingProviders);
 
     //
-    IClasspathScannerFactory classpathScannerServiceFactory = ClasspathScannerFactoryBuilder
-        .newClasspathScannerFactory().registerCodeSourceClassLoaderProvider(URLClassLoader.class, t -> t).create();
-
-    // get the classpath scanner service...
-    IClasspathScanner scanner = classpathScannerServiceFactory.createScanner(this._extensionsClassLoader);
-
-    //
-    List<ICypherStatement> result = new ArrayList<>();
-
-    scanner.matchFiles("cypher", (relativePath, inputStream, lengthBytes) -> {
-      return SlizaaCypherFileParser.parse(relativePath, inputStream);
-    }, (codeSource, items) -> result.addAll(items));
-
-    scanner.scan();
+    List<ICypherStatement> result = CypherRegistryUtils.getCypherStatementsFromClasspath(_extensionsClassLoader);
 
     this._cypherStatementRegistry = new CypherStatementRegistry(() -> {
       return result;

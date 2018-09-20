@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class HierarchicalTreeController {
 
   /**
-   * the slizaa component
+   * the slizaa extensions
    */
   @Autowired
   private SlizaaComponent _component;
