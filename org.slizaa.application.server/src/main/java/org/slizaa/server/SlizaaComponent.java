@@ -9,16 +9,16 @@ import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.service.IMappingService;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.ILabelDefinitionProvider;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.IMappingProvider;
-import org.slizaa.scanner.core.api.cypherregistry.ICypherStatement;
-import org.slizaa.scanner.core.api.cypherregistry.ICypherStatementRegistry;
-import org.slizaa.scanner.core.api.graphdb.IGraphDb;
-import org.slizaa.scanner.core.api.graphdb.IGraphDbFactory;
-import org.slizaa.scanner.core.api.importer.IModelImporter;
-import org.slizaa.scanner.core.api.importer.IModelImporterFactory;
-import org.slizaa.scanner.core.contentdefinition.MvnBasedContentDefinitionProvider;
-import org.slizaa.scanner.core.cypherregistry.CypherRegistryUtils;
-import org.slizaa.scanner.core.cypherregistry.CypherStatementRegistry;
-import org.slizaa.scanner.core.spi.parser.IParserFactory;
+import org.slizaa.scanner.api.cypherregistry.ICypherStatement;
+import org.slizaa.scanner.api.cypherregistry.ICypherStatementRegistry;
+import org.slizaa.scanner.api.graphdb.IGraphDb;
+import org.slizaa.scanner.api.graphdb.IGraphDbFactory;
+import org.slizaa.scanner.api.importer.IModelImporter;
+import org.slizaa.scanner.api.importer.IModelImporterFactory;
+import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
+import org.slizaa.scanner.cypherregistry.CypherRegistryUtils;
+import org.slizaa.scanner.cypherregistry.CypherStatementRegistry;
+import org.slizaa.scanner.spi.parser.IParserFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -245,12 +245,12 @@ public class SlizaaComponent {
 
     //
     URL[] resolvedArtifacts = mvnResolverService.newMvnResolverJob()
-        .withDependency("org.slizaa.scanner.neo4j:org.slizaa.scanner.neo4j.importer:1.0.0-SNAPSHOT")
-        .withDependency("org.slizaa.scanner.neo4j:org.slizaa.scanner.neo4j.graphdbfactory:1.0.0-SNAPSHOT")
+        .withDependency("org.slizaa.neo4j:org.slizaa.neo4j.importer:1.0.0-SNAPSHOT")
+        .withDependency("org.slizaa.neo4j:org.slizaa.neo4j.graphdbfactory:1.0.0-SNAPSHOT")
         .withDependency("org.slizaa.jtype:org.slizaa.jtype.scanner:1.0.0-SNAPSHOT")
         .withDependency("org.slizaa.jtype:org.slizaa.jtype.scanner.apoc:1.0.0-SNAPSHOT")
         .withDependency("org.slizaa.jtype:org.slizaa.jtype.hierarchicalgraph:1.0.0-SNAPSHOT")
-        .withExclusionPattern("*:org.slizaa.scanner.core.spi-api").withExclusionPattern("*:jdk.tools")
+        .withExclusionPattern("*:org.slizaa.scanner.spi-api").withExclusionPattern("*:jdk.tools")
         .resolveToUrlArray();
 
     //
