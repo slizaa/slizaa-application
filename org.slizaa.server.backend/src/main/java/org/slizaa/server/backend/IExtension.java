@@ -1,4 +1,4 @@
-package org.slizaa.server.extensions;
+package org.slizaa.server.backend;
 
 import java.net.URL;
 

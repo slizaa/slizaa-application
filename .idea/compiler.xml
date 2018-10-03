@@ -6,7 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="org.slizaa.application.server" />
+        <module name="org.slizaa.server.backend" />
+        <module name="org.slizaa.server.rest" />
       </profile>
     </annotationProcessing>
   </component>
