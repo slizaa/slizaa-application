@@ -43,14 +43,14 @@ public class ServerBackendStateMachineTest {
    */
   private void testUpdateBackendSucceded() {
 
-    // test BACKEND_CONFIGURED => UPDATING_BACKEND
+    // test BACKEND_CONFIGURED => UPDATING_BACKEND_CONFIGURATION
     _stateMachine.sendEvent(MessageBuilder
-        .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND)
+        .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
         .build());
 
-    assertThat(_stateMachine.getState().getId()).isEqualTo(ServerBackendStateMachine.States.UPDATING_BACKEND);
+    assertThat(_stateMachine.getState().getId()).isEqualTo(ServerBackendStateMachine.States.UPDATING_BACKEND_CONFIGURATION);
 
-    // test UPDATING_BACKEND => BACKEND_CONFIGURED
+    // test UPDATING_BACKEND_CONFIGURATION => BACKEND_CONFIGURED
     _stateMachine.sendEvent(MessageBuilder
         .withPayload(ServerBackendStateMachine.Events.UPDATE_SUCCEDED)
         .build());
@@ -63,14 +63,14 @@ public class ServerBackendStateMachineTest {
    */
   private void testUpdateBackendFailed() {
 
-    // test BACKEND_CONFIGURED => UPDATING_BACKEND
+    // test BACKEND_CONFIGURED => UPDATING_BACKEND_CONFIGURATION
     _stateMachine.sendEvent(MessageBuilder
-        .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND)
+        .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
         .build());
 
-    assertThat(_stateMachine.getState().getId()).isEqualTo(ServerBackendStateMachine.States.UPDATING_BACKEND);
+    assertThat(_stateMachine.getState().getId()).isEqualTo(ServerBackendStateMachine.States.UPDATING_BACKEND_CONFIGURATION);
 
-    // test UPDATING_BACKEND => BACKEND_CONFIGURED
+    // test UPDATING_BACKEND_CONFIGURATION => BACKEND_CONFIGURED
     _stateMachine.sendEvent(MessageBuilder
         .withPayload(ServerBackendStateMachine.Events.UPDATE_FAILED)
         .build());

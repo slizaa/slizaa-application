@@ -23,10 +23,6 @@ public interface ISlizaaServerBackend {
 
   void installExtensions(List<IExtension> extensions);
 
-  void addSlizaaServerBackendListener(ISlizaaServerBackendListener listener);
-
-  void removeSlizaaServerBackendListener(ISlizaaServerBackendListener listener);
-
   /**
    *
    * @return

@@ -20,15 +20,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  *
  */
-@Component
-public class ServerBackendImpl extends AbstractExtensionServiceImpl {
-
-  //
-  @Autowired
-  private StateMachine<ServerBackendStateMachine.States, ServerBackendStateMachine.Events> _stateMachine;
+public class ConfiguredBackend {
 
   //
   private IModelImporterFactory _modelImporterFactory;
@@ -48,7 +45,17 @@ public class ServerBackendImpl extends AbstractExtensionServiceImpl {
   //
   private List<ICypherStatement> _cypherStatements = new ArrayList<>();
 
-  @PostConstruct
+  /** - */
+  private ClassLoader _classLoader;
+
+  /**
+   *
+   * @param classLoader
+   */
+  public ConfiguredBackend(ClassLoader classLoader) {
+    this._classLoader = checkNotNull(classLoader);
+  }
+
   public void initialize() {
     _cypherStatements = new ArrayList<>();
     this._cypherStatementRegistry = new CypherStatementRegistry(() -> {
@@ -58,7 +65,6 @@ public class ServerBackendImpl extends AbstractExtensionServiceImpl {
     this.configure();
   }
 
-  @PreDestroy
   public void dispose() {
     _cypherStatements = null;
     _modelImporterFactory = null;
@@ -66,59 +72,39 @@ public class ServerBackendImpl extends AbstractExtensionServiceImpl {
     _parserFactories = null;
     _mappingProviders = null;
     _cypherStatements = null;
+    _classLoader = null;
   }
 
-  @Override
+  public ClassLoader getClassLoader() {
+    return _classLoader;
+  }
+
   public ICypherStatementRegistry getCypherStatementRegistry() {
     return _cypherStatementRegistry;
   }
 
-  @Override
   public boolean hasModelImporterFactory() {
     return _modelImporterFactory != null;
   }
 
-  @Override
   public IModelImporterFactory getModelImporterFactory() {
     return _modelImporterFactory;
   }
 
-  @Override
   public boolean hasGraphDbFactory() {
     return _graphDbFactory != null;
   }
 
-  @Override
   public IGraphDbFactory getGraphDbFactory() {
     return _graphDbFactory;
   }
 
-  @Override
   public List<IParserFactory> getParserFactories() {
     return _parserFactories;
   }
 
-  @Override
   public List<IMappingProvider> getMappingProviders() {
     return _mappingProviders;
-  }
-
-  /**
-   * @param extensions
-   */
-  @Override
-  public void installExtensions(IExtension... extensions) {
-    super.installExtensions(extensions);
-    configure();
-  }
-
-  /**
-   * @param extensions
-   */
-  @Override
-  public void installExtensions(List<IExtension> extensions) {
-    super.installExtensions(extensions);
-    configure();
   }
 
   /**
@@ -126,33 +112,31 @@ public class ServerBackendImpl extends AbstractExtensionServiceImpl {
    */
   private boolean configure() {
 
-    ClassLoader classLoader = this.getCurrentExtensionClassLoader();
-
     //
     ServiceLoader<IModelImporterFactory> serviceLoader = ServiceLoader.load(IModelImporterFactory.class,
-        classLoader);
+        _classLoader);
     this._modelImporterFactory = serviceLoader.iterator().next();
 
     //
     ServiceLoader<IGraphDbFactory> serviceLoader_2 = ServiceLoader.load(IGraphDbFactory.class,
-        classLoader);
+        _classLoader);
     this._graphDbFactory = serviceLoader_2.iterator().next();
 
     //
     ServiceLoader<IParserFactory> serviceLoader_3 = ServiceLoader.load(IParserFactory.class,
-        classLoader);
+        _classLoader);
     this._parserFactories = new ArrayList<>();
     serviceLoader_3.iterator().forEachRemaining(mp -> this._parserFactories.add(mp));
 
     //
     ServiceLoader<IMappingProvider> serviceLoader_4 = ServiceLoader.load(IMappingProvider.class,
-        classLoader);
+        _classLoader);
     this._mappingProviders = new ArrayList<>();
     serviceLoader_4.iterator().forEachRemaining(mp -> this._mappingProviders.add(mp));
 
     //
     _cypherStatements.clear();
-    _cypherStatements.addAll(CypherRegistryUtils.getCypherStatementsFromClasspath(classLoader));
+    _cypherStatements.addAll(CypherRegistryUtils.getCypherStatementsFromClasspath(_classLoader));
     this._cypherStatementRegistry = new CypherStatementRegistry(() -> {
       return Collections.unmodifiableList(_cypherStatements);
     });
@@ -160,13 +144,5 @@ public class ServerBackendImpl extends AbstractExtensionServiceImpl {
 
     //
     return true;
-  }
-
-  /**
-   * @return
-   */
-  @Override
-  public boolean isConfigured() {
-    return getCurrentExtensionClassLoader() != null;
   }
 }
