@@ -8,13 +8,7 @@ import org.slizaa.scanner.api.importer.IModelImporterFactory;
 import org.slizaa.scanner.cypherregistry.CypherRegistryUtils;
 import org.slizaa.scanner.cypherregistry.CypherStatementRegistry;
 import org.slizaa.scanner.spi.parser.IParserFactory;
-import org.slizaa.server.backend.IExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.statemachine.StateMachine;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

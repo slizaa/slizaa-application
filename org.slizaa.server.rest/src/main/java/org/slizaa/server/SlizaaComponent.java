@@ -1,5 +1,7 @@
 package org.slizaa.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slizaa.core.boltclient.IBoltClient;
 import org.slizaa.core.boltclient.IBoltClientFactory;
 import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
@@ -35,10 +37,14 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SlizaaComponent {
 
+
   {
     org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
     org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
   }
+
+  //
+  private static final Logger logger = LoggerFactory.getLogger(SlizaaComponent.class);
 
   @Value("${database.directory}")
   private File _databaseDirectory;
@@ -113,6 +119,8 @@ public class SlizaaComponent {
    * @throws Exception
    */
   public void test() throws Exception {
+
+    logger.info("Creating SlizaaComponent.");
 
     //
     if (this._databaseDirectory.exists() && this._databaseDirectory.list().length > 0) {

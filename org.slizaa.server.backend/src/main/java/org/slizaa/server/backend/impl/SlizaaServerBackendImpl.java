@@ -8,8 +8,10 @@ import org.slizaa.scanner.api.cypherregistry.ICypherStatementRegistry;
 import org.slizaa.scanner.api.graphdb.IGraphDbFactory;
 import org.slizaa.scanner.api.importer.IModelImporterFactory;
 import org.slizaa.scanner.spi.parser.IParserFactory;
-import org.slizaa.server.backend.IExtension;
 import org.slizaa.server.backend.ISlizaaServerBackend;
+import org.slizaa.server.backend.dao.ISlizaaServerDao;
+import org.slizaa.server.backend.extensions.IExtension;
+import org.slizaa.server.backend.extensions.IExtensionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -18,8 +20,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -30,36 +32,30 @@ import static com.google.common.base.Preconditions.checkState;
 public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     ServerBackendStateMachine.IServerBackendStateMachineContext {
 
-  /**
-   * -
-   */
+  /* the internal state machine */
   @Autowired
   private StateMachine<ServerBackendStateMachine.States, ServerBackendStateMachine.Events> _stateMachine;
 
-  /**
-   * -
-   */
+  /* - */
+  @Autowired
+  private IExtensionService _extensionService;
+
+  /* - */
+  @Autowired
+  private ISlizaaServerDao _slizaaServerDao;
+
+  /*  */
   private ConfiguredBackend _configuredBackend;
-
-  /**
-   * -
-   */
-  private MavenBasedExtension defaultExtension = new MavenBasedExtension()
-      .withDependency("org.slizaa.neo4j:org.slizaa.neo4j.importer:1.0.0-SNAPSHOT")
-      .withDependency("org.slizaa.neo4j:org.slizaa.neo4j.graphdbfactory:1.0.0-SNAPSHOT")
-      .withDependency("org.slizaa.jtype:org.slizaa.jtype.scanner:1.0.0-SNAPSHOT")
-      .withDependency("org.slizaa.jtype:org.slizaa.jtype.scanner.apoc:1.0.0-SNAPSHOT")
-      .withDependency("org.slizaa.jtype:org.slizaa.jtype.hierarchicalgraph:1.0.0-SNAPSHOT")
-      .withExclusionPattern("*:org.slizaa.scanner.spi-api").withExclusionPattern("*:jdk.tools");
-
-  // TODO: replace with dao
-  private List<IExtension> _extensionList = Collections.singletonList(defaultExtension);
 
   /**
    *
    */
   @PostConstruct
   public void initialize() {
+
+    // TODO: Remove
+    _slizaaServerDao.saveInstalledExtensions(_extensionService.getAvailableExtensions());
+
     _stateMachine.start();
   }
 
@@ -76,15 +72,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
    */
   @Override
   public List<IExtension> getInstalledExtensions() {
-    return _extensionList;
-  }
-
-  /**
-   * @return
-   */
-  @Override
-  public List<IExtension> getAvailableExtensions() {
-    return _extensionList;
+    return _slizaaServerDao.getInstalledExtensions();
   }
 
   /**
@@ -171,8 +159,10 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
 
   @Override
   public void unconfigureBackend() {
-    this._configuredBackend.dispose();
-    this._configuredBackend = null;
+    if (this._configuredBackend == null) {
+      this._configuredBackend.dispose();
+      this._configuredBackend = null;
+    }
   }
 
   @Override
@@ -202,9 +192,11 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
 
     //
-    URL[] resolvedArtifacts = this.defaultExtension.resolvedArtifactsToInstall();
+    List<URL> urlList = _extensionService.getAvailableExtensions().stream()
+        .flatMap(ext -> ext.resolvedArtifactsToInstall().stream()).distinct()
+        .collect(Collectors.toList());
 
     //
-    return new URLClassLoader(resolvedArtifacts, SlizaaServerBackendImpl.class.getClassLoader());
+    return new URLClassLoader(urlList.toArray(new URL[0]), SlizaaServerBackendImpl.class.getClassLoader());
   }
 }

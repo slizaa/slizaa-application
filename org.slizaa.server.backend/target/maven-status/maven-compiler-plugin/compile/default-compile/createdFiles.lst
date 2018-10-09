@@ -1,0 +1,9 @@
+org\slizaa\server\backend\impl\AbstractExtensionServiceImpl.class
+org\slizaa\server\backend\ISlizaaServerBackendListener.class
+org\slizaa\server\backend\impl\ServerBackendStateMachine.class
+org\slizaa\server\backend\ISlizaaServerBackend.class
+org\slizaa\server\backend\impl\MavenBasedExtension.class
+org\slizaa\server\backend\impl\ServerBackendStateMachine$Events.class
+org\slizaa\server\backend\impl\ServerBackendStateMachine$States.class
+org\slizaa\server\backend\impl\ServerBackendImpl.class
+org\slizaa\server\backend\IExtension.class
