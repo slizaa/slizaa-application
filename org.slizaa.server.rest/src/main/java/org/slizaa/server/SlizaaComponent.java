@@ -10,6 +10,7 @@ import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.ILabelDefinitionProvider
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.IMappingProvider;
 import org.slizaa.scanner.api.graphdb.IGraphDb;
 import org.slizaa.scanner.api.importer.IModelImporter;
+import org.slizaa.scanner.api.util.DefaultProgressMonitor;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.backend.ISlizaaServerBackend;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +144,7 @@ public class SlizaaComponent {
     //
     IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
     IMappingProvider mappingProvider = this._slizaaServerBackend.getMappingProviders().get(0);
-    this._rootNode = mappingService.convert(mappingProvider, this._boltClient, new SlizaaTestProgressMonitor());
+    this._rootNode = mappingService.convert(mappingProvider, this._boltClient, new DefaultProgressMonitor("Mapping", 100));
 
     //
     _labelDefinitionProvider = mappingProvider.getLabelDefinitionProvider();
@@ -174,7 +175,7 @@ public class SlizaaComponent {
         this._databaseDirectory, _slizaaServerBackend.getParserFactories(),
         this._slizaaServerBackend.getCypherStatementRegistry().getAllStatements());
 
-    modelImporter.parse(new SlizaaTestProgressMonitor(),
+    modelImporter.parse(new DefaultProgressMonitor("Parse", 100),
         () -> this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create());
 
     //
