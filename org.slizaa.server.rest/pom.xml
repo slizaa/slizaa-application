@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.slizaa.server</groupId>
+            <artifactId>org.slizaa.server.backend</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -33,14 +38,9 @@
             <version>21.0</version>
         </dependency>
         <dependency>
-            <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.mvnresolver.uber</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.classpathscanner</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-core</artifactId>
+            <version>2.0.2.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.slizaa.core</groupId>
@@ -48,29 +48,29 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.slizaa.scanner.core</groupId>
-            <artifactId>org.slizaa.scanner.core.spi-api</artifactId>
+            <groupId>org.slizaa.scanner</groupId>
+            <artifactId>org.slizaa.scanner.spi-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.slizaa.scanner.core</groupId>
-            <artifactId>org.slizaa.scanner.core.contentdefinition</artifactId>
+            <groupId>org.slizaa.scanner</groupId>
+            <artifactId>org.slizaa.scanner.contentdefinition</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.slizaa.scanner.core</groupId>
-            <artifactId>org.slizaa.scanner.core.cypherregistry</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.classpathscanner</artifactId>
+            <groupId>org.slizaa.scanner</groupId>
+            <artifactId>org.slizaa.scanner.cypherregistry</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slizaa.hierarchicalgraph.graphdb</groupId>
             <artifactId>org.slizaa.hierarchicalgraph.graphdb.mapping.service</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.1.7</version>
         </dependency>
 
         <!-- TEST -->
@@ -94,22 +94,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
