@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @Component
 public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
-    ServerBackendStateMachine.IServerBackendStateMachineContext {
+        IServerBackendStateMachineContext {
 
   /* the internal state machine */
   @Autowired
@@ -45,7 +45,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
   private ISlizaaServerDao _slizaaServerDao;
 
   /*  */
-  private ConfiguredBackend _configuredBackend;
+  private DynamicallyLoadedExtensions _dynamicallyLoadedExtensions;
 
   /**
    *
@@ -64,7 +64,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
    */
   @Override
   public ClassLoader getCurrentExtensionClassLoader() {
-    return _configuredBackend != null ? _configuredBackend.getClassLoader() : null;
+    return _dynamicallyLoadedExtensions != null ? _dynamicallyLoadedExtensions.getClassLoader() : null;
   }
 
   /**
@@ -101,49 +101,49 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
 
   @Override
   public boolean isConfigured() {
-    return _configuredBackend != null;
+    return _dynamicallyLoadedExtensions != null;
   }
 
   @Override
   public boolean hasModelImporterFactory() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.hasModelImporterFactory();
+    return _dynamicallyLoadedExtensions.hasModelImporterFactory();
   }
 
   @Override
   public IModelImporterFactory getModelImporterFactory() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.getModelImporterFactory();
+    return _dynamicallyLoadedExtensions.getModelImporterFactory();
   }
 
   @Override
   public boolean hasGraphDbFactory() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.hasGraphDbFactory();
+    return _dynamicallyLoadedExtensions.hasGraphDbFactory();
   }
 
   @Override
   public IGraphDbFactory getGraphDbFactory() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.getGraphDbFactory();
+    return _dynamicallyLoadedExtensions.getGraphDbFactory();
   }
 
   @Override
   public ICypherStatementRegistry getCypherStatementRegistry() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.getCypherStatementRegistry();
+    return _dynamicallyLoadedExtensions.getCypherStatementRegistry();
   }
 
   @Override
   public List<IParserFactory> getParserFactories() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.getParserFactories();
+    return _dynamicallyLoadedExtensions.getParserFactories();
   }
 
   @Override
   public List<IMappingProvider> getMappingProviders() {
     checkState(isConfigured(), "Slizaa server backend has to be configured.");
-    return _configuredBackend.getMappingProviders();
+    return _dynamicallyLoadedExtensions.getMappingProviders();
   }
 
   @Override
@@ -153,15 +153,15 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
 
   @Override
   public void configureBackend() {
-    this._configuredBackend = new ConfiguredBackend(dynamicallyLoadExtensions());
-    this._configuredBackend.initialize();
+    this._dynamicallyLoadedExtensions = new DynamicallyLoadedExtensions(dynamicallyLoadExtensions());
+    this._dynamicallyLoadedExtensions.initialize();
   }
 
   @Override
   public void unconfigureBackend() {
-    if (this._configuredBackend == null) {
-      this._configuredBackend.dispose();
-      this._configuredBackend = null;
+    if (this._dynamicallyLoadedExtensions == null) {
+      this._dynamicallyLoadedExtensions.dispose();
+      this._dynamicallyLoadedExtensions = null;
     }
   }
 

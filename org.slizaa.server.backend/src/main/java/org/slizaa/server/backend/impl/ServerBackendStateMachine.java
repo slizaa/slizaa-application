@@ -16,110 +16,92 @@ import static org.slizaa.server.backend.impl.ServerBackendStateMachine.States.*;
 @Configuration
 @EnableStateMachine
 public class ServerBackendStateMachine
-    extends EnumStateMachineConfigurerAdapter<ServerBackendStateMachine.States, ServerBackendStateMachine.Events> {
-
-  @Autowired
-  private IServerBackendStateMachineContext _context;
-
-  @Override
-  public void configure(StateMachineStateConfigurer<States, Events> states)
-      throws Exception {
-
-    //
-    states
-        .withStates()
-        .initial(States.INITIAL)
-        .choice(States.CHOICE)
-        .states(EnumSet.allOf(States.class));
-  }
-
-  @Override
-  public void configure(StateMachineTransitionConfigurer<States, Events> transitions)
-      throws Exception {
-
-    //
-    transitions
-        .withExternal()
-        .source(INITIAL)
-        .target(CHOICE)
-        .and()
-        .withChoice()
-        .source(CHOICE)
-        .first(BACKEND_CONFIGURED, ctx -> _context.canConfigureBackend(), ctx -> _context.configureBackend())
-        .last(BACKEND_UNCONFIGURED, ctx -> _context.unconfigureBackend())
-        .and()
-        .withExternal()
-        .source(BACKEND_CONFIGURED)
-        .target(UPDATING_BACKEND_CONFIGURATION)
-        .event(UPDATE_BACKEND_CONFIGURATION)
-        .action(ctx -> _context.updateBackendConfiguration())
-        .and()
-        .withExternal()
-        .source(BACKEND_UNCONFIGURED)
-        .target(UPDATING_BACKEND_CONFIGURATION)
-        .event(UPDATE_BACKEND_CONFIGURATION)
-        .action(ctx -> {
-          if (_context.updateBackendConfiguration()) {
-            ctx.getStateMachine().sendEvent(MessageBuilder
-                .withPayload(Events.UPDATE_SUCCEDED)
-                .build());
-          } else {
-            ctx.getStateMachine().sendEvent(MessageBuilder
-                .withPayload(Events.UPDATE_SUCCEDED)
-                .build());
-          }
-        })
-        .and()
-        .withExternal()
-        .source(UPDATING_BACKEND_CONFIGURATION)
-        .target(BACKEND_UNCONFIGURED)
-        .event(UPDATE_FAILED)
-        .action(ctx -> _context.unconfigureBackend())
-        .and()
-        .withExternal()
-        .source(UPDATING_BACKEND_CONFIGURATION)
-        .target(BACKEND_CONFIGURED)
-        .action(ctx -> _context.configureBackend())
-        .event(UPDATE_SUCCEDED);
-  }
-
-  /**
-   *
-   */
-  public static enum States {
-    INITIAL, CHOICE, BACKEND_UNCONFIGURED, BACKEND_CONFIGURED, UPDATING_BACKEND_CONFIGURATION
-  }
-
-  /**
-   *
-   */
-  public static enum Events {
-    UPDATE_BACKEND_CONFIGURATION, UPDATE_FAILED, UPDATE_SUCCEDED
-  }
-
-  /**
-   *
-   */
-  public interface IServerBackendStateMachineContext {
-
-    /**
-     * @return
-     */
-    boolean canConfigureBackend();
+        extends EnumStateMachineConfigurerAdapter<ServerBackendStateMachine.States, ServerBackendStateMachine.Events> {
 
     /**
      *
      */
-    void configureBackend();
+    public static enum States {
+        INITIAL, CHOICE, BACKEND_UNCONFIGURED, BACKEND_CONFIGURED, UPDATING_BACKEND_CONFIGURATION
+    }
 
     /**
      *
      */
-    void unconfigureBackend();
+    public static enum Events {
+        UPDATE_BACKEND_CONFIGURATION, UPDATE_FAILED, UPDATE_SUCCEDED
+    }
 
-    /**
-     *
-     */
-    boolean updateBackendConfiguration();
-  }
+    @Autowired
+    private IServerBackendStateMachineContext _context;
+
+    @Override
+    public void configure(StateMachineStateConfigurer<States, Events> states)
+            throws Exception {
+
+        //
+        states
+                .withStates()
+                .initial(States.INITIAL)
+                .choice(States.CHOICE)
+                .states(EnumSet.allOf(States.class));
+    }
+
+    @Override
+    public void configure(StateMachineTransitionConfigurer<States, Events> transitions)
+            throws Exception {
+
+        //
+        transitions
+                //
+                .withExternal()
+                .source(INITIAL)
+                .target(CHOICE)
+                .and()
+                //
+                .withChoice()
+                .source(CHOICE)
+                .first(BACKEND_CONFIGURED, ctx -> _context.canConfigureBackend(), ctx -> _context.configureBackend())
+                .last(BACKEND_UNCONFIGURED, ctx -> _context.unconfigureBackend())
+                .and()
+                //
+                .withExternal()
+                .source(BACKEND_CONFIGURED)
+                .target(UPDATING_BACKEND_CONFIGURATION)
+                .event(UPDATE_BACKEND_CONFIGURATION)
+                .action(ctx -> _context.updateBackendConfiguration())
+                .and()
+                //
+                .withExternal()
+                .source(BACKEND_UNCONFIGURED)
+                .target(UPDATING_BACKEND_CONFIGURATION)
+                .event(UPDATE_BACKEND_CONFIGURATION)
+                .action(ctx -> {
+                    if (_context.updateBackendConfiguration()) {
+                        ctx.getStateMachine().sendEvent(MessageBuilder
+                                .withPayload(Events.UPDATE_SUCCEDED)
+                                .build());
+                    } else {
+                        ctx.getStateMachine().sendEvent(MessageBuilder
+                                .withPayload(Events.UPDATE_SUCCEDED)
+                                .build());
+                    }
+                })
+                .and()
+                //
+                .withExternal()
+                .source(UPDATING_BACKEND_CONFIGURATION)
+                .target(BACKEND_UNCONFIGURED)
+                .event(UPDATE_FAILED)
+                .action(ctx -> _context.unconfigureBackend())
+                .and()
+                //
+                .withExternal()
+                .source(UPDATING_BACKEND_CONFIGURATION)
+                .target(BACKEND_CONFIGURED)
+                .action(ctx -> _context.configureBackend())
+                .event(UPDATE_SUCCEDED);
+    }
+
+
 }

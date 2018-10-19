@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  *
  */
-public class ConfiguredBackend {
+public class DynamicallyLoadedExtensions {
 
   //
   private IModelImporterFactory _modelImporterFactory;
@@ -46,10 +46,13 @@ public class ConfiguredBackend {
    *
    * @param classLoader
    */
-  public ConfiguredBackend(ClassLoader classLoader) {
+  public DynamicallyLoadedExtensions(ClassLoader classLoader) {
     this._classLoader = checkNotNull(classLoader);
   }
 
+  /**
+   *
+   */
   public void initialize() {
     _cypherStatements = new ArrayList<>();
     this._cypherStatementRegistry = new CypherStatementRegistry(() -> {
