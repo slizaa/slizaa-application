@@ -83,7 +83,7 @@ public class ServerBackendStateMachine
                                 .build());
                     } else {
                         ctx.getStateMachine().sendEvent(MessageBuilder
-                                .withPayload(Events.UPDATE_SUCCEDED)
+                                .withPayload(Events.UPDATE_FAILED)
                                 .build());
                     }
                 })
