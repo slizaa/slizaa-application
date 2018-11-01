@@ -18,6 +18,7 @@
     <modules>
         <module>org.slizaa.server.rest</module>
         <module>org.slizaa.server.backend</module>
+        <module>org.slizaa.server.extensions</module>
     </modules>
 
     <dependencyManagement>

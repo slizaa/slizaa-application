@@ -1,4 +1,4 @@
-package org.slizaa.server.backend.extensions;
+package org.slizaa.server.extensions;
 
 import java.util.List;
 

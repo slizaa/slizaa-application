@@ -1,5 +1,9 @@
-package org.slizaa.server.backend.extensions;
+package org.slizaa.server.extensions.impl;
 
+import org.slizaa.server.extensions.IExtension;
+import org.slizaa.server.extensions.IExtensionService;
+import org.slizaa.server.extensions.MavenBasedExtension;
+import org.slizaa.server.extensions.Version;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

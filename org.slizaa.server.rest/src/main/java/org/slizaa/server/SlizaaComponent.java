@@ -41,6 +41,13 @@ public class SlizaaComponent {
   //
   private static final Logger logger = LoggerFactory.getLogger(SlizaaComponent.class);
 
+  //
+  {
+    org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+    org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+  }
+
+  //
   @Value("${database.directory}")
   private File _databaseDirectory;
 
@@ -75,10 +82,6 @@ public class SlizaaComponent {
    */
   private ExecutorService _executorService;
 
-  {
-    org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-    org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-  }
 
   /**
    * <p>
@@ -115,6 +118,18 @@ public class SlizaaComponent {
   }
 
   /**
+   *
+   * @return
+   */
+  public boolean isBackendConfigured() {
+    return _slizaaServerBackend.isConfigured();
+  }
+
+  public void ins() {
+    _slizaaServerBackend.getInstalledExtensions();
+  }
+
+  /**
    * <p>
    * </p>
    *
@@ -122,15 +137,19 @@ public class SlizaaComponent {
    */
   public void test() throws Exception {
 
+    //
     logger.info("Creating SlizaaComponent.");
 
     //
     if (this._databaseDirectory.exists() && this._databaseDirectory.list().length > 0) {
+
       // FUCK ME!
       Thread.currentThread().setContextClassLoader(this._slizaaServerBackend.getCurrentExtensionClassLoader());
 
-      this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create();
-    } else {
+      _graphDb = this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create();
+    }
+    //
+    else {
       parseAndStartDatabase();
     }
 
@@ -144,6 +163,7 @@ public class SlizaaComponent {
     IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
     IMappingProvider mappingProvider = this._slizaaServerBackend.getMappingProviders().get(0);
 
+    //
     this._rootNode = mappingService.convert(mappingProvider, this._boltClient,
         new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
 

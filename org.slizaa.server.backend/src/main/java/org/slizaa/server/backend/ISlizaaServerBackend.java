@@ -5,7 +5,7 @@ import org.slizaa.scanner.api.cypherregistry.ICypherStatementRegistry;
 import org.slizaa.scanner.api.graphdb.IGraphDbFactory;
 import org.slizaa.scanner.api.importer.IModelImporterFactory;
 import org.slizaa.scanner.spi.parser.IParserFactory;
-import org.slizaa.server.backend.extensions.IExtension;
+import org.slizaa.server.extensions.IExtension;
 
 import java.util.List;
 
@@ -14,13 +14,29 @@ import java.util.List;
  */
 public interface ISlizaaServerBackend {
 
+  /**
+   *
+   * @return
+   */
+  ClassLoader getCurrentExtensionClassLoader();
+
+  /**
+   *
+   * @return
+   */
   List<IExtension> getInstalledExtensions();
 
+  /**
+   *
+   * @param extensions
+   */
   void installExtensions(IExtension... extensions);
 
+  /**
+   *
+   * @param extensions
+   */
   void installExtensions(List<IExtension> extensions);
-
-  ClassLoader getCurrentExtensionClassLoader();
 
   /**
    *

@@ -1,4 +1,4 @@
-package org.slizaa.server.backend.extensions;
+package org.slizaa.server.extensions;
 
 import org.slizaa.core.mvnresolver.MvnResolverServiceFactoryFactory;
 import org.slizaa.core.mvnresolver.api.IMvnResolverService;

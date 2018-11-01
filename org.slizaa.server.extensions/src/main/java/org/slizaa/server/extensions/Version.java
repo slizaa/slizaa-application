@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.slizaa.server.backend.extensions;
+package org.slizaa.server.extensions;
 
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;

@@ -1,6 +1,6 @@
 package org.slizaa.server.backend.dao;
 
-import org.slizaa.server.backend.extensions.IExtension;
+import org.slizaa.server.extensions.IExtension;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
