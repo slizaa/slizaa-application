@@ -1,9 +1,0 @@
-org\slizaa\server\backend\impl\SlizaaServerBackendImpl.class
-org\slizaa\server\backend\dao\DefaultSlizaaServerDao.class
-org\slizaa\server\backend\impl\ServerBackendStateMachine.class
-org\slizaa\server\backend\ISlizaaServerBackend.class
-org\slizaa\server\backend\impl\ServerBackendStateMachine$Events.class
-org\slizaa\server\backend\impl\DynamicallyLoadedExtensions.class
-org\slizaa\server\backend\impl\ServerBackendStateMachine$States.class
-org\slizaa\server\backend\impl\IServerBackendStateMachineContext.class
-org\slizaa\server\backend\dao\ISlizaaServerDao.class

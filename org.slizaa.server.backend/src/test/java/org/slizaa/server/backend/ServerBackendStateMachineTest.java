@@ -3,10 +3,12 @@ package org.slizaa.server.backend;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slizaa.server.backend.impl.ServerBackendStateMachine;
+import org.slizaa.server.extensions.ExtensionsConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = ServerBackendStateMachineTest.class)
 @TestConfiguration
 @ComponentScan(basePackageClasses = ServerBackendStateMachineTest.class)
+@Import(ExtensionsConfiguration.class)
 public class ServerBackendStateMachineTest {
 
   //

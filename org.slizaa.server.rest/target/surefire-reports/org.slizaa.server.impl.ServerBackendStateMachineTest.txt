@@ -1,9 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.slizaa.server.impl.ServerBackendStateMachineTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.888 s <<< FAILURE! - in org.slizaa.server.impl.ServerBackendStateMachineTest
-testTest(org.slizaa.server.impl.ServerBackendStateMachineTest)  Time elapsed: 0.004 s  <<< ERROR!
-java.lang.IllegalStateException: Failed to load ApplicationContext
-Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'serverBackendStateMachineTest': Unsatisfied dependency expressed through field '_stateMachine'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.springframework.statemachine.StateMachine<org.slizaa.server.backend.impl.ServerBackendStateMachine$States, org.slizaa.server.backend.impl.ServerBackendStateMachine$Events>' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
-Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.springframework.statemachine.StateMachine<org.slizaa.server.backend.impl.ServerBackendStateMachine$States, org.slizaa.server.backend.impl.ServerBackendStateMachine$Events>' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
-

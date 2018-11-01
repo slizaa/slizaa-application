@@ -28,11 +28,8 @@ import java.util.StringTokenizer;
  * endpoint can be open (excluded from the set) or closed (included in the set).
  *
  * <p>
- * {@code VersionRange} objects are immutable.
  *
- * @since 1.7
- * @Immutable
- * @version $Id: d0c21e6a5015a7fa0b33179a29122ea7d137145a $
+ * This file originally has been copied from org.osgi.core.VersionRange.
  */
 
 public class VersionRange {
