@@ -2,29 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b6007fbf-d122-4d42-9c35-c0bdfe4be116" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/org.slizaa.server.graphql/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/org.slizaa.server.graphql/src/main/java/org/slizaa/server/graphql/ApplicationBootConfiguration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/ISlizaaServerBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/ISlizaaServerBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/dao/DefaultSlizaaServerDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/dao/DefaultSlizaaServerDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/dao/ISlizaaServerDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/dao/ISlizaaServerDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/extensions/DefaultExtensionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/impl/DefaultExtensionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/extensions/IExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/IExtension.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/extensions/IExtensionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/IExtensionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/extensions/MavenBasedExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/MavenBasedExtension.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/extensions/Version.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/Version.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/extensions/VersionRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/VersionRange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/SlizaaServerBackendImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/SlizaaServerBackendImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-archiver/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/target/surefire-reports/TEST-org.slizaa.server.backend.ServerBackendStateMachineTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/target/surefire-reports/TEST-org.slizaa.server.backend.ServerBackendStateMachineTest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.backend/target/surefire-reports/org.slizaa.server.backend.ServerBackendStateMachineTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.backend/target/surefire-reports/org.slizaa.server.backend.ServerBackendStateMachineTest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/SlizaaComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/SlizaaComponent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/org.slizaa.application.server/target/" />
@@ -32,6 +14,8 @@
     <ignored path="$PROJECT_DIR$/org.slizaa.server.extensions/target/" />
     <ignored path="$PROJECT_DIR$/org.slizaa.server.rest/target/" />
     <ignored path="$PROJECT_DIR$/org.slizaa.server.backend/target/" />
+    <ignored path="$PROJECT_DIR$/org.slizaa.server/target/" />
+    <ignored path="$PROJECT_DIR$/org.slizaa.server.graphql/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,16 +93,16 @@
         <counts>
           <entry key="dummy" value="66" />
           <entry key="gitignore" value="21" />
-          <entry key="java" value="6897" />
-          <entry key="xml" value="273" />
+          <entry key="java" value="6901" />
+          <entry key="xml" value="325" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Git file" value="21" />
-          <entry key="JAVA" value="6897" />
+          <entry key="JAVA" value="6901" />
           <entry key="PLAIN_TEXT" value="66" />
-          <entry key="XML" value="273" />
+          <entry key="XML" value="325" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -126,13 +110,13 @@
           <entry key="class" value="7" />
           <entry key="gitignore" value="2" />
           <entry key="html" value="1" />
-          <entry key="java" value="143" />
+          <entry key="java" value="147" />
           <entry key="json" value="6" />
           <entry key="lock" value="1" />
           <entry key="md" value="1" />
           <entry key="properties" value="1" />
           <entry key="ts" value="2" />
-          <entry key="xml" value="25" />
+          <entry key="xml" value="30" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -140,12 +124,12 @@
           <entry key="CLASS" value="7" />
           <entry key="Git file" value="2" />
           <entry key="HTML" value="1" />
-          <entry key="JAVA" value="143" />
+          <entry key="JAVA" value="147" />
           <entry key="JSON" value="5" />
           <entry key="Markdown" value="1" />
           <entry key="Properties" value="1" />
           <entry key="TypeScript" value="2" />
-          <entry key="XML" value="25" />
+          <entry key="XML" value="30" />
           <entry key="tsconfig" value="1" />
           <entry key="yarn.lock" value="1" />
         </counts>
@@ -163,11 +147,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/org.slizaa.server.graphql/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="157">
-              <caret line="26" column="7" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
+            <state relative-caret-position="102">
+              <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/org.slizaa.server.graphql/src/main/java/org/slizaa/server/graphql/ApplicationBootConfiguration.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="29" column="3" lean-forward="true" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#111#112#0" expanded="true" />
+                <element signature="e#190#191#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/org.slizaa.server/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="6" selection-start-line="6" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="35" selection-start-line="12" selection-start-column="3" selection-end-line="14" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -203,10 +219,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/org.slizaa.application.server/src/test/java/org/slizaa/server/statemachines/AdditionalTestConfig.java" />
-        <option value="$PROJECT_DIR$/org.slizaa.application.server/src/test/java/org/slizaa/server/statemachines/SlizaaServerStatemachineTest.java" />
-        <option value="$PROJECT_DIR$/org.slizaa.application.server/src/main/java/org/slizaa/server/statemachines/SlizaaServerStatemachine.java" />
-        <option value="$PROJECT_DIR$/org.slizaa.application.server/src/main/java/org/slizaa/server/serverstate/SlizaaServerStatemachine.java" />
         <option value="$PROJECT_DIR$/org.slizaa.application.server/src/main/java/org/slizaa/server/serverstate/SlizaaServerState.java" />
         <option value="$PROJECT_DIR$/org.slizaa.application.server/src/main/java/org/slizaa/server/extensions/IExtensionAware.java" />
         <option value="$PROJECT_DIR$/org.slizaa.application.server/src/main/java/org/slizaa/server/extensions/impl/MavenBasedExtension.java" />
@@ -227,7 +239,6 @@
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/extensions/ISlizaaServerBackend.java" />
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/extensions/impl/AbstractExtensionServiceImpl.java" />
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/extensions/impl/ServerBackendImpl.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/AbstractExtensionServiceImpl.java" />
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/ServerBackendImpl.java" />
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/SlizzaServerBackendImpl.java" />
@@ -254,6 +265,11 @@
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/ISlizaaServerBackend.java" />
         <option value="$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/SlizaaServerBackendImpl.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/org.slizaa.server/src/main/java/org/slizaa/server/rest/JerseyConfig.java" />
+        <option value="$PROJECT_DIR$/org.slizaa.server.graphql/src/main/java/ApplicationBootConfiguration.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/org.slizaa.server.graphql/src/main/java/org/slizaa/server/graphql/ApplicationBootConfiguration.java" />
+        <option value="$PROJECT_DIR$/org.slizaa.server.graphql/pom.xml" />
       </list>
     </option>
   </component>
@@ -277,6 +293,20 @@
       <expand>
         <path>
           <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="org.slizaa.server.graphql" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="org.slizaa.server.graphql" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="org.slizaa.server.graphql" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="Dependencies" type="f4be9f2a:MavenProjectsStructure$DependenciesNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
           <item name="org.slizaa.server.parent" type="9519ce18:MavenProjectsStructure$ProjectNode" />
         </path>
         <path>
@@ -289,10 +319,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="375" />
-    <option name="y" value="70" />
-    <option name="width" value="2798" />
-    <option name="height" value="1575" />
+    <option name="x" value="1323" />
+    <option name="y" value="237" />
+    <option name="width" value="2399" />
+    <option name="height" value="1724" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -301,6 +331,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -308,11 +339,50 @@
               <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
               <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
+              <item name="org.slizaa.server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
+              <item name="org.slizaa.server.graphql" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
+              <item name="org.slizaa.server.graphql" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
+              <item name="org.slizaa.server.graphql" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
+              <item name="org.slizaa.server.graphql" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="org.slizaa.application.parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="slizaa-application" type="462c0819:PsiDirectoryNode" />
+              <item name="org.slizaa.server.graphql" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="graphql" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -349,9 +419,23 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.SlizaaServer">
+  <component name="RunManager" selected="Application.ApplicationBootConfiguration">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApplicationBootConfiguration" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.slizaa.server.graphql.ApplicationBootConfiguration" />
+      <module name="org.slizaa.server.graphql" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.slizaa.server.graphql.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -451,9 +535,11 @@
       <item itemvalue="JUnit.SlizaaServerStatemachineTest.testTest" />
       <item itemvalue="JUnit.ServerBackendStateMachineTest" />
       <item itemvalue="JUnit.ServerBackendStateMachineTest.testTest" />
+      <item itemvalue="Application.ApplicationBootConfiguration" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ApplicationBootConfiguration" />
         <item itemvalue="Application.SlizaaServer" />
         <item itemvalue="JUnit.ServerBackendStateMachineTest.testTest" />
         <item itemvalue="JUnit.ServerBackendStateMachineTest" />
@@ -503,22 +589,22 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="250" y="47" width="1865" height="1050" extended-state="0" />
+    <frame x="882" y="158" width="1599" height="1149" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.64300627" visible="true" weight="0.20277008" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.64300627" visible="true" weight="0.24041586" />
       <window_info id="Structure" order="1" sideWeight="0.3601286" side_tool="true" weight="0.23560767" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" sideWeight="0.35699373" side_tool="true" weight="0.1332008" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4998012" weight="0.32843137" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49860835" weight="0.3769063" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49860835" visible="true" weight="0.5791544" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3993808" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3290461" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.49821073" weight="0.25723472" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.44553378" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.27559912" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50139165" side_tool="true" weight="0.28328174" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.3290461" />
       <window_info anchor="bottom" id="TypeScript" order="11" />
@@ -527,7 +613,7 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info anchor="right" id="Key Promoter X" order="4" weight="0.32962227" />
-      <window_info anchor="right" id="Maven Projects" order="5" visible="true" weight="0.16454294" />
+      <window_info anchor="right" id="Maven Projects" order="5" visible="true" weight="0.19298245" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -569,21 +655,9 @@
     <option name="LAST_COMMIT_MESSAGE" value="draft" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/package.json" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/README.md" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/tsconfig.json" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/tsconfig.prod.json" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/tsconfig.test.json" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/tslint.json" />
     <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/yarn.lock" />
     <entry file="file://$PROJECT_DIR$/org.slizaa.application.client/src/registerServiceWorker.ts" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/resources/application.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/resources/application.properties" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/statemachine/spring-statemachine-core/2.0.2.RELEASE/spring-statemachine-core-2.0.2.RELEASE.jar!/org/springframework/statemachine/annotation/WithStateMachine.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -655,13 +729,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/rest/model/ErrorMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/rest/model/ErrorMessage.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_77/src.zip!/java/lang/ClassValue.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -677,13 +745,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/org.slizaa.server.backend/src/main/java/org/slizaa/server/backend/impl/ConfiguredBackend.java" />
-    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="29" column="26" selection-start-line="29" selection-start-column="26" selection-end-line="29" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/pom.xml" />
     <entry file="file://$PROJECT_DIR$/org.slizaa.server.backend/src/test/java/org/slizaa/server/backend/ServerBackendStateMachineTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="612">
@@ -705,13 +767,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/rest/HierarchicalTreeController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1010">
-          <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/rest/HierarchicalTreeController.java" />
     <entry file="file://$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/IExtension.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -789,13 +845,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1836">
-          <caret line="108" column="25" selection-start-line="108" selection-start-column="25" selection-end-line="108" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/org.slizaa.server.extensions/src/main/java/org/slizaa/server/extensions/impl/DefaultExtensionService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -803,29 +852,66 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/SlizaaServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/SlizaaComponent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="128" column="32" selection-start-line="128" selection-start-column="32" selection-end-line="128" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2907#2908#0" expanded="true" />
-            <element signature="e#2962#2963#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/SlizaaServer.java" />
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.rest/src/main/java/org/slizaa/server/SlizaaComponent.java" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="157">
           <caret line="26" column="7" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server/src/main/java/org/slizaa/server/SlizaaComponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2259">
+          <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server/src/main/java/org/slizaa/server/SlizaaServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server/src/main/java/org/slizaa/server/rest/JerseyConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="35" selection-start-line="12" selection-start-column="3" selection-end-line="14" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.graphql/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/org.slizaa.server.graphql/src/main/java/org/slizaa/server/graphql/ApplicationBootConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="29" column="3" lean-forward="true" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#111#112#0" expanded="true" />
+            <element signature="e#190#191#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

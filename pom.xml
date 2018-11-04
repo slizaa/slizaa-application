@@ -19,6 +19,7 @@
         <module>org.slizaa.server</module>
         <module>org.slizaa.server.backend</module>
         <module>org.slizaa.server.extensions</module>
+        <module>org.slizaa.server.graphql</module>
     </modules>
 
     <dependencyManagement>

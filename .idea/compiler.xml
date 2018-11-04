@@ -6,10 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="org.slizaa.server" />
         <module name="org.slizaa.server.backend" />
         <module name="org.slizaa.server.extensions" />
+        <module name="org.slizaa.server.graphql" />
         <module name="org.slizaa.server.rest" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="org.slizaa.server.rest" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
