@@ -1,11 +1,41 @@
 type Node {
+
+    # The identifier for this node
     id: ID!
-    name: String!
+
+    # The text label
+    text: String!
+
+    # The parent node
     parent: Node
-    children: [Node]
+
+    # The children
+    children: [Node]!
+
+    properties: [MapEntry]!
+
+    predecessors: [Node]!
+
+    dependenciesTo(targetNodes: [ID]!): [Dependency]!
 }
+
+type Dependency {
+    id: ID!
+    sourceNodeId: ID!
+    targetNodeId: ID!
+}
+
+type MapEntry { key: String!, value: String }
 
 # The Root Query for the application
 type Query {
+
+    # Returns the root node
     rootNode: Node!
+
+    # Returns the node with the given id
+    node(id: ID!): Node
+
+    # Returns the nodes with the given ids
+    nodes(ids: [ID]!): [Node]!
 }

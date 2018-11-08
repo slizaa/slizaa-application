@@ -2,99 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.slizaa.server.parent</artifactId>
+        <groupId>org.slizaa.server</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.3.RELEASE</version>
-    </parent>
-
-    <groupId>org.slizaa.application</groupId>
-    <artifactId>org.slizaa.application.server</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+    <artifactId>org.slizaa.server</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.slizaa.server</groupId>
-            <artifactId>org.slizaa.server.backend</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.server</groupId>
-            <artifactId>org.slizaa.server.extensions</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.progressmonitor</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jersey</artifactId>
+            <groupId>org.slizaa.server</groupId>
+            <artifactId>org.slizaa.server.service.slizaa</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.statemachine</groupId>
-            <artifactId>spring-statemachine-core</artifactId>
-            <version>2.0.2.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.core</groupId>
-            <artifactId>org.slizaa.core.boltclient</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.scanner</groupId>
-            <artifactId>org.slizaa.scanner.spi-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.scanner</groupId>
-            <artifactId>org.slizaa.scanner.contentdefinition</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.scanner</groupId>
-            <artifactId>org.slizaa.scanner.cypherregistry</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slizaa.hierarchicalgraph.graphdb</groupId>
-            <artifactId>org.slizaa.hierarchicalgraph.graphdb.mapping.service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.1.7</version>
-        </dependency>
-
-        <!-- TEST -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-            <scope>test</scope>
+            <groupId>org.slizaa.server</groupId>
+            <artifactId>org.slizaa.server.graphql</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
