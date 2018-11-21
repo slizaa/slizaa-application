@@ -126,6 +126,17 @@ public class SlizaaComponent implements ISlizaaService {
     return _slizaaServerBackend.isConfigured();
   }
 
+  /**
+   *
+   * @return
+   */
+  public ClassLoader getBackendClassLoader() {
+
+    //
+    return isBackendConfigured() ?
+        _slizaaServerBackend.getCurrentExtensionClassLoader() : null;
+  }
+
   public void ins() {
     _slizaaServerBackend.getInstalledExtensions();
   }

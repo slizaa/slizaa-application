@@ -13,6 +13,7 @@
         <module name="org.slizaa.server.service.extensions" />
         <module name="org.slizaa.server.service.slizaa" />
         <module name="org.slizaa.server.slizaaservice" />
+        <module name="org.slizaa.server.staticcontent" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -23,6 +24,7 @@
       <module name="org.slizaa.server.service.extensions" target="1.8" />
       <module name="org.slizaa.server.service.slizaa" target="1.8" />
       <module name="org.slizaa.server.slizaaservice" target="1.8" />
+      <module name="org.slizaa.server.staticcontent" target="1.8" />
       <module name="slizaa-application" target="1.8" />
     </bytecodeTargetLevel>
   </component>

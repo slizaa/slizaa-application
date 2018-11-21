@@ -9,6 +9,7 @@ import org.slizaa.server.rest.model.AggregatedDependency;
 import org.slizaa.server.rest.model.Node;
 import org.slizaa.server.service.slizaa.internal.SlizaaComponent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Gerd W&uuml;therich (gerd@gerd-wuetherich.de)
  */
 @Component
-@Path("/")
+@Path("/rest/")
 @CrossOrigin(origins = "http://localhost:3000")
 public class HierarchicalTreeController {
 

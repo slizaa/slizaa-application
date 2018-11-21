@@ -22,6 +22,7 @@
         <module>org.slizaa.server.graphql</module>
         <module>org.slizaa.server.rest</module>
         <module>org.slizaa.server</module>
+        <module>org.slizaa.server.staticcontent</module>
     </modules>
 
     <dependencyManagement>
