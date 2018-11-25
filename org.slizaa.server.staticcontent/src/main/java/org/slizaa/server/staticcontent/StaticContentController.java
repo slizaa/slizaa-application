@@ -23,7 +23,6 @@ public class StaticContentController {
     public ResponseEntity<InputStreamResource> index(final HttpServletRequest request) throws IOException {
 
         final String url = request.getRequestURI();
-        System.out.println(url);
 
         ClassPathResource imgFile = new ClassPathResource("icons/class_obj.png", _component.getBackendClassLoader());
         return ResponseEntity
