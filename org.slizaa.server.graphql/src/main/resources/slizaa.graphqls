@@ -5,26 +5,28 @@ type Node {
 
     # The text label
     text: String!
-
     imageDescription: ImageDescription
 
     # The parent node
     parent: Node
+    predecessors: [Node]!
 
     # The children
+    # hasChildren: Boolean
     children: [Node]!
 
     properties: [MapEntry]!
 
-    predecessors: [Node]!
+
 
     dependenciesTo(targetNodes: [ID]!): [Dependency]!
 }
 
 type Dependency {
     id: ID!
-    sourceNodeId: ID!
-    targetNodeId: ID!
+    sourceNode: Node!
+    targetNode: Node!
+    weight: Int;
 }
 
 type ImageDescription {
@@ -37,6 +39,12 @@ type ImageDescription {
 
 type MapEntry { key: String!, value: String }
 
+type DependencyMatrix {
+    nodes: [ Node ]
+    dependencies: [[ Dependency ]]
+    matrix: [[ Int ]]
+}
+
 # The Root Query for the application
 type Query {
 
@@ -48,4 +56,6 @@ type Query {
 
     # Returns the nodes with the given ids
     nodes(ids: [ID]!): [Node]!
+
+    dependencyMatrix(ids: [ID]!): DependencyMatrix!
 }

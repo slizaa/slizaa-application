@@ -1,12 +1,17 @@
 package org.slizaa.server.service.backend.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.statemachine.ExtendedState;
+import org.springframework.statemachine.StateContext;
+import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
+import org.springframework.statemachine.guard.Guard;
 
 import java.util.EnumSet;
 
@@ -31,9 +36,6 @@ public class ServerBackendStateMachine
     public static enum Events {
         UPDATE_BACKEND_CONFIGURATION, UPDATE_FAILED, UPDATE_SUCCEDED
     }
-
-    @Autowired
-    private IServerBackendStateMachineContext _context;
 
     @Override
     public void configure(StateMachineStateConfigurer<States, Events> states)
@@ -61,15 +63,15 @@ public class ServerBackendStateMachine
                 //
                 .withChoice()
                 .source(CHOICE)
-                .first(BACKEND_CONFIGURED, ctx -> _context.canConfigureBackend(), ctx -> _context.configureBackend())
-                .last(BACKEND_UNCONFIGURED, ctx -> _context.unconfigureBackend())
+                .first(BACKEND_CONFIGURED, ctx -> context().get().canConfigureBackend(), ctx -> context().get().configureBackend())
+                .last(BACKEND_UNCONFIGURED, ctx -> context().get().unconfigureBackend())
                 .and()
                 //
                 .withExternal()
                 .source(BACKEND_CONFIGURED)
                 .target(UPDATING_BACKEND_CONFIGURATION)
                 .event(UPDATE_BACKEND_CONFIGURATION)
-                .action(ctx -> _context.updateBackendConfiguration())
+                .action(ctx -> context().get().updateBackendConfiguration())
                 .and()
                 //
                 .withExternal()
@@ -77,7 +79,7 @@ public class ServerBackendStateMachine
                 .target(UPDATING_BACKEND_CONFIGURATION)
                 .event(UPDATE_BACKEND_CONFIGURATION)
                 .action(ctx -> {
-                    if (_context.updateBackendConfiguration()) {
+                    if (context().get().updateBackendConfiguration()) {
                         ctx.getStateMachine().sendEvent(MessageBuilder
                                 .withPayload(Events.UPDATE_SUCCEDED)
                                 .build());
@@ -93,15 +95,29 @@ public class ServerBackendStateMachine
                 .source(UPDATING_BACKEND_CONFIGURATION)
                 .target(BACKEND_UNCONFIGURED)
                 .event(UPDATE_FAILED)
-                .action(ctx -> _context.unconfigureBackend())
+                .action(ctx -> context().get().unconfigureBackend())
                 .and()
                 //
                 .withExternal()
                 .source(UPDATING_BACKEND_CONFIGURATION)
                 .target(BACKEND_CONFIGURED)
-                .action(ctx -> _context.configureBackend())
+                .action(ctx -> context().get().configureBackend())
                 .event(UPDATE_SUCCEDED);
     }
 
+    @Bean
+    public ContextHolder context() {
+        System.out.println("************************");
+        return new ContextHolder();
+    }
 
+    public static class ContextHolder {
+
+        @Autowired
+        private IServerBackendStateMachineContext _context;
+
+        public IServerBackendStateMachineContext get() {
+            return _context;
+        }
+    }
 }

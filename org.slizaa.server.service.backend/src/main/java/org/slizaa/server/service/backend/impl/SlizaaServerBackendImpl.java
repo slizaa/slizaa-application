@@ -32,171 +32,171 @@ import static com.google.common.base.Preconditions.checkState;
 public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
         IServerBackendStateMachineContext {
 
-  /* the internal state machine */
-  @Autowired
-  private StateMachine<ServerBackendStateMachine.States, ServerBackendStateMachine.Events> _stateMachine;
+    /* the internal state machine */
+    @Autowired
+    private StateMachine<ServerBackendStateMachine.States, ServerBackendStateMachine.Events> _stateMachine;
 
-  /* - */
-  @Autowired
-  private IExtensionService _extensionService;
+    /* - */
+    @Autowired
+    private IExtensionService _extensionService;
 
-  /* - */
-  @Autowired
-  private ISlizaaServerDao _slizaaServerDao;
+    /* - */
+    @Autowired
+    private ISlizaaServerDao _slizaaServerDao;
 
-  /*  */
-  private DynamicallyLoadedExtensions _dynamicallyLoadedExtensions;
+    /*  */
+    private DynamicallyLoadedExtensions _dynamicallyLoadedExtensions;
 
-  /**
-   *
-   */
-  @PostConstruct
-  public void initialize() {
+    /**
+     *
+     */
+    @PostConstruct
+    public void initialize() {
 
-    // TODO: Remove
-    _slizaaServerDao.saveInstalledExtensions(_extensionService.getAvailableExtensions());
+        // TODO: Remove
+        _slizaaServerDao.saveInstalledExtensions(_extensionService.getAvailableExtensions());
 
-    _stateMachine.start();
-  }
-
-  /**
-   * @return
-   */
-  @Override
-  public ClassLoader getCurrentExtensionClassLoader() {
-    return _dynamicallyLoadedExtensions != null ? _dynamicallyLoadedExtensions.getClassLoader() : null;
-  }
-
-  /**
-   * @return
-   */
-  @Override
-  public List<IExtension> getInstalledExtensions() {
-    return _slizaaServerDao.getInstalledExtensions();
-  }
-
-  /**
-   * @param extensions
-   */
-  @Override
-  public void installExtensions(IExtension... extensions) {
-
-    // TODO
-    _stateMachine.sendEvent(MessageBuilder
-        .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
-        .build());
-  }
-
-  /**
-   * @param extensions
-   */
-  @Override
-  public void installExtensions(List<IExtension> extensions) {
-
-    // TODO
-    _stateMachine.sendEvent(MessageBuilder
-        .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
-        .build());
-  }
-
-  @Override
-  public boolean isConfigured() {
-    return _dynamicallyLoadedExtensions != null;
-  }
-
-  @Override
-  public boolean hasModelImporterFactory() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.hasModelImporterFactory();
-  }
-
-  @Override
-  public IModelImporterFactory getModelImporterFactory() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.getModelImporterFactory();
-  }
-
-  @Override
-  public boolean hasGraphDbFactory() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.hasGraphDbFactory();
-  }
-
-  @Override
-  public IGraphDbFactory getGraphDbFactory() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.getGraphDbFactory();
-  }
-
-  @Override
-  public ICypherStatementRegistry getCypherStatementRegistry() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.getCypherStatementRegistry();
-  }
-
-  @Override
-  public List<IParserFactory> getParserFactories() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.getParserFactories();
-  }
-
-  @Override
-  public List<IMappingProvider> getMappingProviders() {
-    checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
-    return _dynamicallyLoadedExtensions.getMappingProviders();
-  }
-
-  @Override
-  public boolean canConfigureBackend() {
-    return !getInstalledExtensions().isEmpty();
-  }
-
-  @Override
-  public void configureBackend() {
-    this._dynamicallyLoadedExtensions = new DynamicallyLoadedExtensions(dynamicallyLoadExtensions());
-    this._dynamicallyLoadedExtensions.initialize();
-  }
-
-  @Override
-  public void unconfigureBackend() {
-    if (this._dynamicallyLoadedExtensions == null) {
-      this._dynamicallyLoadedExtensions.dispose();
-      this._dynamicallyLoadedExtensions = null;
+        _stateMachine.start();
     }
-  }
 
-  @Override
-  public boolean updateBackendConfiguration() {
-    try {
-      dynamicallyLoadExtensions();
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-      return false;
+    /**
+     * @return
+     */
+    @Override
+    public ClassLoader getCurrentExtensionClassLoader() {
+        return _dynamicallyLoadedExtensions != null ? _dynamicallyLoadedExtensions.getClassLoader() : null;
     }
-  }
 
-  /**
-   * <p>
-   * </p>
-   *
-   * @return
-   */
-  private ClassLoader dynamicallyLoadExtensions() {
+    /**
+     * @return
+     */
+    @Override
+    public List<IExtension> getInstalledExtensions() {
+        return _slizaaServerDao.getInstalledExtensions();
+    }
 
-    //
-    IMvnResolverServiceFactory resolverServiceFactory = MvnResolverServiceFactoryFactory
-        .createNewResolverServiceFactory();
+    /**
+     * @param extensions
+     */
+    @Override
+    public void installExtensions(IExtension... extensions) {
 
-    //
-    IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
+        // TODO
+        _stateMachine.sendEvent(MessageBuilder
+                .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
+                .build());
+    }
 
-    //
-    List<URL> urlList = _extensionService.getAvailableExtensions().stream()
-        .flatMap(ext -> ext.resolvedArtifactsToInstall().stream()).distinct()
-        .collect(Collectors.toList());
+    /**
+     * @param extensions
+     */
+    @Override
+    public void installExtensions(List<IExtension> extensions) {
 
-    //
-    return new URLClassLoader(urlList.toArray(new URL[0]), SlizaaServerBackendImpl.class.getClassLoader());
-  }
+        // TODO
+        _stateMachine.sendEvent(MessageBuilder
+                .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
+                .build());
+    }
+
+    @Override
+    public boolean isConfigured() {
+        return _dynamicallyLoadedExtensions != null;
+    }
+
+    @Override
+    public boolean hasModelImporterFactory() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.hasModelImporterFactory();
+    }
+
+    @Override
+    public IModelImporterFactory getModelImporterFactory() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.getModelImporterFactory();
+    }
+
+    @Override
+    public boolean hasGraphDbFactory() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.hasGraphDbFactory();
+    }
+
+    @Override
+    public IGraphDbFactory getGraphDbFactory() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.getGraphDbFactory();
+    }
+
+    @Override
+    public ICypherStatementRegistry getCypherStatementRegistry() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.getCypherStatementRegistry();
+    }
+
+    @Override
+    public List<IParserFactory> getParserFactories() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.getParserFactories();
+    }
+
+    @Override
+    public List<IMappingProvider> getMappingProviders() {
+        checkState(isConfigured(), "Slizaa server backendservice has to be configured.");
+        return _dynamicallyLoadedExtensions.getMappingProviders();
+    }
+
+    @Override
+    public boolean canConfigureBackend() {
+        return !getInstalledExtensions().isEmpty();
+    }
+
+    @Override
+    public void configureBackend() {
+        this._dynamicallyLoadedExtensions = new DynamicallyLoadedExtensions(dynamicallyLoadExtensions());
+        this._dynamicallyLoadedExtensions.initialize();
+    }
+
+    @Override
+    public void unconfigureBackend() {
+        if (this._dynamicallyLoadedExtensions != null) {
+            this._dynamicallyLoadedExtensions.dispose();
+            this._dynamicallyLoadedExtensions = null;
+        }
+    }
+
+    @Override
+    public boolean updateBackendConfiguration() {
+        try {
+            dynamicallyLoadExtensions();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * <p>
+     * </p>
+     *
+     * @return
+     */
+    private ClassLoader dynamicallyLoadExtensions() {
+
+        //
+        IMvnResolverServiceFactory resolverServiceFactory = MvnResolverServiceFactoryFactory
+                .createNewResolverServiceFactory();
+
+        //
+        IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
+
+        //
+        List<URL> urlList = _extensionService.getAvailableExtensions().stream()
+                .flatMap(ext -> ext.resolvedArtifactsToInstall().stream()).distinct()
+                .collect(Collectors.toList());
+
+        //
+        return new URLClassLoader(urlList.toArray(new URL[0]), SlizaaServerBackendImpl.class.getClassLoader());
+    }
 }

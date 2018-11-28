@@ -7,13 +7,26 @@ public class Dependency {
 
   private String id;
 
-  private String sourceNodeId;
+  private Node sourceNode;
 
-  private String targetNodeId;
+  private Node targetNode;
 
-  public Dependency(String id, String sourceNodeId, String targetNodeId) {
+  private int weight;
+
+  public Dependency(String id, Node sourceNode, Node targetNode, int weight) {
     this.id = id;
-    this.sourceNodeId = sourceNodeId;
-    this.targetNodeId = targetNodeId;
+    this.sourceNode = sourceNode;
+    this.targetNode = targetNode;
+    this.weight = weight;
+  }
+
+  public Dependency(Node sourceNode, Node targetNode, int weight) {
+    this.sourceNode = sourceNode;
+    this.targetNode = targetNode;
+    this.weight = weight;
+  }
+
+  public int getWeight() {
+    return weight;
   }
 }

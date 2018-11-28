@@ -3,16 +3,20 @@ package org.slizaa.server.service.backend;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slizaa.server.service.backend.impl.ServerBackendStateMachine;
-import org.slizaa.server.service.extensions.ExtensionsModuleConfiguration;
+import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,8 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = ServerBackendStateMachineTest.class)
 @TestConfiguration
 @ComponentScan(basePackageClasses = ServerBackendStateMachineTest.class)
-@Import(ExtensionsModuleConfiguration.class)
 public class ServerBackendStateMachineTest {
+
+  @Bean
+  public IExtensionService extensionService() {
+    return new IExtensionService() {
+      @Override
+      public List<IExtension> getAvailableExtensions() {
+        return Collections.emptyList();
+      }
+    };
+  }
 
   //
   @Autowired

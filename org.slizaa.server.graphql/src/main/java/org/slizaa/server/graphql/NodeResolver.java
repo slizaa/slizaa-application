@@ -61,6 +61,8 @@ public class NodeResolver implements GraphQLResolver<Node> {
   }
 
   public List<Dependency> getDependenciesTo(Node node, List<String> targetNodeIds) {
-    return Collections.singletonList(new Dependency("SHCNAP", "source", "target"));
+
+    // TODO!
+    return Collections.singletonList(new Dependency(null, null, 1));
   }
 }
