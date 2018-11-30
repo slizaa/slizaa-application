@@ -20,6 +20,7 @@ public class StaticContentController {
     @Autowired
     private SlizaaComponent _component;
 
+    //
     private ConcurrentHashMap<String, byte[]> _resourceCache = new ConcurrentHashMap<>();
 
     /**
@@ -32,31 +33,27 @@ public class StaticContentController {
 
         //
         String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        requestPath = requestPath.substring("/static/".length());
 
         //
-        ClassPathResource imgFile = new ClassPathResource(requestPath.substring("/static/".length()), _component.getBackendClassLoader());
-        if (imgFile.exists()) {
-
-            //
-            byte[] targetArray = ByteStreams.toByteArray(imgFile.getInputStream());
-
-            //
-            HttpHeaders headers = new HttpHeaders();
-            // TODO
-            headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-            // TODO
-            headers.setContentType(MediaType.IMAGE_PNG);
-            ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(targetArray, headers, HttpStatus.OK);
-            return responseEntity;
-        }
-
+        HttpHeaders headers = new HttpHeaders();
         // TODO
-        throw new RuntimeException();
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        // TODO
+        headers.setContentType(MediaType.IMAGE_PNG);
+        ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(getByte(requestPath), headers, HttpStatus.OK);
+        return responseEntity;
     }
 
+    /**
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     */
     private byte[] getByte(String path) throws IOException {
 
-        _resourceCache.computeIfAbsent(path, p -> {
+       return _resourceCache.computeIfAbsent(path, p -> {
 
             //
             ClassPathResource imgFile = new ClassPathResource(path, _component.getBackendClassLoader());
@@ -71,7 +68,7 @@ public class StaticContentController {
                 }
             }
 
-            throw new RuntimeException(e);
+            throw new RuntimeException();
         });
     }
 }
