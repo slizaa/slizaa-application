@@ -20,7 +20,7 @@ public class StaticContentController {
     @Autowired
     private SlizaaComponent _component;
 
-    //
+    // the resource cache
     private ConcurrentHashMap<String, byte[]> _resourceCache = new ConcurrentHashMap<>();
 
     /**
@@ -64,11 +64,11 @@ public class StaticContentController {
                     byte[] targetArray = ByteStreams.toByteArray(imgFile.getInputStream());
                     return targetArray;
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new ResourceNotFoundException(e);
                 }
             }
 
-            throw new RuntimeException();
+            throw new ResourceNotFoundException("The requested resource couldn't be found.");
         });
     }
 }

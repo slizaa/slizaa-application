@@ -18,7 +18,7 @@ public interface ISlizaaServerBackend {
    *
    * @return
    */
-  ClassLoader getCurrentExtensionClassLoader();
+  boolean isConfigured();
 
   /**
    *
@@ -42,7 +42,7 @@ public interface ISlizaaServerBackend {
    *
    * @return
    */
-  boolean isConfigured();
+  ClassLoader getCurrentExtensionClassLoader();
 
   /**
    *

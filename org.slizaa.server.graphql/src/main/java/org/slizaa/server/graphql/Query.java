@@ -32,6 +32,19 @@ public class Query implements GraphQLQueryResolver {
 
     /**
      *
+     * @return
+     */
+    public boolean isBackendConfigured() {
+        return slizaaService.isBackendConfigured();
+    }
+
+    public List<BackendExtension> installedBackendExtensions() {
+        return slizaaService.getInstalledExtensions().stream().map(ext -> new BackendExtension(ext.getIdentifier(), ext.getVersion().toString())).collect(
+            Collectors.toList());
+    }
+
+    /**
+     *
      * @param id
      * @return
      */

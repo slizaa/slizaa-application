@@ -13,6 +13,7 @@ import org.slizaa.scanner.api.graphdb.IGraphDb;
 import org.slizaa.scanner.api.importer.IModelImporter;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.backend.ISlizaaServerBackend;
+import org.slizaa.server.service.extensions.IExtension;
 import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -103,11 +105,11 @@ public class SlizaaComponent implements ISlizaaService {
   public void initialize() {
 
     //
-    try {
-      test();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+//    try {
+//      test();
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
   }
 
   @PreDestroy
@@ -122,12 +124,17 @@ public class SlizaaComponent implements ISlizaaService {
   /**
    * @return
    */
+  @Override
   public boolean isBackendConfigured() {
     return _slizaaServerBackend.isConfigured();
   }
 
+  @Override
+  public List<IExtension> getInstalledExtensions() {
+    return _slizaaServerBackend.getInstalledExtensions();
+  }
+
   /**
-   *
    * @return
    */
   public ClassLoader getBackendClassLoader() {
@@ -135,10 +142,6 @@ public class SlizaaComponent implements ISlizaaService {
     //
     return isBackendConfigured() ?
         _slizaaServerBackend.getCurrentExtensionClassLoader() : null;
-  }
-
-  public void ins() {
-    _slizaaServerBackend.getInstalledExtensions();
   }
 
   /**

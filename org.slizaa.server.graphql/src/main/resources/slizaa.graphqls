@@ -45,8 +45,20 @@ type DependencyMatrix {
     matrix: [[ Int ]]
 }
 
+# the backend extension
+type BackendExtension {
+    identifier: ID!
+    version: String
+}
+
 # The Root Query for the application
 type Query {
+
+    #
+    isBackendConfigured: Boolean!
+
+    #
+    installedBackendExtensions: [BackendExtension]!
 
     # Returns the root node
     rootNode: Node!
