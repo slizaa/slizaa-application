@@ -1,8 +1,10 @@
-package org.slizaa.server.service.extensions;
+package org.slizaa.server.service.extensions.mvn;
 
 import org.slizaa.core.mvnresolver.MvnResolverServiceFactoryFactory;
 import org.slizaa.core.mvnresolver.api.IMvnResolverService;
 import org.slizaa.core.mvnresolver.api.IMvnResolverServiceFactory;
+import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.Version;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  *
  */
-public class MavenBasedExtension implements IExtension {
+public class MvnBasedExtension implements IExtension {
 
   /* - */
   private String _identifier;
@@ -23,25 +25,17 @@ public class MavenBasedExtension implements IExtension {
   private Version _version;
 
   /* - */
-  private List<String> _dependencies;
-
-  /* - */
-  private List<String> _exclusionPatterns;
-
-  /* - */
-  private List<String> _inclusionPatterns;
+  private List<MvnDependency> _dependencies;
 
   /**
-   * Creates a new instance of type {@link MavenBasedExtension}.
+   * Creates a new instance of type {@link MvnBasedExtension}.
    */
-  public MavenBasedExtension(String identifier, Version version) {
+  public MvnBasedExtension(String identifier, Version version) {
 
     this._identifier = checkNotNull(identifier);
     this._version = checkNotNull(version);
 
     _dependencies = new ArrayList<>();
-    _exclusionPatterns = new ArrayList<>();
-    _inclusionPatterns = new ArrayList<>();
   }
 
   /**
@@ -64,31 +58,11 @@ public class MavenBasedExtension implements IExtension {
 
   /**
    *
-   * @param mvnCoordinates
+   * @param mvnDependency
    * @return
    */
-  public MavenBasedExtension withDependency(String mvnCoordinates) {
-    _dependencies.add(checkNotNull(mvnCoordinates));
-    return this;
-  }
-
-  /**
-   *
-   * @param mvnCoordinates
-   * @return
-   */
-  public MavenBasedExtension withExclusionPattern(String mvnCoordinates) {
-    _exclusionPatterns.add(checkNotNull(mvnCoordinates));
-    return this;
-  }
-
-  /**
-   *
-   * @param mvnCoordinates
-   * @return
-   */
-  public MavenBasedExtension withInclusionPatterns(String mvnCoordinates) {
-    _inclusionPatterns.add(checkNotNull(mvnCoordinates));
+  public MvnBasedExtension withDependency(MvnDependency mvnDependency) {
+    _dependencies.add(checkNotNull(mvnDependency));
     return this;
   }
 
@@ -106,10 +80,7 @@ public class MavenBasedExtension implements IExtension {
     //
     IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
     IMvnResolverService.IMvnResolverJob resolverJob = mvnResolverService.newMvnResolverJob();
-    _dependencies.forEach(dep -> resolverJob.withDependency(dep));
-    _exclusionPatterns.forEach(p -> resolverJob.withExclusionPattern(p));
-    _inclusionPatterns.forEach(p -> resolverJob.withInclusionPattern(p));
-
+    _dependencies.forEach(dep -> resolverJob.withDependency(dep.getDependency()).withExclusionPatterns(dep.getExclusionPatterns().toArray(new String[0])));
     //
     return Arrays.asList(resolverJob.resolveToUrlArray());
   }

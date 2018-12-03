@@ -14,6 +14,7 @@ import org.slizaa.scanner.api.importer.IModelImporter;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.backend.ISlizaaServerBackend;
 import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,207 +42,222 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SlizaaComponent implements ISlizaaService {
 
-  //
-  private static final Logger logger = LoggerFactory.getLogger(SlizaaComponent.class);
-
-  //
-  @Value("${database.directory:}")
-  private String _databaseDirectoryPath;
-
-  /**
-   * -
-   */
-  @Autowired
-  private ISlizaaServerBackend _slizaaServerBackend;
-
-  /**
-   * -
-   */
-  private ILabelDefinitionProvider _labelDefinitionProvider;
-
-  /**
-   * -
-   */
-  private IGraphDb _graphDb;
-
-  /**
-   * -
-   */
-  private HGRootNode _rootNode;
-
-  /**
-   * -
-   */
-  private IBoltClient _boltClient;
-
-  /**
-   * -
-   */
-  private ExecutorService _executorService;
-
-  private File _databaseDirectory;
-
-  //
-  {
-    org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-    org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-  }
-
-  /**
-   * <p>
-   * </p>
-   *
-   * @return
-   */
-  public HGRootNode getRootNode() {
-    return this._rootNode;
-  }
-
-  /**
-   * <p>
-   * </p>
-   */
-  @PostConstruct
-  public void initialize() {
+    //
+    private static final Logger logger = LoggerFactory.getLogger(SlizaaComponent.class);
 
     //
+    @Value("${database.directory:}")
+    private String _databaseDirectoryPath;
+
+    /**
+     * -
+     */
+    @Autowired
+    private ISlizaaServerBackend _slizaaServerBackend;
+
+    /**
+     * -
+     */
+    @Autowired
+    private IExtensionService _extensionService;
+
+    /**
+     * -
+     */
+    private ILabelDefinitionProvider _labelDefinitionProvider;
+
+    /**
+     * -
+     */
+    private IGraphDb _graphDb;
+
+    /**
+     * -
+     */
+    private HGRootNode _rootNode;
+
+    /**
+     * -
+     */
+    private IBoltClient _boltClient;
+
+    /**
+     * -
+     */
+    private ExecutorService _executorService;
+
+    /**
+     * -
+     */
+    private File _databaseDirectory;
+
+    //
+    {
+        org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+        org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+    }
+
+    /**
+     * <p>
+     * </p>
+     *
+     * @return
+     */
+    public HGRootNode getRootNode() {
+        return this._rootNode;
+    }
+
+    /**
+     * <p>
+     * </p>
+     */
+    @PostConstruct
+    public void initialize() {
+
+        //
 //    try {
 //      test();
 //    } catch (Exception e) {
 //      e.printStackTrace();
 //    }
-  }
+    }
 
-  @PreDestroy
-  public void dispose() throws InterruptedException {
+    @PreDestroy
+    public void dispose() throws InterruptedException {
 
-    //
-    this._boltClient.disconnect();
-    this._executorService.shutdown();
-    this._executorService.awaitTermination(5, TimeUnit.SECONDS);
-  }
+        //
+        this._boltClient.disconnect();
+        this._executorService.shutdown();
+        this._executorService.awaitTermination(5, TimeUnit.SECONDS);
+    }
 
-  /**
-   * @return
-   */
-  @Override
-  public boolean isBackendConfigured() {
-    return _slizaaServerBackend.isConfigured();
-  }
+    /**
+     * @return
+     */
+    @Override
+    public boolean isBackendConfigured() {
+        return _slizaaServerBackend.isConfigured();
+    }
 
-  @Override
-  public List<IExtension> getInstalledExtensions() {
-    return _slizaaServerBackend.getInstalledExtensions();
-  }
+    @Override
+    public List<IExtension> getInstalledExtensions() {
+        return _slizaaServerBackend.getInstalledExtensions();
+    }
 
-  /**
-   * @return
-   */
-  public ClassLoader getBackendClassLoader() {
+    @Override
+    public IExtensionService getExtensionService() {
+        return _extensionService;
+    }
 
-    //
-    return isBackendConfigured() ?
-        _slizaaServerBackend.getCurrentExtensionClassLoader() : null;
-  }
+    /**
+     * @return
+     */
+    public ClassLoader getBackendClassLoader() {
 
-  /**
-   * <p>
-   * </p>
-   *
-   * @throws Exception
-   */
-  public void test() throws Exception {
+        //
+        return isBackendConfigured() ?
+                _slizaaServerBackend.getCurrentExtensionClassLoader() : null;
+    }
 
-    //
-    if (_databaseDirectoryPath == null) {
-      _databaseDirectory = new File(_databaseDirectoryPath);
-      if (!_databaseDirectory.exists()) {
-        if (!_databaseDirectory.mkdirs()) {
-          _databaseDirectory = null;
+
+    /**
+     * <p>
+     * </p>
+     *
+     * @throws Exception
+     */
+    public void test() throws Exception {
+
+        //
+        if (_databaseDirectoryPath == null) {
+            _databaseDirectory = new File(_databaseDirectoryPath);
+            if (!_databaseDirectory.exists()) {
+                if (!_databaseDirectory.mkdirs()) {
+                    _databaseDirectory = null;
+                }
+            } else {
+                if (_databaseDirectory.isFile()) {
+                    _databaseDirectory = null;
+                }
+            }
         }
-      } else {
-        if (_databaseDirectory.isFile()) {
-          _databaseDirectory = null;
+
+        //
+        if (_databaseDirectory == null) {
+            // TODO
+            _databaseDirectory = Files.createTempDirectory("_slizaa_Temp").toFile();
         }
-      }
+
+        //
+        logger.info("Creating SlizaaComponent.");
+
+        //
+        if (this._databaseDirectory.exists() && this._databaseDirectory.list().length > 0) {
+
+            // FUCK ME!
+            Thread.currentThread().setContextClassLoader(this._slizaaServerBackend.getCurrentExtensionClassLoader());
+
+            _graphDb = this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create();
+        }
+        //
+        else {
+            parseAndStartDatabase();
+        }
+
+        //
+        this._executorService = Executors.newFixedThreadPool(10);
+        IBoltClientFactory boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
+        this._boltClient = boltClientFactory.createBoltClient("bolt://localhost:5001");
+        this._boltClient.connect();
+
+        //
+        IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
+        IMappingProvider mappingProvider = this._slizaaServerBackend.getMappingProviders().get(0);
+
+        //
+        this._rootNode = mappingService.convert(mappingProvider, this._boltClient,
+                new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
+
+        //
+        _labelDefinitionProvider = mappingProvider.getLabelDefinitionProvider();
     }
 
-    //
-    if (_databaseDirectory == null) {
-      // TODO
-      _databaseDirectory = Files.createTempDirectory("_slizaa_Temp").toFile();
+    /**
+     * <p>
+     * </p>
+     *
+     * @throws IOException
+     */
+    public void parseAndStartDatabase() throws IOException {
+
+        //
+        MvnBasedContentDefinitionProvider contentDefinitionProvider = new MvnBasedContentDefinitionProvider();
+        contentDefinitionProvider.addArtifact("org.springframework", "spring-core", "5.0.9.RELEASE");
+        contentDefinitionProvider.addArtifact("org.springframework", "spring-context", "5.0.9.RELEASE");
+        contentDefinitionProvider.addArtifact("org.springframework", "spring-beans", "5.0.9.RELEASE");
+
+        //
+        if (!_databaseDirectory.exists()) {
+            _databaseDirectory.mkdirs();
+        }
+
+        // delete all contained files
+        Files.walk(this._databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
+                .map(Path::toFile).forEach(File::delete);
+
+        // FUCK ME!
+        Thread.currentThread().setContextClassLoader(this._slizaaServerBackend.getCurrentExtensionClassLoader());
+
+        IModelImporter modelImporter = this._slizaaServerBackend.getModelImporterFactory()
+                .createModelImporter(contentDefinitionProvider,
+                        this._databaseDirectory, _slizaaServerBackend.getParserFactories(),
+                        this._slizaaServerBackend.getCypherStatementRegistry().getAllStatements());
+
+        // parse the model
+        modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),
+                () -> this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create());
+
+        //
+        _graphDb = modelImporter.getGraphDb();
     }
-
-    //
-    logger.info("Creating SlizaaComponent.");
-
-    //
-    if (this._databaseDirectory.exists() && this._databaseDirectory.list().length > 0) {
-
-      // FUCK ME!
-      Thread.currentThread().setContextClassLoader(this._slizaaServerBackend.getCurrentExtensionClassLoader());
-
-      _graphDb = this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create();
-    }
-    //
-    else {
-      parseAndStartDatabase();
-    }
-
-    //
-    this._executorService = Executors.newFixedThreadPool(10);
-    IBoltClientFactory boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
-    this._boltClient = boltClientFactory.createBoltClient("bolt://localhost:5001");
-    this._boltClient.connect();
-
-    //
-    IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
-    IMappingProvider mappingProvider = this._slizaaServerBackend.getMappingProviders().get(0);
-
-    //
-    this._rootNode = mappingService.convert(mappingProvider, this._boltClient,
-        new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
-
-    //
-    _labelDefinitionProvider = mappingProvider.getLabelDefinitionProvider();
-  }
-
-  /**
-   * <p>
-   * </p>
-   *
-   * @throws IOException
-   */
-  public void parseAndStartDatabase() throws IOException {
-
-    //
-    MvnBasedContentDefinitionProvider contentDefinitionProvider = new MvnBasedContentDefinitionProvider();
-    contentDefinitionProvider.addArtifact("org.springframework", "spring-core", "5.0.9.RELEASE");
-    contentDefinitionProvider.addArtifact("org.springframework", "spring-context", "5.0.9.RELEASE");
-    contentDefinitionProvider.addArtifact("org.springframework", "spring-beans", "5.0.9.RELEASE");
-
-    //
-    if (!_databaseDirectory.exists()) {
-      _databaseDirectory.mkdirs();
-    }
-
-    // delete all contained files
-    Files.walk(this._databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
-        .map(Path::toFile).forEach(File::delete);
-
-    // FUCK ME!
-    Thread.currentThread().setContextClassLoader(this._slizaaServerBackend.getCurrentExtensionClassLoader());
-
-    IModelImporter modelImporter = this._slizaaServerBackend.getModelImporterFactory()
-        .createModelImporter(contentDefinitionProvider,
-            this._databaseDirectory, _slizaaServerBackend.getParserFactories(),
-            this._slizaaServerBackend.getCypherStatementRegistry().getAllStatements());
-
-    // parse the model
-    modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),
-        () -> this._slizaaServerBackend.getGraphDbFactory().newGraphDb(5001, this._databaseDirectory).create());
-
-    //
-    _graphDb = modelImporter.getGraphDb();
-  }
 }

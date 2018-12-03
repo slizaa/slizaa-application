@@ -6,6 +6,7 @@ import org.slizaa.scanner.api.graphdb.IGraphDbFactory;
 import org.slizaa.scanner.api.importer.IModelImporterFactory;
 import org.slizaa.scanner.spi.parser.IParserFactory;
 import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionService;
 
 import java.util.List;
 

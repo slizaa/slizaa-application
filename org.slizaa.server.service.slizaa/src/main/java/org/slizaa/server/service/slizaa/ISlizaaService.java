@@ -14,6 +14,7 @@ import org.slizaa.scanner.api.importer.IModelImporter;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.backend.ISlizaaServerBackend;
 import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,8 @@ public interface ISlizaaService {
   public boolean isBackendConfigured();
 
   List<IExtension> getInstalledExtensions();
+
+  IExtensionService getExtensionService();
 
   /**
    * <p>

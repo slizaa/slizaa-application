@@ -60,6 +60,9 @@ type Query {
     #
     installedBackendExtensions: [BackendExtension]!
 
+    #
+    availableBackendExtensions: [BackendExtension]!
+
     # Returns the root node
     rootNode: Node!
 

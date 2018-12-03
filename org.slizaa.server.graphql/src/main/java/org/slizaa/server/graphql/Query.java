@@ -43,6 +43,12 @@ public class Query implements GraphQLQueryResolver {
             Collectors.toList());
     }
 
+    public List<BackendExtension> availableBackendExtensions() {
+        return slizaaService.getExtensionService().getAvailableExtensions().stream().map(ext -> new BackendExtension(ext.getIdentifier(), ext.getVersion().toString())).collect(
+                Collectors.toList());
+    }
+
+
     /**
      *
      * @param id
