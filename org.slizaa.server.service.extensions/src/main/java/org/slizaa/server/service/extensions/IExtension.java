@@ -6,21 +6,7 @@ import java.util.List;
 /**
  *
  */
-public interface IExtension {
-
-  /**
-   * The identifier of this extension.
-   *
-   * @return
-   */
-  String getIdentifier();
-
-  /**
-   * The version of this extension.
-   *
-   * @return
-   */
-  Version getVersion();
+public interface IExtension extends IExtensionIdentifier {
 
   /**
    * Returns a list of artifact URLs to install for this extension.

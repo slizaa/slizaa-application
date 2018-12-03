@@ -15,6 +15,7 @@ import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.backend.ISlizaaServerBackend;
 import org.slizaa.server.service.extensions.IExtension;
 import org.slizaa.server.service.extensions.IExtensionService;
+import org.slizaa.server.service.extensions.IExtensionIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,12 @@ public interface ISlizaaService {
 
   List<IExtension> getInstalledExtensions();
 
-  IExtensionService getExtensionService();
+  /**
+   *
+   * @param extensionIdentifiers
+   * @return
+   */
+  List<IExtension> installExtensions(List<IExtensionIdentifier> extensionIdentifiers);
 
   /**
    * <p>
