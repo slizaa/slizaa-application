@@ -3,6 +3,7 @@ package org.slizaa.server.service.extensions.mvn;
 import org.slizaa.core.mvnresolver.MvnResolverServiceFactoryFactory;
 import org.slizaa.core.mvnresolver.api.IMvnResolverService;
 import org.slizaa.core.mvnresolver.api.IMvnResolverServiceFactory;
+import org.slizaa.server.service.extensions.ExtensionIdentifier;
 import org.slizaa.server.service.extensions.IExtension;
 import org.slizaa.server.service.extensions.Version;
 
@@ -16,72 +17,44 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  *
  */
-public class MvnBasedExtension implements IExtension {
+public class MvnBasedExtension extends ExtensionIdentifier implements IExtension {
 
-  /* - */
-  private String _identifier;
+    /* - */
+    private List<MvnDependency> _dependencies;
 
-  /* - */
-  private Version _version;
+    /**
+     * Creates a new instance of type {@link MvnBasedExtension}.
+     */
+    public MvnBasedExtension(String symbolicName, Version version) {
+        super(symbolicName, version);
 
-  /* - */
-  private List<MvnDependency> _dependencies;
+        _dependencies = new ArrayList<>();
+    }
 
-  /**
-   * Creates a new instance of type {@link MvnBasedExtension}.
-   */
-  public MvnBasedExtension(String identifier, Version version) {
+    /**
+     * @param mvnDependency
+     * @return
+     */
+    public MvnBasedExtension withDependency(MvnDependency mvnDependency) {
+        _dependencies.add(checkNotNull(mvnDependency));
+        return this;
+    }
 
-    this._identifier = checkNotNull(identifier);
-    this._version = checkNotNull(version);
+    /**
+     * @return
+     */
+    @Override
+    public List<URL> resolvedArtifactsToInstall() {
 
-    _dependencies = new ArrayList<>();
-  }
+        //
+        IMvnResolverServiceFactory resolverServiceFactory = MvnResolverServiceFactoryFactory
+                .createNewResolverServiceFactory();
 
-  /**
-   *
-   * @return
-   */
-  @Override
-  public String getIdentifier() {
-    return this._identifier;
-  }
-
-  /**
-   *
-   * @return
-   */
-  @Override
-  public Version getVersion() {
-    return this._version;
-  }
-
-  /**
-   *
-   * @param mvnDependency
-   * @return
-   */
-  public MvnBasedExtension withDependency(MvnDependency mvnDependency) {
-    _dependencies.add(checkNotNull(mvnDependency));
-    return this;
-  }
-
-  /**
-   *
-   * @return
-   */
-  @Override
-  public List<URL> resolvedArtifactsToInstall() {
-
-    //
-    IMvnResolverServiceFactory resolverServiceFactory = MvnResolverServiceFactoryFactory
-        .createNewResolverServiceFactory();
-
-    //
-    IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
-    IMvnResolverService.IMvnResolverJob resolverJob = mvnResolverService.newMvnResolverJob();
-    _dependencies.forEach(dep -> resolverJob.withDependency(dep.getDependency()).withExclusionPatterns(dep.getExclusionPatterns().toArray(new String[0])));
-    //
-    return Arrays.asList(resolverJob.resolveToUrlArray());
-  }
+        //
+        IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
+        IMvnResolverService.IMvnResolverJob resolverJob = mvnResolverService.newMvnResolverJob();
+        _dependencies.forEach(dep -> resolverJob.withDependency(dep.getDependency()).withExclusionPatterns(dep.getExclusionPatterns().toArray(new String[0])));
+        //
+        return Arrays.asList(resolverJob.resolveToUrlArray());
+    }
 }

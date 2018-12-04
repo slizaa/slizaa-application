@@ -11,5 +11,11 @@ public interface IExtensionService {
    *
    * @return
    */
-  List<IExtension> getAvailableExtensions();
+  List<IExtension> getExtensions();
+
+  /**
+   *
+   * @return
+   */
+  List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers);
 }

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  */
-public interface ISlizaaServerDao {
+public interface ISlizaaServerBackendDao {
 
   /**
    *

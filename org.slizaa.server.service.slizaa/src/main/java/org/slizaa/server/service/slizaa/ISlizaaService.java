@@ -42,20 +42,15 @@ import java.util.concurrent.TimeUnit;
 public interface ISlizaaService {
 
   /**
-   * <p>
-   * </p>
    *
    * @return
    */
-  public HGRootNode getRootNode();
-
+  boolean isBackendConfigured();
 
   /**
    *
    * @return
    */
-  public boolean isBackendConfigured();
-
   List<IExtension> getInstalledExtensions();
 
   /**
@@ -66,10 +61,32 @@ public interface ISlizaaService {
   List<IExtension> installExtensions(List<IExtensionIdentifier> extensionIdentifiers);
 
   /**
+   *
+   * @param extensionIds
+   * @return
+   */
+  List<IExtension> uninstallExtensions(List<IExtensionIdentifier> extensionIds);
+
+  /**
+   *
+   * @return
+   */
+  IExtensionService getExtensionService();
+
+  // TODO: MOVE IT
+  /**
    * <p>
    * </p>
    *
    * @throws IOException
    */
   public void parseAndStartDatabase() throws IOException;
+
+  /**
+   * <p>
+   * </p>
+   *
+   * @return
+   */
+  public HGRootNode getRootNode();
 }

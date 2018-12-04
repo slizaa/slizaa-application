@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slizaa.server.service.backend.impl.ServerBackendStateMachine;
 import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionIdentifier;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -30,7 +31,12 @@ public class ServerBackendStateMachineTest {
   public IExtensionService extensionService() {
     return new IExtensionService() {
       @Override
-      public List<IExtension> getAvailableExtensions() {
+      public List<IExtension> getExtensions() {
+        return Collections.emptyList();
+      }
+
+      @Override
+      public List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
         return Collections.emptyList();
       }
     };

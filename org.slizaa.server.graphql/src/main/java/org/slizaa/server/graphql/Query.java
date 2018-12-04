@@ -39,12 +39,12 @@ public class Query implements GraphQLQueryResolver {
     }
 
     public List<BackendExtension> installedBackendExtensions() {
-        return slizaaService.getInstalledExtensions().stream().map(ext -> new BackendExtension(ext.getIdentifier(), ext.getVersion().toString())).collect(
+        return slizaaService.getInstalledExtensions().stream().map(ext -> new BackendExtension(ext.getSymbolicName(), ext.getVersion().toString())).collect(
             Collectors.toList());
     }
 
     public List<BackendExtension> availableBackendExtensions() {
-        return slizaaService.getExtensionService().getAvailableExtensions().stream().map(ext -> new BackendExtension(ext.getIdentifier(), ext.getVersion().toString())).collect(
+        return slizaaService.getExtensionService().getExtensions().stream().map(ext -> new BackendExtension(ext.getSymbolicName(), ext.getVersion().toString())).collect(
                 Collectors.toList());
     }
 

@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class DefaultSlizaaServerDao implements ISlizaaServerDao {
+public class DefaultSlizaaServerBackendDao implements ISlizaaServerBackendDao {
 
   /* - */
   private List<IExtension> _extensions;

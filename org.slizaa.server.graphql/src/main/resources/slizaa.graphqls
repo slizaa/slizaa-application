@@ -17,8 +17,6 @@ type Node {
 
     properties: [MapEntry]!
 
-
-
     dependenciesTo(targetNodes: [ID]!): [Dependency]!
 }
 
@@ -26,7 +24,7 @@ type Dependency {
     id: ID!
     sourceNode: Node!
     targetNode: Node!
-    weight: Int;
+    weight: Int
 }
 
 type ImageDescription {
@@ -45,10 +43,21 @@ type DependencyMatrix {
     matrix: [[ Int ]]
 }
 
+# the backend extension
+type BackendExtension {
+    identifier: ID!
+    version: String!
+}
+
+input BackendExtensionId {
+    identifier: ID!
+    version: String!
+}
+
 # The Root Query for the application
 type Query {
 
-    #
+    # Returns if the backend is configured or not
     isBackendConfigured: Boolean!
 
     #
@@ -67,4 +76,13 @@ type Query {
     nodes(ids: [ID]!): [Node]!
 
     dependencyMatrix(ids: [ID]!): DependencyMatrix!
+}
+
+type Mutation {
+
+    #
+    installBackendExtensions(extensions: [BackendExtensionId]): [BackendExtension]!
+
+    #
+    uninstallBackendExtensions(extensions: [BackendExtensionId]): [BackendExtension]!
 }

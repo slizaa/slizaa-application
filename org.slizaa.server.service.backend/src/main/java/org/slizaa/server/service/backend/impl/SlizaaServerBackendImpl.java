@@ -9,7 +9,7 @@ import org.slizaa.scanner.api.graphdb.IGraphDbFactory;
 import org.slizaa.scanner.api.importer.IModelImporterFactory;
 import org.slizaa.scanner.spi.parser.IParserFactory;
 import org.slizaa.server.service.backend.ISlizaaServerBackend;
-import org.slizaa.server.service.backend.dao.ISlizaaServerDao;
+import org.slizaa.server.service.backend.dao.ISlizaaServerBackendDao;
 import org.slizaa.server.service.extensions.IExtension;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
 
     /* - */
     @Autowired
-    private ISlizaaServerDao _slizaaServerDao;
+    private ISlizaaServerBackendDao _slizaaServerDao;
 
     /*  */
     private DynamicallyLoadedExtensions _dynamicallyLoadedExtensions;
@@ -54,7 +54,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     public void initialize() {
 
         // TODO: Remove
-        _slizaaServerDao.saveInstalledExtensions(_extensionService.getAvailableExtensions());
+        _slizaaServerDao.saveInstalledExtensions(_extensionService.getExtensions());
 
         _stateMachine.start();
     }
@@ -192,7 +192,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
         IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
 
         //
-        List<URL> urlList = _extensionService.getAvailableExtensions().stream()
+        List<URL> urlList = _extensionService.getExtensions().stream()
                 .flatMap(ext -> ext.resolvedArtifactsToInstall().stream()).distinct()
                 .collect(Collectors.toList());
 

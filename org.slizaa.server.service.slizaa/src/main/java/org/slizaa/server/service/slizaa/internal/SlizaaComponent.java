@@ -14,6 +14,7 @@ import org.slizaa.scanner.api.importer.IModelImporter;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.backend.ISlizaaServerBackend;
 import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionIdentifier;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -41,6 +43,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class SlizaaComponent implements ISlizaaService {
+
+    //
+    {
+        org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+        org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+    }
 
     //
     private static final Logger logger = LoggerFactory.getLogger(SlizaaComponent.class);
@@ -64,6 +72,13 @@ public class SlizaaComponent implements ISlizaaService {
     /**
      * -
      */
+    private ExecutorService _executorService;
+
+
+    // TODO: Move -- START
+    /**
+     * -
+     */
     private ILabelDefinitionProvider _labelDefinitionProvider;
 
     /**
@@ -84,28 +99,8 @@ public class SlizaaComponent implements ISlizaaService {
     /**
      * -
      */
-    private ExecutorService _executorService;
-
-    /**
-     * -
-     */
     private File _databaseDirectory;
-
-    //
-    {
-        org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-        org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-    }
-
-    /**
-     * <p>
-     * </p>
-     *
-     * @return
-     */
-    public HGRootNode getRootNode() {
-        return this._rootNode;
-    }
+    // TODO: Move -- STOP
 
     /**
      * <p>
@@ -145,6 +140,19 @@ public class SlizaaComponent implements ISlizaaService {
     }
 
     @Override
+    public List<IExtension> installExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
+        List<IExtension> extensions = this._extensionService.getExtensions(extensionIdentifiers);
+        _slizaaServerBackend.installExtensions(extensions);
+        return  extensions;
+    }
+
+    @Override
+    public List<IExtension> uninstallExtensions(List<IExtensionIdentifier> extensionIds) {
+        // TODO
+        return Collections.emptyList();
+    }
+
+    @Override
     public IExtensionService getExtensionService() {
         return _extensionService;
     }
@@ -159,6 +167,17 @@ public class SlizaaComponent implements ISlizaaService {
                 _slizaaServerBackend.getCurrentExtensionClassLoader() : null;
     }
 
+    // TODO: MOVE //
+
+    /**
+     * <p>
+     * </p>
+     *
+     * @return
+     */
+    public HGRootNode getRootNode() {
+        return this._rootNode;
+    }
 
     /**
      * <p>

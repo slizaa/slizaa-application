@@ -1,6 +1,7 @@
 package org.slizaa.server.service.extensions.impl;
 
 import org.slizaa.server.service.extensions.IExtension;
+import org.slizaa.server.service.extensions.IExtensionIdentifier;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.extensions.Version;
 import org.slizaa.server.service.extensions.mvn.MvnBasedExtension;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -35,18 +37,22 @@ public class DefaultExtensionService implements IExtensionService {
      * @return
      */
     @Override
-    public List<IExtension> getAvailableExtensions() {
+    public List<IExtension> getExtensions() {
         return Collections.unmodifiableList(_extensionList);
     }
 
+    @Override
+    public List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
+        return _extensionList.stream().filter(ext -> extensionIdentifiers.contains(ext)).collect(Collectors.toList());
+    }
+
     /**
-     *
      * @param args
      */
     public static void main(String[] args) {
 
         //
-       new DefaultExtensionService()._neo4jExtension.resolvedArtifactsToInstall().forEach(url -> System.out.println(url.toString()));
-       new DefaultExtensionService()._jtypeExtension.resolvedArtifactsToInstall().forEach(url -> System.out.println(url.toString()));
+        new DefaultExtensionService()._neo4jExtension.resolvedArtifactsToInstall().forEach(url -> System.out.println(url.toString()));
+        new DefaultExtensionService()._jtypeExtension.resolvedArtifactsToInstall().forEach(url -> System.out.println(url.toString()));
     }
 }
