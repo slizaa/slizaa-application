@@ -9,10 +9,7 @@ import org.slizaa.scanner.cypherregistry.CypherRegistryUtils;
 import org.slizaa.scanner.cypherregistry.CypherStatementRegistry;
 import org.slizaa.scanner.spi.parser.IParserFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -21,25 +18,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class DynamicallyLoadedExtensions {
 
-  //
   private IModelImporterFactory _modelImporterFactory;
 
-  //
   private IGraphDbFactory _graphDbFactory;
 
-  //
   private List<IParserFactory> _parserFactories;
 
-  //
   private List<IMappingProvider> _mappingProviders;
 
-  //
   private ICypherStatementRegistry _cypherStatementRegistry;
 
-  //
   private List<ICypherStatement> _cypherStatements = new ArrayList<>();
 
-  /** - */
   private ClassLoader _classLoader;
 
   /**
@@ -107,39 +97,51 @@ public class DynamicallyLoadedExtensions {
   /**
    * @return
    */
-  private boolean configure() {
+  private void configure() {
 
-    //
-    ServiceLoader<IModelImporterFactory> serviceLoader = ServiceLoader.load(IModelImporterFactory.class,
-        _classLoader);
-    this._modelImporterFactory = serviceLoader.iterator().next();
+    // load the IModelImporterFactory instance
+    this._modelImporterFactory = loadSingleInstance(IModelImporterFactory.class);
 
-    //
-    ServiceLoader<IGraphDbFactory> serviceLoader_2 = ServiceLoader.load(IGraphDbFactory.class,
-        _classLoader);
-    this._graphDbFactory = serviceLoader_2.iterator().next();
+    // load the IGraphDbFactory instance
+    this._graphDbFactory = loadSingleInstance(IGraphDbFactory.class);
 
-    //
-    ServiceLoader<IParserFactory> serviceLoader_3 = ServiceLoader.load(IParserFactory.class,
-        _classLoader);
-    this._parserFactories = new ArrayList<>();
-    serviceLoader_3.iterator().forEachRemaining(mp -> this._parserFactories.add(mp));
+    // load all IParserFactory instances
+    this._parserFactories = loadAllInstances(IParserFactory.class);
 
-    //
-    ServiceLoader<IMappingProvider> serviceLoader_4 = ServiceLoader.load(IMappingProvider.class,
-        _classLoader);
-    this._mappingProviders = new ArrayList<>();
-    serviceLoader_4.iterator().forEachRemaining(mp -> this._mappingProviders.add(mp));
+    // load all IMappingProvider instances
+    this._mappingProviders  = loadAllInstances(IMappingProvider.class);
 
-    //
+    // reload the cypher registry
     _cypherStatements.clear();
     _cypherStatements.addAll(CypherRegistryUtils.getCypherStatementsFromClasspath(_classLoader));
     this._cypherStatementRegistry = new CypherStatementRegistry(() -> {
       return Collections.unmodifiableList(_cypherStatements);
     });
     this._cypherStatementRegistry.rescan();
+  }
 
-    //
-    return true;
+  /**
+   *
+   * @param <T>
+   * @return
+   */
+  private <T> T loadSingleInstance(Class<T> type) {
+    ServiceLoader<T> serviceLoader = ServiceLoader.load(type, _classLoader);
+    Iterator<T> iterator = serviceLoader.iterator();
+    return iterator.hasNext() ? iterator.next() : null;
+  }
+
+  /**
+   *
+   * @param type
+   * @param <T>
+   * @return
+   */
+  private <T> List<T> loadAllInstances(Class<T> type) {
+    ServiceLoader<T> serviceLoader = ServiceLoader.load(type, _classLoader);
+    Iterator<T> iterator = serviceLoader.iterator();
+    List<T> result = new ArrayList<>();
+    iterator.forEachRemaining(entry -> result.add(entry));
+    return result;
   }
 }

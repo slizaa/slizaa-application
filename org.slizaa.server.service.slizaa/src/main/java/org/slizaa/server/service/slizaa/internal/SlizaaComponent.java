@@ -1,5 +1,6 @@
 package org.slizaa.server.service.slizaa.internal;
 
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slizaa.core.boltclient.IBoltClient;
@@ -141,9 +142,21 @@ public class SlizaaComponent implements ISlizaaService {
 
     @Override
     public List<IExtension> installExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
-        List<IExtension> extensions = this._extensionService.getExtensions(extensionIdentifiers);
-        _slizaaServerBackend.installExtensions(extensions);
-        return  extensions;
+
+        //
+        List<IExtension> extensionsToInstall = this._extensionService.getExtensions(extensionIdentifiers);
+
+        //
+        List<IExtension> installedExtensions = this._slizaaServerBackend.getInstalledExtensions();
+
+        //
+        List<IExtension> newExtensions = ListUtils.subtract(extensionsToInstall, installedExtensions);
+
+        //
+        _slizaaServerBackend.installExtensions(newExtensions);
+
+        //
+        return  newExtensions;
     }
 
     @Override

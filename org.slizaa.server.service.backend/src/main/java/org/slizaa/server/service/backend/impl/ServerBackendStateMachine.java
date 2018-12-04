@@ -107,7 +107,6 @@ public class ServerBackendStateMachine
 
     @Bean
     public ContextHolder context() {
-        System.out.println("************************");
         return new ContextHolder();
     }
 

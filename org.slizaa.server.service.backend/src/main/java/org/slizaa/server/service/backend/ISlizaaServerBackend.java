@@ -31,12 +31,6 @@ public interface ISlizaaServerBackend {
    *
    * @param extensions
    */
-  void installExtensions(IExtension... extensions);
-
-  /**
-   *
-   * @param extensions
-   */
   void installExtensions(List<IExtension> extensions);
 
   /**
