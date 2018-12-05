@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -22,55 +24,50 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ContextConfiguration(classes = AbstractServerBackendTest.class)
 @TestConfiguration
 @ComponentScan(basePackageClasses = AbstractServerBackendTest.class)
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 public abstract class AbstractServerBackendTest {
 
   @Autowired
   protected ApplicationContext applicationContext;
 
-  private List<IExtension> _initialExtensions;
+  @Autowired
+  protected DummyExtensionService extensionService;
 
   /**
    *
    */
-  public AbstractServerBackendTest() {
-    this._initialExtensions = checkNotNull(Collections.emptyList());
-  }
-
-  /**
-   * @param initialExtensions
-   */
-  public AbstractServerBackendTest(List<IExtension> initialExtensions) {
-    this._initialExtensions = checkNotNull(initialExtensions);
-  }
-
-  /**
-   * @return
-   */
-  @Bean
-  public IExtensionService extensionService() {
+  @Component
+  public static class DummyExtensionService implements IExtensionService {
 
     //
-    return new IExtensionService() {
+    private List<IExtension> _extensions = Collections.emptyList();
 
-      /**
-       *
-       * @return
-       */
-      @Override
-      public List<IExtension> getExtensions() {
-        return _initialExtensions;
-      }
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<IExtension> getExtensions() {
+      return _extensions;
+    }
 
-      /**
-       *
-       * @param extensionIdentifiers
-       * @return
-       */
-      @Override
-      public List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
-        return getExtensions().stream().filter(extensionIdentifiers::contains).collect(Collectors.toList());
-      }
-    };
+    /**
+     *
+     * @param extensionIdentifiers
+     * @return
+     */
+    @Override
+    public List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
+      return getExtensions().stream().filter(extensionIdentifiers::contains).collect(Collectors.toList());
+    }
+
+    /**
+     *
+     * @param _extensions
+     */
+    public void setExtensions(List<IExtension> _extensions) {
+      this._extensions = _extensions;
+    }
   }
 }
 

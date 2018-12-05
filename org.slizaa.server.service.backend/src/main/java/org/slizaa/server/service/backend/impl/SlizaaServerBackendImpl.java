@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,9 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     @Autowired
     private ISlizaaServerBackendDao _slizaaServerBackendDao;
 
+    /* - */
+    private List<IExtension> _extensionsToInstall;
+
     /* the dynamically loaded extensions */
     private DynamicallyLoadedExtensions _dynamicallyLoadedExtensions;
 
@@ -55,7 +59,7 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     public void initialize() {
 
         // TODO: Remove
-        _slizaaServerBackendDao.saveInstalledExtensions(_extensionService.getExtensions());
+        // _slizaaServerBackendDao.saveInstalledExtensions(_extensionService.getExtensions());
 
         //
         _stateMachine.start();
@@ -83,7 +87,13 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     @Override
     public void installExtensions(List<IExtension> extensions) {
 
-        // TODO
+        //
+        List<IExtension> installedExtensions = _slizaaServerBackendDao.getInstalledExtensions();
+
+        //
+        _extensionsToInstall = extensions.stream().filter(ext -> !installedExtensions.contains(ext)).collect(Collectors.toList());
+
+        //
         _stateMachine.sendEvent(MessageBuilder
                 .withPayload(ServerBackendStateMachine.Events.UPDATE_BACKEND_CONFIGURATION)
                 .build());
@@ -142,9 +152,19 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
     }
 
     @Override
-    public void configureBackend() {
-        this._dynamicallyLoadedExtensions = new DynamicallyLoadedExtensions(dynamicallyLoadExtensions());
-        this._dynamicallyLoadedExtensions.initialize();
+    public boolean configureBackend() {
+
+        try {
+            DynamicallyLoadedExtensions newDynamicallyLoadedExtensions = new DynamicallyLoadedExtensions(dynamicallyLoadExtensions());
+
+            this._dynamicallyLoadedExtensions = newDynamicallyLoadedExtensions;
+            this._dynamicallyLoadedExtensions.initialize();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -157,8 +177,17 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
 
     @Override
     public boolean updateBackendConfiguration() {
+
         try {
-            dynamicallyLoadExtensions();
+            ClassLoader classLoader = dynamicallyLoadExtensions();
+            DynamicallyLoadedExtensions newDynamicallyLoadedExtensions = new DynamicallyLoadedExtensions(dynamicallyLoadExtensions());
+
+            this._dynamicallyLoadedExtensions = newDynamicallyLoadedExtensions;
+            this._dynamicallyLoadedExtensions.initialize();
+
+            _extensionsToInstall = null;
+            _slizaaServerBackendDao.saveInstalledExtensions(_extensionsToInstall);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -182,7 +211,11 @@ public class SlizaaServerBackendImpl implements ISlizaaServerBackend,
         IMvnResolverService mvnResolverService = resolverServiceFactory.newMvnResolverService().create();
 
         //
-        List<URL> urlList = _extensionService.getExtensions().stream()
+        List<IExtension> allExtensions = new ArrayList<>(_slizaaServerBackendDao.getInstalledExtensions());
+        allExtensions.addAll(_extensionsToInstall);
+
+        //
+        List<URL> urlList = allExtensions.stream()
                 .flatMap(ext -> ext.resolvedArtifactsToInstall().stream()).distinct()
                 .collect(Collectors.toList());
 

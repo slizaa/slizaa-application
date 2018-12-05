@@ -25,20 +25,23 @@ public class ServerBackendTest extends AbstractServerBackendTest {
   /**
    *
    */
-  public ServerBackendTest() {
-    super(Collections.singletonList(neo4jExtension));
-  }
-
-  /**
-   *
-   */
   @Test
   public void test_ServerBackend() {
+
+    //
+    extensionService.setExtensions(Collections.singletonList(neo4jExtension));
 
     SlizaaServerBackendImpl backend = applicationContext.getBean(SlizaaServerBackendImpl.class);
     assertThat(backend).isNotNull();
 
-    assertThat(backend.isConfigured());
+    assertThat(backend.isConfigured()).isFalse();
+
+    // try to install
+    backend.installExtensions(extensionService.getExtensions());
+
+    //
+    assertThat(backend.isConfigured()).isTrue();
+    assertThat(backend.getGraphDbFactory()).isNotNull();
   }
 }
 

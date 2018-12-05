@@ -13,7 +13,7 @@ public interface IServerBackendStateMachineContext {
     /**
      *
      */
-    void configureBackend();
+    boolean configureBackend();
 
     /**
      *
