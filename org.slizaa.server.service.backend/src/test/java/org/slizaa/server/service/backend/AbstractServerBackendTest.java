@@ -24,7 +24,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ContextConfiguration(classes = AbstractServerBackendTest.class)
 @TestConfiguration
 @ComponentScan(basePackageClasses = AbstractServerBackendTest.class)
-@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 public abstract class AbstractServerBackendTest {
 
   @Autowired
