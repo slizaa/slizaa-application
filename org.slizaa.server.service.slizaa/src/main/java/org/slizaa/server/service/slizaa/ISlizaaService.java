@@ -73,20 +73,9 @@ public interface ISlizaaService {
    */
   IExtensionService getExtensionService();
 
-  // TODO: MOVE IT
   /**
-   * <p>
-   * </p>
-   *
-   * @throws IOException
-   */
-  public void parseAndStartDatabase() throws IOException;
-
-  /**
-   * <p>
-   * </p>
    *
    * @return
    */
-  public HGRootNode getRootNode();
+  List<ISystemAnalysis> getSystemAnalyses();
 }
