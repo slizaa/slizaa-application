@@ -34,7 +34,7 @@ public class ServerBackend_InstallExtensionsTest extends AbstractServerBackendTe
   @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
   public void installExtensions_Success() {
 
-    //
+    // prepare
     extensionService.setExtensions(Collections.singletonList(neo4jExtension));
 
     SlizaaServerBackendImpl backend = applicationContext.getBean(SlizaaServerBackendImpl.class);
@@ -54,7 +54,7 @@ public class ServerBackend_InstallExtensionsTest extends AbstractServerBackendTe
   @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
   public void installExtensions_Failure() {
 
-    //
+    // prepare
     extensionService.setExtensions(Collections.singletonList(invalidExtension));
 
     //

@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 public class DefaultExtensionService implements IExtensionService {
 
     /* - */
-    private MvnBasedExtension _neo4jExtension = new MvnBasedExtension("Neo4j Slizaa Backend", new Version(1, 0, 0))
+    private MvnBasedExtension _neo4jExtension = new MvnBasedExtension("org.slizaa.neo4j.backend", new Version(1, 0, 0))
             .withDependency(new MvnDependency("org.slizaa.neo4j:org.slizaa.neo4j.importer:1.0.0-SNAPSHOT", "*:org.slizaa.scanner.spi-api", "*:jdk.tools"))
             .withDependency(new MvnDependency("org.slizaa.neo4j:org.slizaa.neo4j.graphdbfactory:1.0.0-SNAPSHOT", "*:org.slizaa.scanner.spi-api"));
 
     /* - */
-    private MvnBasedExtension _jtypeExtension = new MvnBasedExtension("JType Slizaa Extension", new Version(1, 0, 0))
+    private MvnBasedExtension _jtypeExtension = new MvnBasedExtension("org.slizaa.jtype.extension", new Version(1, 0, 0))
             .withDependency(new MvnDependency("org.slizaa.jtype:org.slizaa.jtype.scanner:1.0.0-SNAPSHOT", "*:org.slizaa.scanner.spi-api"))
             .withDependency(new MvnDependency("org.slizaa.jtype:org.slizaa.jtype.scanner.apoc:1.0.0-SNAPSHOT", "*:org.slizaa.scanner.spi-api"))
             .withDependency(new MvnDependency("org.slizaa.jtype:org.slizaa.jtype.hierarchicalgraph:1.0.0-SNAPSHOT", "*:org.slizaa.scanner.spi-api"));
@@ -42,7 +42,7 @@ public class DefaultExtensionService implements IExtensionService {
     }
 
     @Override
-    public List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
+    public List<IExtension> getExtensions(List<? extends IExtensionIdentifier> extensionIdentifiers) {
         return _extensionList.stream().filter(ext -> extensionIdentifiers.contains(ext)).collect(Collectors.toList());
     }
 

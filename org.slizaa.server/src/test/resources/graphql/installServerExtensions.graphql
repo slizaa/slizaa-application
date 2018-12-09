@@ -1,0 +1,17 @@
+mutation installServerExtensions {
+    installServerExtensions (extensions:
+        [
+            {
+              symbolicName:"org.slizaa.neo4j.backend",
+                version: "1.0.0"
+            },
+            {
+                symbolicName: "org.slizaa.jtype.extension",
+                version: "1.0.0"
+            }
+        ]
+    ) {
+        symbolicName
+        version
+    }
+}

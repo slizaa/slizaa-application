@@ -56,7 +56,7 @@ public class StaticContentController {
        return _resourceCache.computeIfAbsent(path, p -> {
 
             //
-            ClassPathResource imgFile = new ClassPathResource(path, _component.getBackendClassLoader());
+            ClassPathResource imgFile = new ClassPathResource(path, _component.getCurrentExtensionClassLoader());
             if (imgFile.exists()) {
 
                 //

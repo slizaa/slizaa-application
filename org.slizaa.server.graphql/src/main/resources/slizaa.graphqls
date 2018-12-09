@@ -1,88 +1,9 @@
-type Node {
-
-    # The identifier for this node
-    id: ID!
-
-    # The text label
-    text: String!
-    imageDescription: ImageDescription
-
-    # The parent node
-    parent: Node
-    predecessors: [Node]!
-
-    # The children
-    # hasChildren: Boolean
-    children: [Node]!
-
-    properties: [MapEntry]!
-
-    dependenciesTo(targetNodes: [ID]!): [Dependency]!
-}
-
-type Dependency {
-    id: ID!
-    sourceNode: Node!
-    targetNode: Node!
-    weight: Int
-}
-
-type ImageDescription {
-    baseImagePath: String
-    topLeftImagePath: String
-    topRightImagePath: String
-    bottomLeftImagePath: String
-    bottomRightImagePath: String
-}
-
-type MapEntry { key: String!, value: String }
-
-type DependencyMatrix {
-    nodes: [ Node ]
-    dependencies: [[ Dependency ]]
-    matrix: [[ Int ]]
-}
-
-# the backend extension
-type BackendExtension {
-    identifier: ID!
-    version: String!
-}
-
-input BackendExtensionId {
-    identifier: ID!
-    version: String!
-}
-
-# The Root Query for the application
+# The Query type
 type Query {
 
-    # Returns if the backend is configured or not
-    isBackendConfigured: Boolean!
-
-    #
-    installedBackendExtensions: [BackendExtension]!
-
-    #
-    availableBackendExtensions: [BackendExtension]!
-
-    # Returns the root node
-    rootNode: Node!
-
-    # Returns the node with the given id
-    node(id: ID!): Node
-
-    # Returns the nodes with the given ids
-    nodes(ids: [ID]!): [Node]!
-
-    dependencyMatrix(ids: [ID]!): DependencyMatrix!
 }
 
+# The Mutation type
 type Mutation {
 
-    #
-    installBackendExtensions(extensions: [BackendExtensionId]): [BackendExtension]!
-
-    #
-    uninstallBackendExtensions(extensions: [BackendExtensionId]): [BackendExtension]!
 }

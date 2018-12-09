@@ -1,0 +1,16 @@
+type StructureDatabase {
+
+    identifier: ID!
+}
+
+# The Query type
+extend type Query {
+
+    structureDatabases: [StructureDatabase]!
+}
+
+# The Mutation type
+extend type Mutation {
+
+    newStructureDatabase(identifier: ID!): StructureDatabase
+}

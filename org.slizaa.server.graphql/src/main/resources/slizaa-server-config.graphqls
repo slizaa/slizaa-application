@@ -1,0 +1,40 @@
+# Represents a server extension
+type ServerExtension {
+
+    # the symbolic name of the extension
+    symbolicName: ID!
+
+    # the version of the extension
+    version: String!
+}
+
+# The input type to specify server extensions
+input ServerExtensionIdentifier {
+
+    # the symbolic name of the extension
+    symbolicName: ID!
+
+    # the version of the extension
+    version: String!
+}
+
+extend type Query {
+
+    # Returns true if the backend of the slizaa server is configured, false otherwise.
+    isBackendConfigured: Boolean!
+
+    # Returns the installed server extensions
+    installedServerExtensions: [ServerExtension]!
+
+    # Returns the available server extensions
+    availableServerExtensions: [ServerExtension]!
+}
+
+extend type Mutation {
+
+    # Installs the specified server extensions.
+    installServerExtensions(extensions: [ServerExtensionIdentifier]): [ServerExtension]!
+
+    # Uninstalls the specified server extension.
+    uninstallServerExtensions(extensions: [ServerExtensionIdentifier]): [ServerExtension]!
+}

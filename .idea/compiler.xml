@@ -8,7 +8,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="org.slizaa.server" />
         <module name="org.slizaa.server.graphql" />
-        <module name="org.slizaa.server.rest" />
         <module name="org.slizaa.server.service.backend" />
         <module name="org.slizaa.server.service.extensions" />
         <module name="org.slizaa.server.service.slizaa" />
@@ -18,6 +17,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="org.slizaa.server" target="1.8" />
+      <module name="org.slizaa.server.bom" target="1.8" />
       <module name="org.slizaa.server.graphql" target="1.8" />
       <module name="org.slizaa.server.parent" target="1.8" />
       <module name="org.slizaa.server.rest" target="1.8" />
@@ -32,6 +32,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="org.slizaa.server" options="-parameters" />
+      <module name="org.slizaa.server.bom" options="-parameters" />
       <module name="org.slizaa.server.graphql" options="-parameters" />
       <module name="org.slizaa.server.rest" options="-parameters" />
       <module name="org.slizaa.server.service.backend" options="-parameters" />

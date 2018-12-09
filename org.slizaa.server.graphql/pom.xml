@@ -21,12 +21,10 @@
         <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>5.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphiql-spring-boot-starter</artifactId>
-            <version>5.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.slizaa.server</groupId>

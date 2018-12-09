@@ -17,5 +17,5 @@ public interface IExtensionService {
    *
    * @return
    */
-  List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers);
+  List<IExtension> getExtensions(List<? extends IExtensionIdentifier> extensionIdentifiers);
 }

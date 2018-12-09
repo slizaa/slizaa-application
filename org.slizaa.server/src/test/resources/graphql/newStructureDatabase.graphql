@@ -1,0 +1,5 @@
+mutation newStructureDatabase($identifier: ID!) {
+    newStructureDatabase(identifier: $identifier) {
+        identifier
+    }
+}

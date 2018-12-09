@@ -1,0 +1,6 @@
+query availableServerExtensions {
+    availableServerExtensions {
+        symbolicName
+        version
+    }
+}

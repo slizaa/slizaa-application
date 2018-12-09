@@ -11,6 +11,8 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/org.slizaa.server.bom/pom.xml" />
+        <option value="$PROJECT_DIR$/org.slizaa.server.rest/pom.xml" />
         <option value="$PROJECT_DIR$/org.slizaa.server.static/pom.xml" />
       </set>
     </option>

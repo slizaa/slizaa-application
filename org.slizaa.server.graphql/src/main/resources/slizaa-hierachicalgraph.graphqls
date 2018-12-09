@@ -1,0 +1,65 @@
+type Node {
+
+    # The symbolicName for this node
+    id: ID!
+
+    # The text label
+    text: String!
+    imageDescription: ImageDescription
+
+    # The parent node
+    parent: Node
+    predecessors: [Node]!
+
+    #
+    hasChildren: Boolean
+
+    # The children
+    children: [Node]!
+
+    properties: [MapEntry]!
+
+    dependenciesTo(targetNodes: [ID]!): [Dependency]!
+}
+
+type Dependency {
+    id: ID!
+    sourceNode: Node!
+    targetNode: Node!
+    weight: Int
+}
+
+type ImageDescription {
+    baseImagePath: String
+    topLeftImagePath: String
+    topRightImagePath: String
+    bottomLeftImagePath: String
+    bottomRightImagePath: String
+}
+
+type MapEntry { key: String!, value: String }
+
+type DependencyMatrix {
+    nodes: [ Node ]
+    dependencies: [[ Dependency ]]
+    matrix: [[ Int ]]
+}
+
+extend type Query {
+
+    # Returns the root node
+    rootNode: Node!
+
+    # Returns the node with the given id
+    node(id: ID!): Node
+
+    # Returns the nodes with the given ids
+    nodes(ids: [ID]!): [Node]!
+
+    #
+    dependencyMatrix(ids: [ID]!): DependencyMatrix!
+}
+
+extend type Mutation {
+
+}

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.slizaa.server.bom" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server.graphql" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server.rest" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server.service.backend" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server.service.extensions" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server.service.slizaa" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/org.slizaa.server.static" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.slizaa.server.staticcontent" charset="UTF-8" />
   </component>
 </project>

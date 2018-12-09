@@ -56,7 +56,7 @@ public abstract class AbstractServerBackendTest {
      * @return
      */
     @Override
-    public List<IExtension> getExtensions(List<IExtensionIdentifier> extensionIdentifiers) {
+    public List<IExtension> getExtensions(List<? extends IExtensionIdentifier> extensionIdentifiers) {
       return getExtensions().stream().filter(extensionIdentifiers::contains).collect(Collectors.toList());
     }
 
