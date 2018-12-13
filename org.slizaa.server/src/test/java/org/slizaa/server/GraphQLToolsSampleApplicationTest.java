@@ -36,18 +36,18 @@ public class GraphQLToolsSampleApplicationTest {
     public void installExtensionsAndCreateDatabase() throws IOException {
 
         //
-        GraphQLResponse response = assertOk(graphQLTestTemplate.perform("graphql/isBackendConfigured.graphql", null));
+        GraphQLResponse response = assertOk(graphQLTestTemplate.perform("/graphql/isBackendConfigured.graphql", null));
         assertThat(response.get("$.data.isBackendConfigured", Boolean.class)).isFalse();
 
         //
-        response = assertOk(graphQLTestTemplate.perform("graphql/availableServerExtensions.graphql", null));
+        response = assertOk(graphQLTestTemplate.perform("/graphql/availableServerExtensions.graphql", null));
         assertThat(response.get("$.data.availableServerExtensions[0].symbolicName")).isEqualTo("org.slizaa.neo4j.backend");
         assertThat(response.get("$.data.availableServerExtensions[0].version")).isEqualTo("1.0.0");
         assertThat(response.get("$.data.availableServerExtensions[1].symbolicName")).isEqualTo("org.slizaa.jtype.extension");
         assertThat(response.get("$.data.availableServerExtensions[1].version")).isEqualTo("1.0.0");
 
         //
-        response = assertOk(graphQLTestTemplate.perform("graphql/installServerExtensions.graphql", null));
+        response = assertOk(graphQLTestTemplate.perform("/graphql/installServerExtensions.graphql", null));
         assertThat(response.get("$.data.installServerExtensions[0].symbolicName")).isEqualTo("org.slizaa.neo4j.backend");
         assertThat(response.get("$.data.installServerExtensions[0].version")).isEqualTo("1.0.0");
         assertThat(response.get("$.data.installServerExtensions[1].symbolicName")).isEqualTo("org.slizaa.jtype.extension");
@@ -56,11 +56,11 @@ public class GraphQLToolsSampleApplicationTest {
         //
         ObjectNode variables = new ObjectMapper().createObjectNode();
         variables.put("identifier", "lorem-ipsum-dolor-sit-amet");
-        response = assertOk(graphQLTestTemplate.perform("graphql/newStructureDatabase.graphql", variables));
+        response = assertOk(graphQLTestTemplate.perform("/graphql/newStructureDatabase.graphql", variables));
         assertThat(response.get("$.data.newStructureDatabase.identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
 
         //
-        response = assertOk(graphQLTestTemplate.perform("graphql/structureDatabases.graphql", null));
+        response = assertOk(graphQLTestTemplate.perform("/graphql/structureDatabases.graphql", null));
         assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
     }
 
