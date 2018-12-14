@@ -3,6 +3,18 @@ type StructureDatabase {
     identifier: ID!
 }
 
+input MvnCoordinate {
+
+    # the group id
+    groupId: String!
+
+    # the artifact id
+    artifactId: String!
+
+    # the version
+    version: String!
+}
+
 # The Query type
 extend type Query {
 
@@ -13,4 +25,6 @@ extend type Query {
 extend type Mutation {
 
     newStructureDatabase(identifier: ID!): StructureDatabase
+
+    setMvnBasedContentDefinition(identifier: ID!, coords: [MvnCoordinate]!): [MvnCoordinate]!
 }

@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,6 +62,13 @@ public class GraphQLToolsSampleApplicationTest {
 
         //
         response = assertOk(graphQLTestTemplate.perform("/graphql/structureDatabases.graphql", null));
+        assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
+
+        //
+        variables = new ObjectMapper().createObjectNode();
+        variables.put("identifier", "lorem-ipsum-dolor-sit-amet");
+        variables.put("coords", "[\"test:test:1.2.3\"]");
+        response = assertOk(graphQLTestTemplate.perform("/graphql/setMvnBasedContentDefinition.graphql", null));
         assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
     }
 
