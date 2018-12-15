@@ -3,7 +3,7 @@ type StructureDatabase {
     identifier: ID!
 }
 
-input MvnCoordinate {
+type MvnCoordinate {
 
     # the group id
     groupId: String!
@@ -26,5 +26,5 @@ extend type Mutation {
 
     newStructureDatabase(identifier: ID!): StructureDatabase
 
-    setMvnBasedContentDefinition(identifier: ID!, coords: [MvnCoordinate]!): [MvnCoordinate]!
+    setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): [MvnCoordinate]!
 }

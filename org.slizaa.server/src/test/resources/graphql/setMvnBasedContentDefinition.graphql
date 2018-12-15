@@ -1,5 +1,5 @@
 mutation setMvnBasedContentDefinition($identifier: ID!, $coords: [String]!) {
     setMvnBasedContentDefinition(identifier: $identifier, coords: $coords) {
-
+        artifactId
     }
 }

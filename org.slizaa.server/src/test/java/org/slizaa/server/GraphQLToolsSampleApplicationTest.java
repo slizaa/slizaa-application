@@ -67,9 +67,9 @@ public class GraphQLToolsSampleApplicationTest {
         //
         variables = new ObjectMapper().createObjectNode();
         variables.put("identifier", "lorem-ipsum-dolor-sit-amet");
-        variables.put("coords", "[\"test:test:1.2.3\"]");
-        response = assertOk(graphQLTestTemplate.perform("/graphql/setMvnBasedContentDefinition.graphql", null));
-        assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
+        variables.put("coords", "[\"org.springframework:spring-core:5.1.3.RELEASE\"]");
+        response = assertOk(graphQLTestTemplate.perform("/graphql/setMvnBasedContentDefinition.graphql", variables));
+        assertThat(response.get("$.data.setMvnBasedContentDefinition[0].artifactId")).isEqualTo("spring-core");
     }
 
     /**
