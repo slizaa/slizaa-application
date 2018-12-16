@@ -29,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableGraphqlModule
 public class GraphQLToolsSampleApplicationTest {
 
+    public static final String DATABASE_NAME = "lorem-ipsum-dolor-sit-amet";
+
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -56,20 +58,26 @@ public class GraphQLToolsSampleApplicationTest {
 
         //
         ObjectNode variables = new ObjectMapper().createObjectNode();
-        variables.put("identifier", "lorem-ipsum-dolor-sit-amet");
+        variables.put("identifier", DATABASE_NAME);
         response = assertOk(graphQLTestTemplate.perform("/graphql/newStructureDatabase.graphql", variables));
-        assertThat(response.get("$.data.newStructureDatabase.identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
+        assertThat(response.get("$.data.newStructureDatabase.identifier")).isEqualTo(DATABASE_NAME);
 
         //
         response = assertOk(graphQLTestTemplate.perform("/graphql/structureDatabases.graphql", null));
-        assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo("lorem-ipsum-dolor-sit-amet");
+        assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo(DATABASE_NAME);
 
         //
         variables = new ObjectMapper().createObjectNode();
-        variables.put("identifier", "lorem-ipsum-dolor-sit-amet");
-        variables.put("coords", "[\"org.springframework:spring-core:5.1.3.RELEASE\"]");
+        variables.put("identifier", DATABASE_NAME);
+        variables.put("coords", "org.springframework:spring-core:5.1.3.RELEASE");
         response = assertOk(graphQLTestTemplate.perform("/graphql/setMvnBasedContentDefinition.graphql", variables));
         assertThat(response.get("$.data.setMvnBasedContentDefinition[0].artifactId")).isEqualTo("spring-core");
+
+        //
+        variables = new ObjectMapper().createObjectNode();
+        variables.put("identifier", DATABASE_NAME);
+        response = assertOk(graphQLTestTemplate.perform("/graphql/parseContent.graphql", variables));
+        assertThat(response.get("$.data.parseContent.identifier")).isEqualTo(DATABASE_NAME);
     }
 
     /**

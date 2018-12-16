@@ -8,6 +8,7 @@ import org.slizaa.server.service.slizaa.IStructureDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +51,21 @@ public class StructureDatabaseMutation implements GraphQLMutationResolver {
 
     //
     return result;
+  }
+
+  public StructureDatabase parseContent(String identifier) {
+
+    // create the structure database
+    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
+
+    //
+    try {
+      structureDatabase.parseAndStartDatabase();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    // return the result
+    return new StructureDatabase(structureDatabase.getIdentifier());
   }
 }
