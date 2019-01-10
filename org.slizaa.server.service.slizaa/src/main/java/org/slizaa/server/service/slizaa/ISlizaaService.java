@@ -64,4 +64,11 @@ public interface ISlizaaService {
    * @return
    */
   IStructureDatabase newStructureDatabase(String identifier);
+  
+  /**
+   * 
+   * @param path
+   * @return
+   */
+  byte[] loadFromExtensions(String path);
 }

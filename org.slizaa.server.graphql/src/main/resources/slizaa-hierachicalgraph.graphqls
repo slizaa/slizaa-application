@@ -17,8 +17,10 @@ type Node {
     # The children
     children: [Node]!
 
+    #
     properties: [MapEntry]!
 
+    #
     dependenciesTo(targetNodes: [ID]!): [Dependency]!
 }
 

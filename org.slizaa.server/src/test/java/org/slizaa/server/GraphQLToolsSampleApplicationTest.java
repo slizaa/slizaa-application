@@ -30,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GraphQLToolsSampleApplicationTest {
 
     public static final String DATABASE_NAME = "lorem-ipsum-dolor-sit-amet";
+    
+    public static final String MAPPED_SYSTEM_NAME = "hurz";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -78,6 +80,14 @@ public class GraphQLToolsSampleApplicationTest {
         variables.put("identifier", DATABASE_NAME);
         response = assertOk(graphQLTestTemplate.perform("/graphql/parseContent.graphql", variables));
         assertThat(response.get("$.data.parseContent.identifier")).isEqualTo(DATABASE_NAME);
+        
+        //
+        variables = new ObjectMapper().createObjectNode();
+        variables.put("databaseId", DATABASE_NAME);
+        variables.put("mappedSystemId", MAPPED_SYSTEM_NAME);
+        response = assertOk(graphQLTestTemplate.perform("/graphql/mapSystem.graphql", variables));
+        System.out.println(response.getRawResponse().getBody());
+        assertThat(response.get("$.data.mapSystem.identifier")).isEqualTo(DATABASE_NAME);
     }
 
     /**

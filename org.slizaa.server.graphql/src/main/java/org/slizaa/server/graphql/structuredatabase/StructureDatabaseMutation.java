@@ -61,7 +61,7 @@ public class StructureDatabaseMutation implements GraphQLMutationResolver {
 
     //
     try {
-      structureDatabase.parseAndStartDatabase();
+      structureDatabase.parse(true);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -70,15 +70,15 @@ public class StructureDatabaseMutation implements GraphQLMutationResolver {
     return new StructureDatabase(structureDatabase.getIdentifier());
   }
 
-  public StructureDatabase mapSystem(String identifier) {
+  public StructureDatabase mapSystem(String databaseId, String mappedSystemId) {
 
     // create the structure database
     // TODO
-    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
+    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(databaseId);
 
     //
     try {
-      structureDatabase.mapSystem();
+      structureDatabase.createNewMappedSystem(mappedSystemId);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

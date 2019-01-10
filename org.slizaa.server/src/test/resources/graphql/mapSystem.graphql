@@ -1,0 +1,5 @@
+mutation mapSystem($databaseId: ID!, $mappedSystemId: ID!) {
+    mapSystem(databaseId: $databaseId, mappedSystemId: $mappedSystemId) {
+        identifier
+    }
+}

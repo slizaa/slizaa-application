@@ -30,5 +30,5 @@ extend type Mutation {
 
     parseContent(identifier: ID!): StructureDatabase
 
-    mapSystem(identifier: ID!): StructureDatabase
+    mapSystem(databaseId: ID!, mappedSystemId: ID!): StructureDatabase
 }
