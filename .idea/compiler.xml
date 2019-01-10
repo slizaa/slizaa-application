@@ -9,6 +9,7 @@
         <module name="org.slizaa.server" />
         <module name="org.slizaa.server.graphql" />
         <module name="org.slizaa.server.service.backend" />
+        <module name="org.slizaa.server.service.configuration" />
         <module name="org.slizaa.server.service.extensions" />
         <module name="org.slizaa.server.service.slizaa" />
         <module name="org.slizaa.server.slizaaservice" />
@@ -22,6 +23,7 @@
       <module name="org.slizaa.server.parent" target="1.8" />
       <module name="org.slizaa.server.rest" target="1.8" />
       <module name="org.slizaa.server.service.backend" target="1.8" />
+      <module name="org.slizaa.server.service.configuration" target="1.8" />
       <module name="org.slizaa.server.service.extensions" target="1.8" />
       <module name="org.slizaa.server.service.slizaa" target="1.8" />
       <module name="org.slizaa.server.slizaaservice" target="1.8" />
@@ -36,6 +38,7 @@
       <module name="org.slizaa.server.graphql" options="-parameters" />
       <module name="org.slizaa.server.rest" options="-parameters" />
       <module name="org.slizaa.server.service.backend" options="-parameters" />
+      <module name="org.slizaa.server.service.configuration" options="-parameters" />
       <module name="org.slizaa.server.service.extensions" options="-parameters" />
       <module name="org.slizaa.server.service.slizaa" options="-parameters" />
       <module name="org.slizaa.server.staticcontent" options="-parameters" />

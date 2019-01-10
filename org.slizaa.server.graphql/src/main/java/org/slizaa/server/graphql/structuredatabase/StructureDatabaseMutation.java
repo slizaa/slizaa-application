@@ -47,7 +47,7 @@ public class StructureDatabaseMutation implements GraphQLMutationResolver {
 
     // TODO: new vs get
     IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
-    structureDatabase.addContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+    structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
 
     //
     return result;
@@ -56,12 +56,30 @@ public class StructureDatabaseMutation implements GraphQLMutationResolver {
   public StructureDatabase parseContent(String identifier) {
 
     // create the structure database
+    // TODO
     IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
 
     //
     try {
       structureDatabase.parseAndStartDatabase();
     } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    // return the result
+    return new StructureDatabase(structureDatabase.getIdentifier());
+  }
+
+  public StructureDatabase mapSystem(String identifier) {
+
+    // create the structure database
+    // TODO
+    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
+
+    //
+    try {
+      structureDatabase.mapSystem();
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 

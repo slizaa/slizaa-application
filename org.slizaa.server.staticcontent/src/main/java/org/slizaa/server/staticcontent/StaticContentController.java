@@ -1,7 +1,9 @@
 package org.slizaa.server.staticcontent;
 
 import com.google.common.io.ByteStreams;
-import org.slizaa.server.service.slizaa.internal.SlizaaComponent;
+
+import org.slizaa.server.service.slizaa.ISlizaaService;
+import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
@@ -18,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StaticContentController {
 
     @Autowired
-    private SlizaaComponent _component;
+    private ISlizaaService _component;
 
     // the resource cache
     private ConcurrentHashMap<String, byte[]> _resourceCache = new ConcurrentHashMap<>();

@@ -1,23 +1,21 @@
 package org.slizaa.server.service.slizaa;
 
-import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 
 import java.io.IOException;
+import java.util.List;
 
+/**
+ * <p></p>
+ */
 public interface IStructureDatabase {
 
     /**
+     * <p></p>
      *
      * @return
      */
     String getIdentifier();
-
-    /**
-     *
-     * @param contentDefinitionProvider
-     */
-    void addContentDefinitionProvider(IContentDefinitionProvider contentDefinitionProvider);
 
     /**
      *
@@ -26,18 +24,45 @@ public interface IStructureDatabase {
     boolean hasContentDefinitionProvider();
 
     /**
-     * <p>
-     * </p>
      *
-     * @throws IOException
+     * @param contentDefinitionProvider
      */
-    void parseAndStartDatabase() throws IOException;
+    void setContentDefinitionProvider(IContentDefinitionProvider contentDefinitionProvider);
 
     /**
      * <p>
      * </p>
      *
+     * @throws IOException
+     */
+    void parse(boolean startDatabase) throws IOException;
+
+    /**
+     *
+     */
+    void start();
+
+    /**
+     *
+     */
+    void stop();
+
+    /**
+     *
+     * @param identifier
      * @return
      */
-    HGRootNode getRootNode();
+    IMappedSystem createNewMappedSystem(String identifier);
+
+    /**
+     *
+     * @param identifier
+     */
+    void disposeMappedSystem(String identifier);
+
+    /**
+     *
+     * @return
+     */
+    List<IMappedSystem> getMappedSystems();
 }

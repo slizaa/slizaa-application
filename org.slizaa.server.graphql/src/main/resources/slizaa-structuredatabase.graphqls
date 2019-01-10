@@ -29,4 +29,6 @@ extend type Mutation {
     setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): [MvnCoordinate]!
 
     parseContent(identifier: ID!): StructureDatabase
+
+    mapSystem(identifier: ID!): StructureDatabase
 }
