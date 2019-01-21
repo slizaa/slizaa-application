@@ -1,5 +1,12 @@
 package org.slizaa.server.service.extensions.mvn;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slizaa.core.mvnresolver.MvnResolverServiceFactoryFactory;
 import org.slizaa.core.mvnresolver.api.IMvnResolverService;
 import org.slizaa.core.mvnresolver.api.IMvnResolverServiceFactory;
@@ -7,19 +14,17 @@ import org.slizaa.server.service.extensions.ExtensionIdentifier;
 import org.slizaa.server.service.extensions.IExtension;
 import org.slizaa.server.service.extensions.Version;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- *
+ * see:https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
  */
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public class MvnBasedExtension extends ExtensionIdentifier implements IExtension {
 
     /* - */
+	@JsonProperty("dependencies")
     private List<MvnDependency> _dependencies;
 
     /**
@@ -31,6 +36,12 @@ public class MvnBasedExtension extends ExtensionIdentifier implements IExtension
         _dependencies = new ArrayList<>();
     }
 
+    protected MvnBasedExtension() {
+        super();
+
+        _dependencies = new ArrayList<>();
+    }
+    
     /**
      * @param mvnDependency
      * @return

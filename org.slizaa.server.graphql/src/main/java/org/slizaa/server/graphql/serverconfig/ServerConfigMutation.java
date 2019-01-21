@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Component
 public class ServerConfigMutation implements GraphQLMutationResolver {
 
-    //
     @Autowired
     private ISlizaaService slizaaService;
 
@@ -31,21 +30,8 @@ public class ServerConfigMutation implements GraphQLMutationResolver {
                 .collect(Collectors.toList());
 
         //
-        List<IExtension> extensions =  slizaaService.installExtensions(extensionIds);
-
-        //
-        return extensions.stream().map(ext -> new ServerExtension(ext.getSymbolicName(), ext.getVersion().toString())).collect(Collectors.toList());
-    }
-
-    public List<ServerExtension> uninstallServerExtensions(List<ServerExtension> serverExtensions) {
-
-        //
-        List<IExtensionIdentifier> extensionIds = serverExtensions
-            .stream().map(ext -> new ExtensionIdentifier(ext.getSymbolicName(), ext.getVersion()))
-                .collect(Collectors.toList());
-
-        //
-        List<IExtension> extensions =  slizaaService.uninstallExtensions(extensionIds);
+        List<IExtension> extensions = slizaaService.getExtensionService().getExtensions(extensionIds);
+        slizaaService.getBackendService().installExtensions(extensions);
 
         //
         return extensions.stream().map(ext -> new ServerExtension(ext.getSymbolicName(), ext.getVersion().toString())).collect(Collectors.toList());

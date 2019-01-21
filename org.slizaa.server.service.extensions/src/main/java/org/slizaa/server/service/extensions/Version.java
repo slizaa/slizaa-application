@@ -22,10 +22,10 @@ import java.util.StringTokenizer;
  */
 
 public class Version implements Comparable<Version> {
-	private final int			major;
-	private final int			minor;
-	private final int			micro;
-	private final String		qualifier;
+	private int			major;
+	private int			minor;
+	private int			micro;
+	private String		qualifier;
 	private static final String	SEPARATOR		= ".";
 	private transient String	versionString /* default to null */;
 	private transient int		hash /* default to 0 */;
@@ -137,6 +137,10 @@ public class Version implements Comparable<Version> {
 		validate();
 	}
 
+	protected Version() {
+		
+	}
+	
 	/**
 	 * Parse numeric component into an int.
 	 * 

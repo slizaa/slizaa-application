@@ -1,8 +1,5 @@
 package org.slizaa.server.service.extensions;
 
-import java.net.URL;
-import java.util.List;
-
 /**
  *
  */

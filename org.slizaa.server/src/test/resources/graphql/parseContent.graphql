@@ -1,5 +1,0 @@
-mutation parseContent($identifier: ID!) {
-    parseContent(identifier: $identifier) {
-        identifier
-    }
-}

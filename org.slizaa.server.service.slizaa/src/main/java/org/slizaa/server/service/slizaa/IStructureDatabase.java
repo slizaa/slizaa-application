@@ -1,14 +1,13 @@
 package org.slizaa.server.service.slizaa;
 
-import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
-
 import java.io.IOException;
-import java.util.List;
+
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 
 /**
  * <p></p>
  */
-public interface IStructureDatabase {
+public interface IStructureDatabase extends IHierarchicalGraphContainer {
 
     /**
      * <p></p>
@@ -46,23 +45,4 @@ public interface IStructureDatabase {
      *
      */
     void stop();
-
-    /**
-     *
-     * @param identifier
-     * @return
-     */
-    IMappedSystem createNewMappedSystem(String identifier);
-
-    /**
-     *
-     * @param identifier
-     */
-    void disposeMappedSystem(String identifier);
-
-    /**
-     *
-     * @return
-     */
-    List<IMappedSystem> getMappedSystems();
 }

@@ -15,75 +15,97 @@ import java.util.List;
 @Component
 public class StructureDatabaseMutation implements GraphQLMutationResolver {
 
-  //
-  @Autowired
-  private ISlizaaService slizaaService;
+	//
+	@Autowired
+	private ISlizaaService slizaaService;
 
-  /**
-   * @param identifier
-   * @return
-   */
-  public StructureDatabase newStructureDatabase(String identifier) {
+	/**
+	 * @param identifier
+	 * @return
+	 */
+	public StructureDatabase newStructureDatabase(String identifier) {
 
-    // create the structure database
-    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
+		// create the structure database
+		IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
 
-    // return the result
-    return new StructureDatabase(structureDatabase.getIdentifier());
-  }
+		// return the result
+		return new StructureDatabase(structureDatabase.getIdentifier());
+	}
 
-  public List<MvnCoordinate> setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
+	public StructureDatabase startStructureDatabase(String identifier) {
 
-    //
-    MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
+		// get the structure database
+		// TODO: check exists
+		IStructureDatabase structureDatabase = slizaaService.getStructureDatabase(identifier);
+		
+		// TODO: check state
+		structureDatabase.start();
 
-    List<MvnCoordinate> result = new ArrayList<>();
+		// return the result
+		return new StructureDatabase(structureDatabase.getIdentifier());
+	}
 
-    //
-    for (String artifactID : artifactIDs) {
-      IMvnCoordinate mvnCoordinate = mvnBasedContentDefinitionProvider.addArtifact(artifactID);
-      result.add(new MvnCoordinate(mvnCoordinate));
-    }
+	public StructureDatabase stopStructureDatabase(String identifier) {
 
-    // TODO: new vs get
-    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
-    structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+		// get the structure database
+		// TODO: check exists
+		IStructureDatabase structureDatabase = slizaaService.getStructureDatabase(identifier);
+		
+		// TODO: check state
+		structureDatabase.stop();
 
-    //
-    return result;
-  }
+		// return the result
+		return new StructureDatabase(structureDatabase.getIdentifier());
+	}
+	
+	public StructureDatabase populateStructureDatabase(String identifier) {
 
-  public StructureDatabase parseContent(String identifier) {
+		IStructureDatabase structureDatabase = slizaaService.getStructureDatabase(identifier);
 
-    // create the structure database
-    // TODO
-    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(identifier);
+		//
+		try {
+			structureDatabase.parse(true);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
-    //
-    try {
-      structureDatabase.parse(true);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+		// return the result
+		return new StructureDatabase(structureDatabase.getIdentifier());
+	}
 
-    // return the result
-    return new StructureDatabase(structureDatabase.getIdentifier());
-  }
+	public List<MvnCoordinate> setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
 
-  public StructureDatabase mapSystem(String databaseId, String mappedSystemId) {
+		//
+		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
 
-    // create the structure database
-    // TODO
-    IStructureDatabase structureDatabase = slizaaService.newStructureDatabase(databaseId);
+		List<MvnCoordinate> result = new ArrayList<>();
 
-    //
-    try {
-      structureDatabase.createNewMappedSystem(mappedSystemId);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+		//
+		for (String artifactID : artifactIDs) {
+			IMvnCoordinate mvnCoordinate = mvnBasedContentDefinitionProvider.addArtifact(artifactID);
+			result.add(new MvnCoordinate(mvnCoordinate));
+		}
 
-    // return the result
-    return new StructureDatabase(structureDatabase.getIdentifier());
-  }
+		//
+		IStructureDatabase structureDatabase = slizaaService.getStructureDatabase(identifier);
+		structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+
+		//
+		return result;
+	}
+
+	public StructureDatabase mapSystem(String databaseId, String mappedSystemId) {
+
+		IStructureDatabase structureDatabase = slizaaService.getStructureDatabase(databaseId);
+
+		//
+		try {
+			structureDatabase.createNewHierarchicalGraph(mappedSystemId);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		// return the result
+		return new StructureDatabase(structureDatabase.getIdentifier());
+	}
 }

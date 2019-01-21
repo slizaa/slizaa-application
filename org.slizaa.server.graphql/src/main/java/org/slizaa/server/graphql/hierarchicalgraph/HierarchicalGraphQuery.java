@@ -39,7 +39,7 @@ public class HierarchicalGraphQuery implements GraphQLQueryResolver {
         return nullSafe(hgRootNode -> {
             HGNode hgNode = hgRootNode.lookupNode(Long.parseLong(id));
             //TODO
-            return hgNode != null ? new Node(slizaaService.getStructureDatabases().get(0).getMappedSystems().get(0).getRootNode().lookupNode(Long.parseLong(id))) : null;
+            return hgNode != null ? new Node(slizaaService.getStructureDatabases().get(0).getHierarchicalGraphs().get(0).getRootNode().lookupNode(Long.parseLong(id))) : null;
         });
     }
 
@@ -84,7 +84,7 @@ public class HierarchicalGraphQuery implements GraphQLQueryResolver {
 
         // lookup the root node
     	// TODO: !
-        HGRootNode rootNode = slizaaService.getStructureDatabases().get(0).getMappedSystems().get(0).getRootNode();
+        HGRootNode rootNode = slizaaService.getStructureDatabases().get(0).getHierarchicalGraphs().get(0).getRootNode();
 
         //
         if (rootNode != null) {

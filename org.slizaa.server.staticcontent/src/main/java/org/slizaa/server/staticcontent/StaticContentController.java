@@ -1,26 +1,27 @@
 package org.slizaa.server.staticcontent;
 
-import com.google.common.io.ByteStreams;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slizaa.server.service.slizaa.ISlizaaService;
-import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.*;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-
 @RestController
 public class StaticContentController {
 
 	@Autowired
-	private ISlizaaService _component;
+	private ISlizaaService _slizaaService;
 
 	// the resource cache
 	private ConcurrentHashMap<String, byte[]> _resourceCache = new ConcurrentHashMap<>();
@@ -57,7 +58,9 @@ public class StaticContentController {
 
 		return _resourceCache.computeIfAbsent(path, p -> {
 
-			byte[] targetArray = _component.loadFromExtensions(path);
+			byte[] targetArray = _slizaaService.getBackendService().hasInstalledExtensions()
+					? _slizaaService.getBackendService().loadResourceFromExtensions(path)
+					: null;
 
 			if (targetArray == null) {
 				throw new ResourceNotFoundException("The requested resource couldn't be found.");

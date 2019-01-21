@@ -1,9 +1,10 @@
 package org.slizaa.server.service.extensions;
 
-import java.util.ArrayList;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Default implementation of type {@link IExtensionIdentifier}.
@@ -11,10 +12,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ExtensionIdentifier implements IExtensionIdentifier {
 
     /* the symbolic name */
-    private String _symbolicName;
+	@JsonProperty("symbolicName")
+    protected String _symbolicName;
 
     /* the version */
-    private Version _version;
+	@JsonProperty("version")
+	protected Version _version;
 
     /**
      * Creates a new instance of type {@link IExtensionIdentifier}.
@@ -25,6 +28,9 @@ public class ExtensionIdentifier implements IExtensionIdentifier {
     public ExtensionIdentifier(String symbolicName, Version version) {
         this._symbolicName = checkNotNull(symbolicName);
         this._version = checkNotNull(version);
+    }
+    
+    protected ExtensionIdentifier() {
     }
 
     /**

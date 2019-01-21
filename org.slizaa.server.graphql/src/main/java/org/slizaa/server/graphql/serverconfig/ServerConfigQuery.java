@@ -21,12 +21,12 @@ public class ServerConfigQuery implements GraphQLQueryResolver {
   /**
    * @return
    */
-  public boolean isBackendConfigured() {
-    return slizaaService.isBackendConfigured();
+  public boolean hasInstalledExtensions() {
+    return slizaaService.getBackendService().hasInstalledExtensions();
   }
 
   public List<ServerExtension> installedServerExtensions() {
-    return slizaaService.getInstalledExtensions().stream()
+    return slizaaService.getBackendService().getInstalledExtensions().stream()
         .map(ext -> new ServerExtension(ext.getSymbolicName(), ext.getVersion().toString())).collect(
             Collectors.toList());
   }

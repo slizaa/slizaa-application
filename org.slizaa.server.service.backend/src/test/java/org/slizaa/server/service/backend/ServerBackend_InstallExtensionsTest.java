@@ -40,13 +40,13 @@ public class ServerBackend_InstallExtensionsTest extends AbstractServerBackendTe
     SlizaaServerBackendImpl backend = applicationContext.getBean(SlizaaServerBackendImpl.class);
     assertThat(backend).isNotNull();
 
-    assertThat(backend.isConfigured()).isFalse();
+    assertThat(backend.hasInstalledExtensions()).isFalse();
 
     // try to install
     backend.installExtensions(extensionService.getExtensions());
 
     //
-    assertThat(backend.isConfigured()).isTrue();
+    assertThat(backend.hasInstalledExtensions()).isTrue();
     assertThat(backend.getGraphDbFactory()).isNotNull();
   }
 
@@ -61,13 +61,13 @@ public class ServerBackend_InstallExtensionsTest extends AbstractServerBackendTe
     SlizaaServerBackendImpl backend = applicationContext.getBean(SlizaaServerBackendImpl.class);
     assertThat(backend).isNotNull();
 
-    assertThat(backend.isConfigured()).isFalse();
+    assertThat(backend.hasInstalledExtensions()).isFalse();
 
     // try to install
     backend.installExtensions(extensionService.getExtensions());
 
     //
-    assertThat(backend.isConfigured()).isFalse();
+    assertThat(backend.hasInstalledExtensions()).isFalse();
   }
 }
 

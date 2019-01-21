@@ -1,3 +1,18 @@
+extend type HierarchicalGraph {
+
+    # Returns the root node
+    rootNode: Node!
+
+    # Returns the node with the given id
+    node(id: ID!): Node
+
+    # Returns the nodes with the given ids
+    nodes(ids: [ID]!): [Node]!
+
+    #
+    dependencyMatrix(ids: [ID]!): DependencyMatrix!
+}
+
 type Node {
 
     # The symbolicName for this node
@@ -47,21 +62,4 @@ type DependencyMatrix {
     matrix: [[ Int ]]
 }
 
-extend type Query {
 
-    # Returns the root node
-    rootNode: Node!
-
-    # Returns the node with the given id
-    node(id: ID!): Node
-
-    # Returns the nodes with the given ids
-    nodes(ids: [ID]!): [Node]!
-
-    #
-    dependencyMatrix(ids: [ID]!): DependencyMatrix!
-}
-
-extend type Mutation {
-
-}

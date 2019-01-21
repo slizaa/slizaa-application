@@ -1,3 +1,0 @@
-query isBackendConfigured {
-    isBackendConfigured
-}

@@ -1,5 +1,9 @@
 package org.slizaa.server.service.backend.impl;
 
+import java.util.List;
+
+import org.slizaa.server.service.extensions.IExtension;
+
 /**
  *
  */
@@ -23,5 +27,5 @@ public interface IServerBackendStateMachineContext {
     /**
      *
      */
-    boolean updateBackendConfiguration();
+    boolean updateBackendConfiguration(List<IExtension> extensions);
 }

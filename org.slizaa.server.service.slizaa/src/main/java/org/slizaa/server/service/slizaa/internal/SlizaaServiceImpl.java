@@ -1,9 +1,10 @@
 package org.slizaa.server.service.slizaa.internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,13 +15,12 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slizaa.core.boltclient.IBoltClientFactory;
-import org.slizaa.server.service.backend.ISlizaaServerBackend;
-import org.slizaa.server.service.extensions.IExtension;
-import org.slizaa.server.service.extensions.IExtensionIdentifier;
+import org.slizaa.server.service.backend.IBackendService;
+import org.slizaa.server.service.backend.IBackendServiceInstanceProvider;
+import org.slizaa.server.service.configuration.IConfigurationService;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
@@ -29,11 +29,8 @@ import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureData
 import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Component;
-
-import com.google.common.io.ByteStreams;
 
 /**
  * <p>
@@ -44,7 +41,8 @@ import com.google.common.io.ByteStreams;
 @Component
 public class SlizaaServiceImpl implements ISlizaaService {
 
-	//
+	private static final String CONFIG_ID = "org.slizaa.server.service.slizaa";
+
 	private static final Logger logger = LoggerFactory.getLogger(SlizaaServiceImpl.class);
 
 	@Value("${slizaa.working.directory:}")
@@ -54,19 +52,23 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	private StateMachineFactory<StructureDatabaseState, StructureDatabaseEvent> _stateMachineFactory;
 
 	@Autowired
-	private ISlizaaServerBackend _slizaaServerBackend;
+	private IBackendServiceInstanceProvider _backendService;
 
 	@Autowired
 	private IExtensionService _extensionService;
+
+	@Autowired
+	private IConfigurationService _configurationService;
 
 	private File _databaseDirectory;
 
 	private ExecutorService _executorService;
 
-	//
 	private ConcurrentHashMap<String, StructureDatabase> _structureDatabases = new ConcurrentHashMap<>();
 
 	private IBoltClientFactory _boltClientFactory;
+
+	private Configuration _configuration;
 
 	{
 		org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
@@ -84,6 +86,18 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		// TODO: config!
 		this._executorService = Executors.newFixedThreadPool(20);
 		_boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
+
+		_configuration = _configurationService.load(CONFIG_ID, Configuration.class);
+		if (_configuration == null) {
+			_configuration = new Configuration();
+		}
+
+		for (String identifier : _configuration.getStructureDatabases()) {
+			_structureDatabases.computeIfAbsent(identifier, id -> {
+				return StructureDatabase.create(id, new File(_databaseDirectoryPath), this._backendService,
+						this._boltClientFactory, () -> this._stateMachineFactory.getStateMachine());
+			});
+		}
 	}
 
 	@PreDestroy
@@ -93,47 +107,14 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		this._executorService.awaitTermination(5, TimeUnit.SECONDS);
 	}
 
-	/**
-	 * @return
-	 */
-	@Override
-	public boolean isBackendConfigured() {
-		return _slizaaServerBackend.isConfigured();
-	}
-
-	@Override
-	public List<IExtension> getInstalledExtensions() {
-		return _slizaaServerBackend.getInstalledExtensions();
-	}
-
 	@Override
 	public IExtensionService getExtensionService() {
 		return _extensionService;
 	}
 
-	/**
-	 * @param extensionIdentifiers
-	 * @return
-	 */
 	@Override
-	public List<IExtension> installExtensions(List<? extends IExtensionIdentifier> extensionIdentifiers) {
-
-		// compute the extensions to install
-		List<IExtension> extensionsToInstall = this._extensionService.getExtensions(extensionIdentifiers);
-		List<IExtension> installedExtensions = this._slizaaServerBackend.getInstalledExtensions();
-		List<IExtension> newExtensions = ListUtils.subtract(extensionsToInstall, installedExtensions);
-
-		// install the new extension
-		_slizaaServerBackend.installExtensions(newExtensions);
-
-		// return the newly installed extensions
-		return newExtensions;
-	}
-
-	@Override
-	public List<IExtension> uninstallExtensions(List<? extends IExtensionIdentifier> extensionIds) {
-		// TODO
-		return Collections.emptyList();
+	public IBackendService getBackendService() {
+		return _backendService;
 	}
 
 	@Override
@@ -156,15 +137,33 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	}
 
 	@Override
+	public IStructureDatabase getStructureDatabase(String identifier) {
+		return _structureDatabases.get(identifier);
+	}
+
+	@Override
 	public IStructureDatabase newStructureDatabase(String identifier) {
 
-		// TODO: SAVE CONFIG
+		//
+		if (_structureDatabases.containsKey(identifier)) {
+			// TODO
+			throw new RuntimeException();
+		}
+
+		// save the config
+		_configuration.getStructureDatabases().add(identifier);
+		try {
+			_configurationService.store(CONFIG_ID, _configuration);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		//
 		return _structureDatabases.computeIfAbsent(identifier, id -> {
 
 			//
-			return StructureDatabase.create(id, new File(_databaseDirectoryPath), this._slizaaServerBackend,
+			return StructureDatabase.create(id, new File(_databaseDirectoryPath), this._backendService,
 					this._boltClientFactory, () -> this._stateMachineFactory.getStateMachine());
 		});
 	}
@@ -173,22 +172,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		_databaseDirectory = databaseDirectory;
 	}
 
-	@Override
-	public byte[] loadFromExtensions(String path) {
-
-		if (isBackendConfigured()) {
-
-			ClassPathResource imgFile = new ClassPathResource(path,
-					this._slizaaServerBackend.getCurrentExtensionClassLoader());
-
-			if (imgFile.exists()) {
-				try {
-					return ByteStreams.toByteArray(imgFile.getInputStream());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
+	public boolean hasStructureDatabase(String identifier) {
+		return _structureDatabases.containsKey(checkNotNull(identifier));
 	}
 }

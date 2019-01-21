@@ -1,7 +1,14 @@
 type StructureDatabase {
 
     identifier: ID!
+    
+    hierarchicalGraphs: [HierarchicalGraph]!
 }
+
+type HierarchicalGraph{
+
+}
+
 
 type MvnCoordinate {
 
@@ -19,16 +26,22 @@ type MvnCoordinate {
 extend type Query {
 
     structureDatabases: [StructureDatabase]!
+    
+    structureDatabase(identifier: ID!): StructureDatabase
 }
 
 # The Mutation type
 extend type Mutation {
 
     newStructureDatabase(identifier: ID!): StructureDatabase
+    
+	populateStructureDatabase(identifier: ID!): StructureDatabase
+    
+    startStructureDatabase(identifier: ID!): StructureDatabase
+    
+    stopStructureDatabase(identifier: ID!): StructureDatabase
 
     setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): [MvnCoordinate]!
-
-    parseContent(identifier: ID!): StructureDatabase
 
     mapSystem(databaseId: ID!, mappedSystemId: ID!): StructureDatabase
 }

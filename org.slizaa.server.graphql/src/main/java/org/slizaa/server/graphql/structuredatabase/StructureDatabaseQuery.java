@@ -16,15 +16,22 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 @Component
 public class StructureDatabaseQuery implements GraphQLQueryResolver {
 
-  //
-  @Autowired
-  private ISlizaaService slizaaService;
+	//
+	@Autowired
+	private ISlizaaService slizaaService;
 
-  /**
-   *
-   * @return
-   */
-  public List<StructureDatabase> structureDatabases() {
-    return slizaaService.getStructureDatabases().stream().map(db -> new StructureDatabase(((IStructureDatabase) db).getIdentifier())).collect(Collectors.toList());
-  }
+	/**
+	 *
+	 * @return
+	 */
+	public List<StructureDatabase> structureDatabases() {
+		return slizaaService.getStructureDatabases().stream()
+				.map(db -> new StructureDatabase(((IStructureDatabase) db).getIdentifier()))
+				.collect(Collectors.toList());
+	}
+
+	public StructureDatabase structureDatabase(String identifier) {
+		IStructureDatabase structureDatabase = slizaaService.getStructureDatabase(identifier);
+		return structureDatabase != null ? new StructureDatabase(structureDatabase.getIdentifier()) : null;
+	}
 }

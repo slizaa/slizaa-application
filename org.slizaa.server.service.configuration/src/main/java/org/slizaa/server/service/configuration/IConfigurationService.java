@@ -1,8 +1,10 @@
 package org.slizaa.server.service.configuration;
 
+import java.io.IOException;
+
 public interface IConfigurationService {
 
-  <T> void store(String configurationIdentifier, T configuration);
+  <T> void store(String configurationIdentifier, T configuration) throws IOException;
 
-  <T> T load(String configurationIdentifier, ClassLoader classLoader, Class<T> type);
+  <T> T load(String configurationIdentifier, Class<T> type) throws IOException;
 }

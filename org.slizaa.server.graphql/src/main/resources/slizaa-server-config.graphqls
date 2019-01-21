@@ -20,8 +20,8 @@ input ServerExtensionIdentifier {
 
 extend type Query {
 
-    # Returns true if the backend of the slizaa server is configured, false otherwise.
-    isBackendConfigured: Boolean!
+    # Returns true if the backend contains installed extensions.
+    hasInstalledExtensions: Boolean!
 
     # Returns the installed server extensions
     installedServerExtensions: [ServerExtension]!
@@ -34,7 +34,4 @@ extend type Mutation {
 
     # Installs the specified server extensions.
     installServerExtensions(extensions: [ServerExtensionIdentifier]): [ServerExtension]!
-
-    # Uninstalls the specified server extension.
-    uninstallServerExtensions(extensions: [ServerExtensionIdentifier]): [ServerExtension]!
 }

@@ -1,16 +1,19 @@
 package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.slizaa.server.service.backend.EnableBackendModule;
+import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
+import org.slizaa.server.service.backend.EnableBackendServiceModule;
+import org.slizaa.server.service.configuration.EnableConfigurationModule;
 import org.slizaa.server.service.extensions.EnableExtensionsModule;
 import org.slizaa.server.service.extensions.IExtensionService;
-import org.slizaa.server.service.slizaa.ISlizaaService;
+import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,91 +21,73 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(SpringRunner.class)
 @Configuration
 @ComponentScan(basePackageClasses = SlizaaServiceImpl.class)
-@EnableBackendModule
+@EnableBackendServiceModule
 @EnableExtensionsModule
+@EnableConfigurationModule
 public class StructureDatabaseTest {
 
-  @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
+	private static final String STRUCTURE_DATABASE_NAME = "HURZ";
 
-  //
-  @Autowired
-  private SlizaaServiceImpl _slizaaService;
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
-  @Autowired
-  private IExtensionService _extensionService;
+	//
+	@Autowired
+	private SlizaaServiceImpl _slizaaService;
 
-  private IStructureDatabase _structureDatabase;
+	@Autowired
+	private IExtensionService _extensionService;
 
-  @Before
-  public void setUp() throws Exception {
+	//
+	private IStructureDatabase _structureDatabase;
 
-    //
-    _slizaaService.setDatabaseDirectory(folder.newFolder());
-    _slizaaService.installExtensions(_extensionService.getExtensions());
+	@Before
+	public void setUp() throws Exception {
 
-    //
-    _structureDatabase = _slizaaService.newStructureDatabase("HURZ");
-    assertThat(_structureDatabase).isNotNull();
-  }
+		//
+		_slizaaService.setDatabaseDirectory(folder.newFolder());
+		
+		//
+		if (! _slizaaService.getBackendService().hasInstalledExtensions()) {
+			_slizaaService.getBackendService().installExtensions(_extensionService.getExtensions());
+		}
 
-  @After
-  public void tearDown() throws Exception {
-  }
+		//
+		if (! _slizaaService.hasStructureDatabase(STRUCTURE_DATABASE_NAME)) {
+			
+			// create a new database
+			_structureDatabase = _slizaaService.newStructureDatabase(STRUCTURE_DATABASE_NAME);
+			
+			// configure
+			MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
+			mvnBasedContentDefinitionProvider
+					.addArtifact("org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
+			_structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+			
+			// and parse
+			_structureDatabase.parse(true);
+		} 
+		//
+		else {
+			_structureDatabase = _slizaaService.getStructureDatabase(STRUCTURE_DATABASE_NAME);
+		}
+		
+		IHierarchicalGraph hierarchicalGraph = _structureDatabase.createNewHierarchicalGraph("HG");
+		System.out.println(hierarchicalGraph.getRootNode());
 
-  @Test
-  public void getIdentifier() {
-    assertThat(_structureDatabase.getIdentifier()).isEqualTo("HURZ");
-  }
+		//
+		assertThat(_structureDatabase).isNotNull();
+	}
 
-  @Test
-  public void setContentDefinitionProvider() {
-  }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-  @Test
-  public void hasContentDefinitionProvider() {
-  }
-
-  @Test
-  public void createNewMappedSystem() {
-  }
-
-  @Test
-  public void disposeMappedSystem() {
-  }
-
-  @Test
-  public void getMappedSystems() {
-  }
-
-  @Test
-  public void parse() {
-  }
-
-  @Test
-  public void start() {
-  }
-
-  @Test
-  public void stop() {
-  }
-
-  @Test
-  public void _start() {
-  }
-
-  @Test
-  public void _stop() {
-  }
-
-  @Test
-  public void _parse() {
-  }
+	@Test
+	public void getIdentifier() {
+		assertThat(_structureDatabase.getIdentifier()).isEqualTo(STRUCTURE_DATABASE_NAME);
+	}
 }

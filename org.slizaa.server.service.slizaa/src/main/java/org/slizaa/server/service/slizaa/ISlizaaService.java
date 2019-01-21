@@ -1,10 +1,9 @@
 package org.slizaa.server.service.slizaa;
 
-import org.slizaa.server.service.extensions.IExtension;
-import org.slizaa.server.service.extensions.IExtensionService;
-import org.slizaa.server.service.extensions.IExtensionIdentifier;
-
 import java.util.List;
+
+import org.slizaa.server.service.backend.IBackendService;
+import org.slizaa.server.service.extensions.IExtensionService;
 
 /**
  * <p>
@@ -14,61 +13,15 @@ import java.util.List;
  */
 public interface ISlizaaService {
 
-  /**
-   *
-   * @return
-   */
-  boolean isBackendConfigured();
+	IExtensionService getExtensionService();
 
-  /**
-   *
-   * @return
-   */
-  List<IExtension> getInstalledExtensions();
+	IBackendService getBackendService();
 
-  /**
-   *
-   * @param extensionIdentifiers
-   * @return
-   */
-  List<IExtension> installExtensions(List<? extends IExtensionIdentifier> extensionIdentifiers);
+	boolean hasStructureDatabases();
 
-  /**
-   *
-   * @param extensionIds
-   * @return
-   */
-  List<IExtension> uninstallExtensions(List<? extends IExtensionIdentifier> extensionIds);
+	List<? extends IStructureDatabase> getStructureDatabases();
 
-  /**
-   *
-   * @return
-   */
-  IExtensionService getExtensionService();
-
-  /**
-   *
-   * @return
-   */
-  boolean hasStructureDatabases();
-
-  /**
-   *
-   * @return
-   */
-  List<? extends IStructureDatabase> getStructureDatabases();
-
-  /**
-   *
-   * @param identifier
-   * @return
-   */
-  IStructureDatabase newStructureDatabase(String identifier);
-  
-  /**
-   * 
-   * @param path
-   * @return
-   */
-  byte[] loadFromExtensions(String path);
+	IStructureDatabase getStructureDatabase(String identifier);
+	
+	IStructureDatabase newStructureDatabase(String identifier);
 }
