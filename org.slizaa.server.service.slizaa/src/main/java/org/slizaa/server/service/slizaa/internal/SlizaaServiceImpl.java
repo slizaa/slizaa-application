@@ -24,12 +24,9 @@ import org.slizaa.server.service.configuration.IConfigurationService;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
-import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabase;
-import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseEvent;
-import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseState;
+import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -49,9 +46,6 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	private String _databaseDirectoryPath;
 
 	@Autowired
-	private StateMachineFactory<StructureDatabaseState, StructureDatabaseEvent> _stateMachineFactory;
-
-	@Autowired
 	private IBackendServiceInstanceProvider _backendService;
 
 	@Autowired
@@ -60,11 +54,14 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	@Autowired
 	private IConfigurationService _configurationService;
 
+	@Autowired
+	private StructureDatabaseFactory _structureDatabaseFactory;
+
 	private File _databaseDirectory;
 
 	private ExecutorService _executorService;
 
-	private ConcurrentHashMap<String, StructureDatabase> _structureDatabases = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, IStructureDatabase> _structureDatabases = new ConcurrentHashMap<>();
 
 	private IBoltClientFactory _boltClientFactory;
 
@@ -93,10 +90,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		}
 
 		for (String identifier : _configuration.getStructureDatabases()) {
-			_structureDatabases.computeIfAbsent(identifier, id -> {
-				return StructureDatabase.create(id, new File(_databaseDirectoryPath), this._backendService,
-						this._boltClientFactory, () -> this._stateMachineFactory.getStateMachine());
-			});
+			createStructureDatabaseIfAbsent(identifier);
 		}
 	}
 
@@ -160,12 +154,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		}
 
 		//
-		return _structureDatabases.computeIfAbsent(identifier, id -> {
-
-			//
-			return StructureDatabase.create(id, new File(_databaseDirectoryPath), this._backendService,
-					this._boltClientFactory, () -> this._stateMachineFactory.getStateMachine());
-		});
+		return createStructureDatabaseIfAbsent(identifier);
 	}
 
 	public void setDatabaseDirectory(File databaseDirectory) {
@@ -174,5 +163,10 @@ public class SlizaaServiceImpl implements ISlizaaService {
 
 	public boolean hasStructureDatabase(String identifier) {
 		return _structureDatabases.containsKey(checkNotNull(identifier));
+	}
+	
+	private IStructureDatabase createStructureDatabaseIfAbsent(String identifier) {
+		return _structureDatabases.computeIfAbsent(identifier, id -> _structureDatabaseFactory.newInstance(id,
+				new File(_databaseDirectoryPath), this._backendService, _boltClientFactory));
 	}
 }

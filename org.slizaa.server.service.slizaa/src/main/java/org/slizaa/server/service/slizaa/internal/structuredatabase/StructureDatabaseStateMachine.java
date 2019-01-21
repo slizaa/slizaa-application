@@ -1,52 +1,44 @@
 package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.annotation.OnTransition;
-import org.springframework.statemachine.annotation.WithStateMachine;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.statemachine.StateContext;
+import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-import org.springframework.statemachine.transition.Transition;
+import org.springframework.statemachine.guard.Guard;
 
-@Configuration
-@EnableStateMachineFactory(name = "org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseStateMachine")
-@WithStateMachine(id = "org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseStateMachine")
+@EnableStateMachineFactory
 public class StructureDatabaseStateMachine
 		extends EnumStateMachineConfigurerAdapter<StructureDatabaseState, StructureDatabaseEvent> {
 
-	// 
-	private Map<StateMachine<StructureDatabaseState, StructureDatabaseEvent>, StructureDatabase> _map = new HashMap<>();
+	@Autowired
+	private StructureDatabaseFactory _structureDatabaseFactory;
 
-	public void register(StateMachine<StructureDatabaseState, StructureDatabaseEvent> stateMachine, StructureDatabase structureDatabase) {
-		_map.put(stateMachine, structureDatabase);
-	}
-	
-	public void unregister(StateMachine<StructureDatabaseState, StructureDatabaseEvent> stateMachine) {
-		_map.remove(stateMachine);
-	}
-	
 	@Override
 	public void configure(StateMachineConfigurationConfigurer<StructureDatabaseState, StructureDatabaseEvent> config)
 			throws Exception {
 
-		config.withConfiguration().autoStartup(true);
+		config.withConfiguration().autoStartup(false);
 	}
 
 	@Override
 	public void configure(StateMachineStateConfigurer<StructureDatabaseState, StructureDatabaseEvent> states)
 			throws Exception {
 
-		//
-		states.withStates().initial(StructureDatabaseState.INITIAL).choice(StructureDatabaseState.PARSING)
+		states
+		// @formatter:off
+			.withStates()
+				.initial(StructureDatabaseState.INITIAL)
+				.choice(StructureDatabaseState.PARSING)
 				.states(EnumSet.allOf(StructureDatabaseState.class));
-
+		// @formatter:on
 	}
 
 	@Override
@@ -57,28 +49,41 @@ public class StructureDatabaseStateMachine
 		// @formatter:off
 			.withExternal()
 				.source(StructureDatabaseState.INITIAL)
+				.target(StructureDatabaseState.NOT_RUNNING)
+				.guard(guardWithCtx(ctx -> ctx.hasPopulatedDatabaseDirectory()))
+				.and()
+			.withExternal()
+				.source(StructureDatabaseState.INITIAL)
 				.target(StructureDatabaseState.PARSING)
 				.event(StructureDatabaseEvent.PARSE)
 				.and()
-//			.withExternal()
-//				.source(StructureDatabaseState.INITIAL)
-//				.target(StructureDatabaseState.NOT_RUNNING)
-//				.guard(context -> )
-//				.and()				
-			//
 			.withChoice()
 				.source(StructureDatabaseState.PARSING)
-				.first(StructureDatabaseState.RUNNING, ctx -> {
-					return _map.get(ctx.getStateMachine())._isRunning();
-				})
+				.first(StructureDatabaseState.RUNNING, guardWithCtx(ctx -> ctx.isRunning()))
 				.last(StructureDatabaseState.NOT_RUNNING);
 			// @formatter:on
 	}
 
-	
-	
-	@OnTransition
-	public void anyTransition(Transition<StructureDatabaseState, StructureDatabaseEvent> transition) {
-		System.out.println("anyTransition: " + transition);
+	private Action<StructureDatabaseState, StructureDatabaseEvent> actionWithCtx(
+			Consumer<StructureDatabaseStateMachineContext> consumer) {
+
+		return new Action<StructureDatabaseState, StructureDatabaseEvent>() {
+			@Override
+			public void execute(StateContext<StructureDatabaseState, StructureDatabaseEvent> context) {
+				consumer.accept(_structureDatabaseFactory.context(context.getStateMachine()));
+			}
+		};
+	}
+
+	private Guard<StructureDatabaseState, StructureDatabaseEvent> guardWithCtx(
+			Function<StructureDatabaseStateMachineContext, Boolean> guard) {
+
+		return new Guard<StructureDatabaseState, StructureDatabaseEvent>() {
+			@Override
+			public boolean evaluate(StateContext<StructureDatabaseState, StructureDatabaseEvent> context) {
+				return guard.apply(_structureDatabaseFactory.context(context.getStateMachine()));
+			}
+		};
+
 	}
 }
