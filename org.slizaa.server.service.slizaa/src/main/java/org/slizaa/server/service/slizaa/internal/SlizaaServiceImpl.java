@@ -3,7 +3,6 @@ package org.slizaa.server.service.slizaa.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +25,6 @@ import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
 import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,7 +38,8 @@ public class SlizaaServiceImpl implements ISlizaaService {
 
 	{
 		org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-		org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+		org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport
+				.registerCustomHierarchicalgraphFactory();
 	}
 
 	private static final String CONFIG_ID = "org.slizaa.server.service.slizaa";
@@ -48,7 +47,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	private static final Logger logger = LoggerFactory.getLogger(SlizaaServiceImpl.class);
 
 	@Autowired
-	private SlizaaServiceProperties _serviceProperties;
+	private SlizaaServiceDatabaseProperties _serviceProperties;
 
 	@Autowired
 	private IBackendServiceInstanceProvider _backendService;
@@ -68,7 +67,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 
 	private IBoltClientFactory _boltClientFactory;
 
-	private Configuration _configuration;
+	private SlizaaServiceConfiguration _configuration;
 
 	/**
 	 * <p>
@@ -81,13 +80,12 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		this._executorService = Executors.newFixedThreadPool(20);
 		_boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
 
-		_configuration = _configurationService.load(CONFIG_ID, Configuration.class);
+		_configuration = _configurationService.load(CONFIG_ID, SlizaaServiceConfiguration.class);
 		if (_configuration == null) {
-			_configuration = new Configuration();
+			_configuration = new SlizaaServiceConfiguration();
 		}
 
 		for (String identifier : _configuration.getStructureDatabases()) {
-			System.out.println("************: " + identifier);
 			createStructureDatabaseIfAbsent(identifier);
 		}
 	}
@@ -158,9 +156,25 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	public boolean hasStructureDatabase(String identifier) {
 		return _structureDatabases.containsKey(checkNotNull(identifier));
 	}
-	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public IBackendServiceInstanceProvider getInstanceProvider() {
+		return _backendService;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public IBoltClientFactory getBoltClientFactory() {
+		return _boltClientFactory;
+	}
+
 	private IStructureDatabase createStructureDatabaseIfAbsent(String identifier) {
 		return _structureDatabases.computeIfAbsent(identifier, id -> _structureDatabaseFactory.newInstance(id,
-				new File(_serviceProperties.getDatabaseRootDirectory(), identifier), this._backendService, _boltClientFactory));
+				new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), this));
 	}
 }

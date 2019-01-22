@@ -1,5 +1,5 @@
 package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
-public enum StructureDatabaseEvent {
+public enum StructureDatabaseTrigger {
   PARSE, PARSING_COMPLETED, START, STOP, TERMINATE;
 }

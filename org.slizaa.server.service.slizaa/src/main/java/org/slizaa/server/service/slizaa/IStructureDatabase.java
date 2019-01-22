@@ -10,7 +10,7 @@ import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 public interface IStructureDatabase extends IHierarchicalGraphContainer {
 
     /**
-     * <p></p>
+     * 
      *
      * @return
      */

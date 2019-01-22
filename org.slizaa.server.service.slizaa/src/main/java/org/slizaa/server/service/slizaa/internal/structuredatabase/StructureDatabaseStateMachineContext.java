@@ -7,38 +7,58 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.slizaa.core.boltclient.IBoltClientFactory;
+import org.slizaa.core.boltclient.IBoltClient;
 import org.slizaa.core.progressmonitor.DefaultProgressMonitor;
+import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
+import org.slizaa.hierarchicalgraph.graphdb.mapping.service.IMappingService;
+import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.IMappingProvider;
 import org.slizaa.scanner.api.graphdb.IGraphDb;
 import org.slizaa.scanner.api.importer.IModelImporter;
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
-import org.slizaa.server.service.backend.IBackendServiceInstanceProvider;
-import org.springframework.statemachine.StateMachine;
+import org.slizaa.server.service.slizaa.IHierarchicalGraph;
+import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
+import org.slizaa.server.service.slizaa.internal.hierarchicalgraph.HierarchicalGraph;
 
 public class StructureDatabaseStateMachineContext {
 
+	/** the id of the structure database */
 	private String _id;
+
+	/** the database directory */
 	private File _databaseDirectory;
-	private IBackendServiceInstanceProvider _serverBackend;
-	private IBoltClientFactory _boltClientFactory;
-	
+	private StructureDatabaseImpl _structureDatabase;
+	private SlizaaServiceImpl _slizaaService;
+
 	private IContentDefinitionProvider _contentDefinitionProvider;
 	private IGraphDb _graphDb;
-	
-	StructureDatabaseStateMachineContext(String id, File databaseDirectory, IBackendServiceInstanceProvider serverBackend,
-			IBoltClientFactory boltClientFactory) {
+	private IBoltClient _boltClient;
+
+	private Map<String, HierarchicalGraph> _map;
+
+	StructureDatabaseStateMachineContext(String id, File databaseDirectory, SlizaaServiceImpl slizaaService) {
+
 		this._id = checkNotNull(id);
 		this._databaseDirectory = checkNotNull(databaseDirectory);
-		this._serverBackend = checkNotNull(serverBackend);
-		this._boltClientFactory = checkNotNull(boltClientFactory);
+		this._slizaaService = checkNotNull(slizaaService);
+
+		//
+		_map = new HashMap<>();
 	}
-	
+
+	void setStructureDatabase(StructureDatabaseImpl structureDatabase) {
+		_structureDatabase = structureDatabase;
+	}
+
 	public String getIdentifier() {
 		return _id;
 	}
-	
+
 	public void setContentDefinitionProvider(IContentDefinitionProvider contentDefinitionProvider) {
 		this._contentDefinitionProvider = contentDefinitionProvider;
 	}
@@ -49,14 +69,15 @@ public class StructureDatabaseStateMachineContext {
 	public boolean hasContentDefinitionProvider() {
 		return _contentDefinitionProvider != null;
 	}
-	
+
 	public boolean isRunning() {
 		return _graphDb != null;
 	}
-	
+
 	public void start() {
 		// TODO: PORT
-		_graphDb = _serverBackend.getGraphDbFactory().newGraphDb(5001, _databaseDirectory).create();
+		_graphDb = _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(5001, _databaseDirectory)
+				.create();
 	}
 
 	public void stop() {
@@ -70,7 +91,6 @@ public class StructureDatabaseStateMachineContext {
 	}
 
 	/**
-	 *
 	 * @throws Exception
 	 */
 	public boolean parse() {
@@ -84,11 +104,13 @@ public class StructureDatabaseStateMachineContext {
 		}
 
 		// FUCK ME!
-		Thread.currentThread().setContextClassLoader(_serverBackend.getCurrentExtensionClassLoader());
+		Thread.currentThread()
+				.setContextClassLoader(_slizaaService.getInstanceProvider().getCurrentExtensionClassLoader());
 
-		IModelImporter modelImporter = _serverBackend.getModelImporterFactory().createModelImporter(
-				_contentDefinitionProvider, _databaseDirectory, _serverBackend.getParserFactories(),
-				_serverBackend.getCypherStatementRegistry().getAllStatements());
+		IModelImporter modelImporter = _slizaaService.getInstanceProvider().getModelImporterFactory()
+				.createModelImporter(_contentDefinitionProvider, _databaseDirectory,
+						_slizaaService.getInstanceProvider().getParserFactories(),
+						_slizaaService.getInstanceProvider().getCypherStatementRegistry().getAllStatements());
 
 		// parse the model
 		if (true) {
@@ -96,7 +118,8 @@ public class StructureDatabaseStateMachineContext {
 			//
 			modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),
 					// TODO
-					() -> _serverBackend.getGraphDbFactory().newGraphDb(5001, _databaseDirectory).create());
+					() -> _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(5001, _databaseDirectory)
+							.create());
 
 			_graphDb = modelImporter.getGraphDb();
 
@@ -111,5 +134,46 @@ public class StructureDatabaseStateMachineContext {
 
 	public boolean hasPopulatedDatabaseDirectory() {
 		return _databaseDirectory.isDirectory() && _databaseDirectory.list().length > 0;
+	}
+
+	/**
+	 * 
+	 * @param identifier
+	 * @return
+	 */
+	public IHierarchicalGraph createHierarchicalGraph(String identifier) {
+
+		if (_boltClient == null) {
+			// TODO!
+			this._boltClient = _slizaaService.getBoltClientFactory().createBoltClient("bolt://localhost:5001");
+			this._boltClient.connect();
+		}
+
+		// TODO: Spring?
+		IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
+
+		// TODO!
+		IMappingProvider mappingProvider = _slizaaService.getInstanceProvider().getMappingProviders().get(0);
+
+		//
+		HGRootNode rootNode = mappingService.convert(mappingProvider, this._boltClient,
+				new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
+
+//		//
+//		_labelDefinitionProvider = mappingProvider.getLabelDefinitionProvider();
+
+		HierarchicalGraph hierarchicalGraph = new HierarchicalGraph(identifier, rootNode, _structureDatabase);
+
+		_map.put(identifier, hierarchicalGraph);
+
+		return hierarchicalGraph;
+	}
+
+	public void disposeHierarchicalGraph(String identifier) {
+
+	}
+
+	public List<IHierarchicalGraph> getHierarchicalGraphs() {
+		return new ArrayList<>(_map.values());
 	}
 }

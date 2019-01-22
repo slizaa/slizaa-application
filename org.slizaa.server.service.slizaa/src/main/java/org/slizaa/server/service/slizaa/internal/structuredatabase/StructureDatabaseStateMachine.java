@@ -16,20 +16,20 @@ import org.springframework.statemachine.guard.Guard;
 
 @EnableStateMachineFactory
 public class StructureDatabaseStateMachine
-		extends EnumStateMachineConfigurerAdapter<StructureDatabaseState, StructureDatabaseEvent> {
+		extends EnumStateMachineConfigurerAdapter<StructureDatabaseState, StructureDatabaseTrigger> {
 
 	@Autowired
 	private StructureDatabaseFactory _structureDatabaseFactory;
 
 	@Override
-	public void configure(StateMachineConfigurationConfigurer<StructureDatabaseState, StructureDatabaseEvent> config)
+	public void configure(StateMachineConfigurationConfigurer<StructureDatabaseState, StructureDatabaseTrigger> config)
 			throws Exception {
 
 		config.withConfiguration().autoStartup(false);
 	}
 
 	@Override
-	public void configure(StateMachineStateConfigurer<StructureDatabaseState, StructureDatabaseEvent> states)
+	public void configure(StateMachineStateConfigurer<StructureDatabaseState, StructureDatabaseTrigger> states)
 			throws Exception {
 
 		states
@@ -42,7 +42,7 @@ public class StructureDatabaseStateMachine
 	}
 
 	@Override
-	public void configure(StateMachineTransitionConfigurer<StructureDatabaseState, StructureDatabaseEvent> transitions)
+	public void configure(StateMachineTransitionConfigurer<StructureDatabaseState, StructureDatabaseTrigger> transitions)
 			throws Exception {
 
 		transitions
@@ -55,7 +55,7 @@ public class StructureDatabaseStateMachine
 			.withExternal()
 				.source(StructureDatabaseState.INITIAL)
 				.target(StructureDatabaseState.PARSING)
-				.event(StructureDatabaseEvent.PARSE)
+				.event(StructureDatabaseTrigger.PARSE)
 				.action(actionWithCtx(ctx -> ctx.parse()))
 				.and()
 			.withChoice()
@@ -66,28 +66,34 @@ public class StructureDatabaseStateMachine
 			.withExternal()
 				.source(StructureDatabaseState.NOT_RUNNING)
 				.target(StructureDatabaseState.RUNNING)
-				.event(StructureDatabaseEvent.START)
-				.action(actionWithCtx(ctx -> ctx.start()));
+				.event(StructureDatabaseTrigger.START)
+				.action(actionWithCtx(ctx -> ctx.start()))
+				.and()
+			.withExternal()
+				.source(StructureDatabaseState.NOT_RUNNING)
+				.target(StructureDatabaseState.RUNNING)
+				.event(StructureDatabaseTrigger.START)
+				.action(actionWithCtx(ctx -> ctx.stop()));
 			// @formatter:on
 	}
 
-	private Action<StructureDatabaseState, StructureDatabaseEvent> actionWithCtx(
+	private Action<StructureDatabaseState, StructureDatabaseTrigger> actionWithCtx(
 			Consumer<StructureDatabaseStateMachineContext> consumer) {
 
-		return new Action<StructureDatabaseState, StructureDatabaseEvent>() {
+		return new Action<StructureDatabaseState, StructureDatabaseTrigger>() {
 			@Override
-			public void execute(StateContext<StructureDatabaseState, StructureDatabaseEvent> context) {
+			public void execute(StateContext<StructureDatabaseState, StructureDatabaseTrigger> context) {
 				consumer.accept(_structureDatabaseFactory.context(context.getStateMachine()));
 			}
 		};
 	}
 
-	private Guard<StructureDatabaseState, StructureDatabaseEvent> guardWithCtx(
+	private Guard<StructureDatabaseState, StructureDatabaseTrigger> guardWithCtx(
 			Function<StructureDatabaseStateMachineContext, Boolean> guard) {
 
-		return new Guard<StructureDatabaseState, StructureDatabaseEvent>() {
+		return new Guard<StructureDatabaseState, StructureDatabaseTrigger>() {
 			@Override
-			public boolean evaluate(StateContext<StructureDatabaseState, StructureDatabaseEvent> context) {
+			public boolean evaluate(StateContext<StructureDatabaseState, StructureDatabaseTrigger> context) {
 				return guard.apply(_structureDatabaseFactory.context(context.getStateMachine()));
 			}
 		};

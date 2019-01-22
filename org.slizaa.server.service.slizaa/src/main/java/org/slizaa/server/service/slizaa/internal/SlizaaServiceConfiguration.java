@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Configuration {
+public class SlizaaServiceConfiguration {
 
 	@JsonProperty("structureDatabases")
 	private List<String> _structureDatabases = new ArrayList<>();
