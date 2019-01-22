@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 
 import org.slizaa.server.service.configuration.IConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,22 +14,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class ConfigurationServiceImpl implements IConfigurationService {
 
-	private File _rootConfigDir = new File("d:\\tmp\\slizaa\\");
+	@Autowired
+	private ConfigurationServiceProperties _configProps;
 
 	@PostConstruct
 	public void init() {
-		
-		//
-		if (!_rootConfigDir.exists()) {
-			_rootConfigDir.mkdirs();
-		}
 	}
 
 	@Override
 	public <T> void store(String configurationIdentifier, T configuration) throws IOException {
 
 		//
-		File file = new File(_rootConfigDir, configurationIdentifier + "/configuration.json");
+		File file = new File(_configProps.getRootDirectoryAsFile(), configurationIdentifier + "/configuration.json");
 		file.getParentFile().mkdirs();
 
 		//
@@ -41,7 +38,7 @@ public class ConfigurationServiceImpl implements IConfigurationService {
 	public <T> T load(String configurationIdentifier, Class<T> type) throws IOException {
 
 		//
-		File file = new File(_rootConfigDir, configurationIdentifier + "/configuration.json");
+		File file = new File(_configProps.getRootDirectory(), configurationIdentifier + "/configuration.json");
 		
 		//
 		if (file.exists()) {

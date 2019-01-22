@@ -73,7 +73,7 @@ public class StructureDatabaseStateMachineContext {
 	 *
 	 * @throws Exception
 	 */
-	public boolean _parse() {
+	public boolean parse() {
 
 		// delete all contained files
 		try {

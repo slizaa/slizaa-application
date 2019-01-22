@@ -2,10 +2,7 @@ package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
@@ -13,6 +10,7 @@ import org.slizaa.server.service.backend.EnableBackendServiceModule;
 import org.slizaa.server.service.configuration.EnableConfigurationModule;
 import org.slizaa.server.service.extensions.EnableExtensionsModule;
 import org.slizaa.server.service.extensions.IExtensionService;
+import org.slizaa.server.service.slizaa.EnableSlizaaServiceModule;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
@@ -21,41 +19,39 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+
 @RunWith(SpringRunner.class)
 @Configuration
-@ComponentScan(basePackageClasses = SlizaaServiceImpl.class)
 @EnableBackendServiceModule
 @EnableExtensionsModule
 @EnableConfigurationModule
+@EnableSlizaaServiceModule
 public class StructureDatabaseTest {
 
-	private static final String STRUCTURE_DATABASE_NAME = "HURZ";
+	@ClassRule
+	public static TemporaryFolder folder = new TemporaryFolder();
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+	@BeforeClass
+	public static void before() throws Exception {
+		System.setProperty("configuration.rootDirectory", folder.newFolder().getAbsolutePath());
+		System.setProperty("slizaa.rootDatabaseDirectory", folder.newFolder().getAbsolutePath());
+	}
 
-	//
 	@Autowired
 	private SlizaaServiceImpl _slizaaService;
 
-	@Autowired
-	private IExtensionService _extensionService;
-
-	//
 	private IStructureDatabase _structureDatabase;
 
 	@Before
 	public void setUp() throws Exception {
 
-		//
-		_slizaaService.setDatabaseDirectory(folder.newFolder());
-		
-		//
+		String STRUCTURE_DATABASE_NAME = "HURZ";
+
 		if (! _slizaaService.getBackendService().hasInstalledExtensions()) {
-			_slizaaService.getBackendService().installExtensions(_extensionService.getExtensions());
+			_slizaaService.getBackendService().installExtensions(_slizaaService.getExtensionService().getExtensions());
 		}
 
-		//
 		if (! _slizaaService.hasStructureDatabase(STRUCTURE_DATABASE_NAME)) {
 			
 			// create a new database
@@ -73,6 +69,7 @@ public class StructureDatabaseTest {
 		//
 		else {
 			_structureDatabase = _slizaaService.getStructureDatabase(STRUCTURE_DATABASE_NAME);
+			_structureDatabase.start();
 		}
 		
 		IHierarchicalGraph hierarchicalGraph = _structureDatabase.createNewHierarchicalGraph("HG");
@@ -88,6 +85,7 @@ public class StructureDatabaseTest {
 
 	@Test
 	public void getIdentifier() {
-		assertThat(_structureDatabase.getIdentifier()).isEqualTo(STRUCTURE_DATABASE_NAME);
+
+		// TODO
 	}
 }

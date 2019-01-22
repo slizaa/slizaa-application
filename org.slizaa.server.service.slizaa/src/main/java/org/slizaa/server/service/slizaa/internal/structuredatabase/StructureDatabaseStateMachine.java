@@ -56,11 +56,18 @@ public class StructureDatabaseStateMachine
 				.source(StructureDatabaseState.INITIAL)
 				.target(StructureDatabaseState.PARSING)
 				.event(StructureDatabaseEvent.PARSE)
+				.action(actionWithCtx(ctx -> ctx.parse()))
 				.and()
 			.withChoice()
 				.source(StructureDatabaseState.PARSING)
 				.first(StructureDatabaseState.RUNNING, guardWithCtx(ctx -> ctx.isRunning()))
-				.last(StructureDatabaseState.NOT_RUNNING);
+				.last(StructureDatabaseState.NOT_RUNNING)
+				.and()
+			.withExternal()
+				.source(StructureDatabaseState.NOT_RUNNING)
+				.target(StructureDatabaseState.RUNNING)
+				.event(StructureDatabaseEvent.START)
+				.action(actionWithCtx(ctx -> ctx.start()));
 			// @formatter:on
 	}
 

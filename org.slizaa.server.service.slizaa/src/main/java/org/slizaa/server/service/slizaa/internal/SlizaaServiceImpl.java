@@ -38,12 +38,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class SlizaaServiceImpl implements ISlizaaService {
 
+	{
+		org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+		org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+	}
+
 	private static final String CONFIG_ID = "org.slizaa.server.service.slizaa";
 
 	private static final Logger logger = LoggerFactory.getLogger(SlizaaServiceImpl.class);
 
-	@Value("${slizaa.working.directory:}")
-	private String _databaseDirectoryPath;
+	@Autowired
+	private SlizaaServiceProperties _serviceProperties;
 
 	@Autowired
 	private IBackendServiceInstanceProvider _backendService;
@@ -57,8 +62,6 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	@Autowired
 	private StructureDatabaseFactory _structureDatabaseFactory;
 
-	private File _databaseDirectory;
-
 	private ExecutorService _executorService;
 
 	private ConcurrentHashMap<String, IStructureDatabase> _structureDatabases = new ConcurrentHashMap<>();
@@ -66,12 +69,6 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	private IBoltClientFactory _boltClientFactory;
 
 	private Configuration _configuration;
-
-	{
-		org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-		org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport
-				.registerCustomHierarchicalgraphFactory();
-	}
 
 	/**
 	 * <p>
@@ -90,6 +87,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		}
 
 		for (String identifier : _configuration.getStructureDatabases()) {
+			System.out.println("************: " + identifier);
 			createStructureDatabaseIfAbsent(identifier);
 		}
 	}
@@ -145,20 +143,16 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		}
 
 		// save the config
-		_configuration.getStructureDatabases().add(identifier);
-		try {
-			_configurationService.store(CONFIG_ID, _configuration);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		_configuration.getStructureDatabases().add(identifier);
+//		try {
+//			_configurationService.store(CONFIG_ID, _configuration);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		//
 		return createStructureDatabaseIfAbsent(identifier);
-	}
-
-	public void setDatabaseDirectory(File databaseDirectory) {
-		_databaseDirectory = databaseDirectory;
 	}
 
 	public boolean hasStructureDatabase(String identifier) {
@@ -167,6 +161,6 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	
 	private IStructureDatabase createStructureDatabaseIfAbsent(String identifier) {
 		return _structureDatabases.computeIfAbsent(identifier, id -> _structureDatabaseFactory.newInstance(id,
-				new File(_databaseDirectoryPath), this._backendService, _boltClientFactory));
+				new File(_serviceProperties.getDatabaseRootDirectory(), identifier), this._backendService, _boltClientFactory));
 	}
 }

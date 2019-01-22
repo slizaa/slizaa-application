@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.IOException;
 import java.util.List;
 
+import org.slizaa.hierarchicalgraph.graphdb.mapping.service.IMappingService;
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
@@ -51,6 +52,29 @@ public class StructureDatabaseImpl implements IStructureDatabase {
 	public IHierarchicalGraph createNewHierarchicalGraph(String identifier) {
 		checkState(StructureDatabaseState.RUNNING.equals(this._stateMachine.getState().getId()),
 				"Database is not running:  %s", this._stateMachine.getState().getId());
+
+		// TODO: Spring?
+		IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
+
+//    // this._boltClient.disconnect();
+//    //
+//    IBoltClientFactory boltClientFactory = IBoltClientFactory.newInstance(this._slizaaComponent.getExecutorService());
+//    // TODO!!
+//    this._boltClient = boltClientFactory.createBoltClient("bolt://localhost:5001");
+//    this._boltClient.connect();
+//
+//    //
+//    IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
+//    // TODO!!
+//    IMappingProvider mappingProvider = this._slizaaComponent.getSlizaaServerBackend().getMappingProviders().get(0);
+//
+//    //
+//    this._rootNode = mappingService.convert(mappingProvider, this._boltClient,
+//        new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
+//
+//    //
+//    _labelDefinitionProvider = mappingProvider.getLabelDefinitionProvider();
+
 		return null;
 	}
 
