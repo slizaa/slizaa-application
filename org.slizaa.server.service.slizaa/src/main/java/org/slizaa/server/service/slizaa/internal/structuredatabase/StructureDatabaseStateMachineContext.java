@@ -101,7 +101,7 @@ public class StructureDatabaseStateMachineContext {
 	/**
 	 * @throws Exception
 	 */
-	public boolean parse() {
+	public boolean parse(boolean startDatabase) {
 
 		// delete all contained files
 		clearDatabaseDirectory();
@@ -116,7 +116,7 @@ public class StructureDatabaseStateMachineContext {
 						_slizaaService.getInstanceProvider().getCypherStatementRegistry().getAllStatements());
 
 		// parse the model
-		if (true) {
+		if (startDatabase) {
 
 			//
 			modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),

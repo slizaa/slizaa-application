@@ -94,6 +94,12 @@
 			<artifactId>json-path</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slizaa.hierarchicalgraph.core</groupId>
+			<artifactId>org.slizaa.hierarchicalgraph.core.algorithms</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

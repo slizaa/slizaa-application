@@ -38,38 +38,59 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 	}
 
 	@Test
-	public void test_1() throws IOException {
+	public void parseWithStart() throws IOException {
 
-		// create a new database
+		// create a new database and parse with start
 		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
-		assertThat(structureDatabase.isRunning()).isFalse();
-
-		//
 		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
-
-		// and parse
 		structureDatabase.parse(true);
 
 		//
-		assertThat(structureDatabase.isRunning());
+		assertThat(structureDatabase.isRunning()).isTrue();
 	}
 
 	@Test
-	public void test_2() throws IOException {
+	public void parseWithoutStart() throws IOException {
 
-		assertThat(slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)).isFalse();
-
-		// create a new database
+		// create a new database and parse without start
 		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
-
-		// configure
 		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
-
-		// and parse
-		structureDatabase.parse(true);
+		structureDatabase.parse(false);
 
 		//
-		assertThat(structureDatabase.isRunning());
+		assertThat(structureDatabase.isRunning()).isFalse();
+	}
+
+	@Test
+	public void parseWithStartAndStop() throws IOException {
+
+		// create a new database and parse without start
+		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
+		structureDatabase.parse(true);
+		assertThat(structureDatabase.isRunning()).isTrue();
+
+		//
+		structureDatabase.stop();
+		assertThat(structureDatabase.isRunning()).isFalse();
+	}
+
+	@Test
+	public void parseWithStartAndStopAndStart() throws IOException {
+
+		// create a new database and parse without start
+		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
+		structureDatabase.parse(true);
+		assertThat(structureDatabase.isRunning()).isTrue();
+
+		//
+		structureDatabase.stop();
+		assertThat(structureDatabase.isRunning()).isFalse();
+
+		//
+		structureDatabase.start();
+		assertThat(structureDatabase.isRunning()).isTrue();
 	}
 
 	/**

@@ -3,9 +3,13 @@ package org.slizaa.server.service.slizaa.internal.structuredatabase;
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.StateMachineMessageHeaders;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,9 +20,9 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class StructureDatabaseImpl implements IStructureDatabase {
 
-    /**
-     * the state machine
-     **/
+    public static final String START_DATABASE_AFTER_PARSING = "START_DATABASE_AFTER_PARSING";
+
+    /** the state machine **/
     private StateMachine<StructureDatabaseState, StructureDatabaseTrigger> _stateMachine;
 
     /**
@@ -80,15 +84,23 @@ public class StructureDatabaseImpl implements IStructureDatabase {
     @Override
     public List<IHierarchicalGraph> getHierarchicalGraphs() {
 
-        checkState(StructureDatabaseState.RUNNING.equals(this._stateMachine.getState().getId()),
-                "Database is not running:  %s", this._stateMachine.getState().getId());
+        if (!StructureDatabaseState.RUNNING.equals(this._stateMachine.getState().getId())) {
+            return Collections.emptyList();
+        }
 
         return _stateMachineContext.getHierarchicalGraphs();
     }
 
     @Override
     public void parse(boolean startDatabase) throws IOException {
-        trigger(StructureDatabaseTrigger.PARSE);
+
+        //
+       Message<StructureDatabaseTrigger> triggerMessage = MessageBuilder
+                .withPayload(StructureDatabaseTrigger.PARSE)
+                .setHeader(START_DATABASE_AFTER_PARSING, startDatabase)
+                .build();
+
+        trigger(triggerMessage);
     }
 
     @Override
@@ -110,6 +122,15 @@ public class StructureDatabaseImpl implements IStructureDatabase {
     public void dispose() {
         if (!StructureDatabaseState.TERMINATED.equals(this._stateMachine.getState().getId())) {
             trigger(StructureDatabaseTrigger.TERMINATE);
+        }
+    }
+
+    private void trigger(Message<StructureDatabaseTrigger> triggerMessage) {
+
+        if (!this._stateMachine.sendEvent(triggerMessage)) {
+            // TODO
+            throw new RuntimeException(String.format("Trigger '%s' not accepted in state '%s'.",
+                    triggerMessage.getPayload(), this._stateMachine.getState().getId().name()));
         }
     }
 
