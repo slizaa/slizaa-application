@@ -21,8 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @EnableConfigurationModule
 @EnableSlizaaServiceModule
 public abstract class AbstractSlizaaServiceTest {
-	
-	public static final String STRUCTURE_DATABASE_NAME = "TEST_STRUCTURE_DATABASE";
 
 	@ClassRule
 	public static TemporaryFolder folder = new TemporaryFolder();
@@ -35,7 +33,7 @@ public abstract class AbstractSlizaaServiceTest {
 	private SlizaaServiceImpl _slizaaService;
 
 	@BeforeClass
-	public static void before() throws Exception {
+	public static void beforeClass() throws Exception {
 		
 		configurationRootDirectory = folder.newFolder();
 		databaseRootDirectory = folder.newFolder();

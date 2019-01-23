@@ -45,4 +45,15 @@ public interface IStructureDatabase extends IHierarchicalGraphContainer {
      *
      */
     void stop();
+
+    /**
+     *
+     * @return
+     */
+    boolean isRunning();
+
+    /**
+     *
+     */
+    void dispose();
 }

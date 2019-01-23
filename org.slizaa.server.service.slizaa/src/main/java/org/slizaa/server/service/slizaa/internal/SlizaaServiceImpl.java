@@ -173,6 +173,10 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		return _boltClientFactory;
 	}
 
+	public ConcurrentHashMap<String, IStructureDatabase> structureDatabases() {
+		return _structureDatabases;
+	}
+
 	private IStructureDatabase createStructureDatabaseIfAbsent(String identifier) {
 		return _structureDatabases.computeIfAbsent(identifier, id -> _structureDatabaseFactory.newInstance(id,
 				new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), this));

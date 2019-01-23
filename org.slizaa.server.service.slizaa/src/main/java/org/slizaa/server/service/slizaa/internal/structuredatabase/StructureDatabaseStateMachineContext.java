@@ -81,13 +81,21 @@ public class StructureDatabaseStateMachineContext {
 	}
 
 	public void stop() {
-		this._graphDb.shutdown();
-		this._graphDb = null;
+
+		if (this._boltClient != null) {
+			this._boltClient.disconnect();
+			this._boltClient = null;
+		}
+		if (this._graphDb != null) {
+			this._graphDb.shutdown();
+			this._graphDb = null;
+		}
 	}
 
-	public void shutdown() {
-		this._graphDb.shutdown();
-		this._graphDb = null;
+	public void terminate() {
+		stop();
+		_slizaaService.structureDatabases().remove(_id);
+		clearDatabaseDirectory();
 	}
 
 	/**
@@ -96,12 +104,7 @@ public class StructureDatabaseStateMachineContext {
 	public boolean parse() {
 
 		// delete all contained files
-		try {
-			Files.walk(_databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
-					.map(Path::toFile).forEach(File::delete);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		clearDatabaseDirectory();
 
 		// FUCK ME!
 		Thread.currentThread()
@@ -123,12 +126,25 @@ public class StructureDatabaseStateMachineContext {
 
 			_graphDb = modelImporter.getGraphDb();
 
+			System.out.println("******************* DONE ***********************");
 			return true;
 		}
 		//
 		else {
 			modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()));
+			System.out.println("******************* DONE ***********************");
 			return false;
+		}
+
+
+	}
+
+	private void clearDatabaseDirectory() {
+		try {
+			Files.walk(_databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
+					.map(Path::toFile).forEach(File::delete);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
@@ -25,7 +26,10 @@ public class StructureDatabaseStateMachine
 	public void configure(StateMachineConfigurationConfigurer<StructureDatabaseState, StructureDatabaseTrigger> config)
 			throws Exception {
 
-		config.withConfiguration().autoStartup(false);
+		config
+			.withConfiguration()
+			.taskExecutor(new SyncTaskExecutor())
+			.autoStartup(false);
 	}
 
 	@Override
@@ -65,15 +69,47 @@ public class StructureDatabaseStateMachine
 				.and()
 			.withExternal()
 				.source(StructureDatabaseState.NOT_RUNNING)
-				.target(StructureDatabaseState.RUNNING)
-				.event(StructureDatabaseTrigger.START)
-				.action(actionWithCtx(ctx -> ctx.start()))
+				.target(StructureDatabaseState.PARSING)
+				.event(StructureDatabaseTrigger.PARSE)
+				.action(actionWithCtx(ctx -> ctx.parse()))
 				.and()
 			.withExternal()
+				.source(StructureDatabaseState.RUNNING)
+				.target(StructureDatabaseState.NOT_RUNNING)
+				.event(StructureDatabaseTrigger.STOP)
+				.action(actionWithCtx(ctx -> ctx.stop()))
+			.and()
+				.withExternal()
 				.source(StructureDatabaseState.NOT_RUNNING)
-				.target(StructureDatabaseState.RUNNING)
-				.event(StructureDatabaseTrigger.START)
-				.action(actionWithCtx(ctx -> ctx.stop()));
+				.target(StructureDatabaseState.TERMINATED)
+				.event(StructureDatabaseTrigger.TERMINATE)
+				.action(actionWithCtx(ctx -> ctx.terminate()))
+			// TERMINATE
+			.and()
+				.withExternal()
+				.source(StructureDatabaseState.INITIAL)
+				.target(StructureDatabaseState.TERMINATED)
+				.event(StructureDatabaseTrigger.TERMINATE)
+				.action(actionWithCtx(ctx -> ctx.terminate()))
+			.and()
+				.withExternal()
+				.source(StructureDatabaseState.CONFIGURED)
+				.target(StructureDatabaseState.TERMINATED)
+				.event(StructureDatabaseTrigger.TERMINATE)
+				.action(actionWithCtx(ctx -> ctx.terminate()))
+			.and()
+				.withExternal()
+				.source(StructureDatabaseState.RUNNING)
+				.target(StructureDatabaseState.TERMINATED)
+				.event(StructureDatabaseTrigger.TERMINATE)
+				.action(actionWithCtx(ctx -> ctx.terminate()))
+			.and()
+				.withExternal()
+				.source(StructureDatabaseState.NOT_RUNNING)
+				.target(StructureDatabaseState.TERMINATED)
+				.event(StructureDatabaseTrigger.TERMINATE)
+				.action(actionWithCtx(ctx -> ctx.terminate()))
+		;
 			// @formatter:on
 	}
 

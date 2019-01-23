@@ -24,13 +24,6 @@ public class StructureDatabaseFactory {
 
 	private Map<StateMachine<StructureDatabaseState, StructureDatabaseTrigger>, StructureDatabaseStateMachineContext> _stateMachine2StructureDatabaseContext = new HashMap<>();
 
-	/**
-	 * @param id
-	 * @param databaseDirectory
-	 * @param serverBackend
-	 * @param boltClientFactory
-	 * @return
-	 */
 	public IStructureDatabase newInstance(String id, File databaseDirectory, SlizaaServiceImpl slizaaService) {
 
 		checkNotNull(id);
@@ -63,10 +56,6 @@ public class StructureDatabaseFactory {
 		return structureDatabase;
 	}
 
-	/**
-	 * @param stateMachine
-	 * @return
-	 */
 	StructureDatabaseStateMachineContext context(
 			StateMachine<StructureDatabaseState, StructureDatabaseTrigger> stateMachine) {
 		return _stateMachine2StructureDatabaseContext.get(stateMachine);

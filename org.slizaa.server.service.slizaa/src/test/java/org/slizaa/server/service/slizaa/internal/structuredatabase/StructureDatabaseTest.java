@@ -2,10 +2,15 @@ package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
 import java.io.IOException;
 
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.slizaa.IStructureDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 
@@ -13,32 +18,68 @@ import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
  */
 public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 
-	@Test
-	public void test_1() throws IOException {
+	public static final String STRUCTURE_DATABASE_NAME = "TEST_STRUCTURE_DATABASE";
 
+	private IStructureDatabase structureDatabase;
+
+	@Before
+	public void before() {
 		if (!slizaaService().getBackendService().hasInstalledExtensions()) {
 			slizaaService().getBackendService()
 					.installExtensions(slizaaService().getExtensionService().getExtensions());
 		}
+		assertThat(slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)).isFalse();
+	}
 
-		if (!slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)) {
+	@After
+	public void after() {
+		structureDatabase.dispose();
+		assertThat(slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)).isFalse();
+	}
 
-			// create a new database
-			IStructureDatabase structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+	@Test
+	public void test_1() throws IOException {
 
-			// configure
-			MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
-			mvnBasedContentDefinitionProvider
-					.addArtifact("org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
-			structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+		// create a new database
+		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		assertThat(structureDatabase.isRunning()).isFalse();
 
-			// and parse
-			structureDatabase.parse(true);
-		}
 		//
-		else {
-			IStructureDatabase structureDatabase = slizaaService().getStructureDatabase(STRUCTURE_DATABASE_NAME);
-			structureDatabase.start();
-		}
+		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
+
+		// and parse
+		structureDatabase.parse(true);
+
+		//
+		assertThat(structureDatabase.isRunning());
+	}
+
+	@Test
+	public void test_2() throws IOException {
+
+		assertThat(slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)).isFalse();
+
+		// create a new database
+		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+
+		// configure
+		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
+
+		// and parse
+		structureDatabase.parse(true);
+
+		//
+		assertThat(structureDatabase.isRunning());
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	private MvnBasedContentDefinitionProvider createContentDefinitionProvider() {
+		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
+		mvnBasedContentDefinitionProvider
+				.addArtifact("org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
+		return mvnBasedContentDefinitionProvider;
 	}
 }
