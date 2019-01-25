@@ -70,11 +70,11 @@ public class GraphQLToolsSampleApplicationTest {
 		ObjectNode variables = new ObjectMapper().createObjectNode();
 		variables.put("identifier", DATABASE_NAME);
 		response = assertOk(graphQLTestTemplate.perform("/graphql/newStructureDatabase.graphql", variables));
-		assertThat(response.get("$.data.newStructureDatabase.identifier")).isEqualTo(DATABASE_NAME);
+		assertThat(response.get("$.data.newGraphDatabase.identifier")).isEqualTo(DATABASE_NAME);
 
 		//
 		response = assertOk(graphQLTestTemplate.perform("/graphql/structureDatabases.graphql", null));
-		assertThat(response.get("$.data.structureDatabases[0].identifier")).isEqualTo(DATABASE_NAME);
+		assertThat(response.get("$.data.graphDatabases[0].identifier")).isEqualTo(DATABASE_NAME);
 
 		//
 		variables = new ObjectMapper().createObjectNode();

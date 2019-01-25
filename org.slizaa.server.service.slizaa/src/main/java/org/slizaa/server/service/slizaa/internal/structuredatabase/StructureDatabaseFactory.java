@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slizaa.server.service.slizaa.IStructureDatabase;
+import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
@@ -24,7 +24,7 @@ public class StructureDatabaseFactory {
 
 	private Map<StateMachine<StructureDatabaseState, StructureDatabaseTrigger>, StructureDatabaseStateMachineContext> _stateMachine2StructureDatabaseContext = new HashMap<>();
 
-	public IStructureDatabase newInstance(String id, File databaseDirectory, SlizaaServiceImpl slizaaService) {
+	public IGraphDatabase newInstance(String id, File databaseDirectory, SlizaaServiceImpl slizaaService) {
 
 		checkNotNull(id);
 		checkNotNull(databaseDirectory);
@@ -44,7 +44,7 @@ public class StructureDatabaseFactory {
 				databaseDirectory, slizaaService);
 
 		// create the structure database
-		StructureDatabaseImpl structureDatabase = new StructureDatabaseImpl(statemachine, stateMachineContext);
+		GraphDatabaseImpl structureDatabase = new GraphDatabaseImpl(statemachine, stateMachineContext);
 
 		// store the association
 		_stateMachine2StructureDatabaseContext.put(statemachine, stateMachineContext);

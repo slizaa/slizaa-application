@@ -22,7 +22,7 @@ import org.slizaa.server.service.backend.IBackendServiceInstanceProvider;
 import org.slizaa.server.service.configuration.IConfigurationService;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.ISlizaaService;
-import org.slizaa.server.service.slizaa.IStructureDatabase;
+import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -63,7 +63,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 
 	private ExecutorService _executorService;
 
-	private ConcurrentHashMap<String, IStructureDatabase> _structureDatabases = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, IGraphDatabase> _structureDatabases = new ConcurrentHashMap<>();
 
 	private IBoltClientFactory _boltClientFactory;
 
@@ -113,13 +113,13 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	}
 
 	@Override
-	public List<? extends IStructureDatabase> getStructureDatabases() {
+	public List<? extends IGraphDatabase> getGraphDatabases() {
 
 		//
-		List<? extends IStructureDatabase> result = new ArrayList<>(_structureDatabases.values());
-		result.sort(new Comparator<IStructureDatabase>() {
+		List<? extends IGraphDatabase> result = new ArrayList<>(_structureDatabases.values());
+		result.sort(new Comparator<IGraphDatabase>() {
 			@Override
-			public int compare(IStructureDatabase o1, IStructureDatabase o2) {
+			public int compare(IGraphDatabase o1, IGraphDatabase o2) {
 				return o1.getIdentifier().compareTo(o2.getIdentifier());
 			}
 		});
@@ -127,12 +127,12 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	}
 
 	@Override
-	public IStructureDatabase getStructureDatabase(String identifier) {
+	public IGraphDatabase getGraphDatabase(String identifier) {
 		return _structureDatabases.get(identifier);
 	}
 
 	@Override
-	public IStructureDatabase newStructureDatabase(String identifier) {
+	public IGraphDatabase newGraphDatabase(String identifier) {
 
 		//
 		if (_structureDatabases.containsKey(identifier)) {
@@ -141,7 +141,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		}
 
 		// save the config
-//		_configuration.getStructureDatabases().add(identifier);
+//		_configuration.getGraphDatabases().add(identifier);
 //		try {
 //			_configurationService.store(CONFIG_ID, _configuration);
 //		} catch (IOException e) {
@@ -173,11 +173,11 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		return _boltClientFactory;
 	}
 
-	public ConcurrentHashMap<String, IStructureDatabase> structureDatabases() {
+	public ConcurrentHashMap<String, IGraphDatabase> structureDatabases() {
 		return _structureDatabases;
 	}
 
-	private IStructureDatabase createStructureDatabaseIfAbsent(String identifier) {
+	private IGraphDatabase createStructureDatabaseIfAbsent(String identifier) {
 		return _structureDatabases.computeIfAbsent(identifier, id -> _structureDatabaseFactory.newInstance(id,
 				new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), this));
 	}

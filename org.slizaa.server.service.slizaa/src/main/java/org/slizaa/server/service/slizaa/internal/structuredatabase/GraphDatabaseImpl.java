@@ -2,11 +2,10 @@ package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
-import org.slizaa.server.service.slizaa.IStructureDatabase;
+import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.StateMachineMessageHeaders;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -18,7 +17,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  *
  */
-public class StructureDatabaseImpl implements IStructureDatabase {
+public class GraphDatabaseImpl implements IGraphDatabase {
 
     public static final String START_DATABASE_AFTER_PARSING = "START_DATABASE_AFTER_PARSING";
 
@@ -34,8 +33,8 @@ public class StructureDatabaseImpl implements IStructureDatabase {
      * @param stateMachine
      * @param stateMachineContext
      */
-    StructureDatabaseImpl(StateMachine<StructureDatabaseState, StructureDatabaseTrigger> stateMachine,
-                          StructureDatabaseStateMachineContext stateMachineContext) {
+    GraphDatabaseImpl(StateMachine<StructureDatabaseState, StructureDatabaseTrigger> stateMachine,
+                      StructureDatabaseStateMachineContext stateMachineContext) {
 
         this._stateMachine = checkNotNull(stateMachine);
         this._stateMachineContext = checkNotNull(stateMachineContext);
@@ -80,6 +79,8 @@ public class StructureDatabaseImpl implements IStructureDatabase {
 
         _stateMachineContext.disposeHierarchicalGraph(identifier);
     }
+
+
 
     @Override
     public List<IHierarchicalGraph> getHierarchicalGraphs() {

@@ -2,12 +2,11 @@ package org.slizaa.server.service.slizaa.internal.structuredatabase;
 
 import java.io.IOException;
 
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
-import org.slizaa.server.service.slizaa.IStructureDatabase;
+import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +19,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 
 	public static final String STRUCTURE_DATABASE_NAME = "TEST_STRUCTURE_DATABASE";
 
-	private IStructureDatabase structureDatabase;
+	private IGraphDatabase structureDatabase;
 
 	@Before
 	public void before() {
@@ -41,7 +40,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 	public void parseWithStart() throws IOException {
 
 		// create a new database and parse with start
-		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
 		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
 		structureDatabase.parse(true);
 
@@ -53,7 +52,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 	public void parseWithoutStart() throws IOException {
 
 		// create a new database and parse without start
-		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
 		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
 		structureDatabase.parse(false);
 
@@ -65,7 +64,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 	public void parseWithStartAndStop() throws IOException {
 
 		// create a new database and parse without start
-		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
 		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
 		structureDatabase.parse(true);
 		assertThat(structureDatabase.isRunning()).isTrue();
@@ -79,7 +78,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 	public void parseWithStartAndStopAndStart() throws IOException {
 
 		// create a new database and parse without start
-		structureDatabase = slizaaService().newStructureDatabase(STRUCTURE_DATABASE_NAME);
+		structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
 		structureDatabase.setContentDefinitionProvider(createContentDefinitionProvider());
 		structureDatabase.parse(true);
 		assertThat(structureDatabase.isRunning()).isTrue();

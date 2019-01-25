@@ -1,0 +1,47 @@
+type GraphDatabase {
+
+    identifier: ID!
+    
+    hierarchicalGraphs: [HierarchicalGraph]!
+}
+
+type HierarchicalGraph{
+
+}
+
+
+type MvnCoordinate {
+
+    # the group id
+    groupId: String!
+
+    # the artifact id
+    artifactId: String!
+
+    # the version
+    version: String!
+}
+
+# The Query type
+extend type Query {
+
+    graphDatabases: [GraphDatabase]!
+
+    graphDatabase(identifier: ID!): GraphDatabase
+}
+
+# The Mutation type
+extend type Mutation {
+
+    newGraphDatabase(identifier: ID!): GraphDatabase
+    
+	populateGraphDatabase(identifier: ID!): GraphDatabase
+    
+    startGraphDatabase(identifier: ID!): GraphDatabase
+    
+    stopGraphDatabase(identifier: ID!): GraphDatabase
+
+    setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): [MvnCoordinate]!
+
+    mapSystem(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase
+}

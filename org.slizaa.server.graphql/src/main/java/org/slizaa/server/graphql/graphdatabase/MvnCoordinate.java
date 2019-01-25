@@ -1,4 +1,4 @@
-package org.slizaa.server.graphql.structuredatabase;
+package org.slizaa.server.graphql.graphdatabase;
 
 import org.slizaa.core.mvnresolver.api.IMvnCoordinate;
 

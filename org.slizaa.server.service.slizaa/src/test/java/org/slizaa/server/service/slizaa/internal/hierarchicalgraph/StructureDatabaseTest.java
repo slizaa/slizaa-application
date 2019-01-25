@@ -10,7 +10,7 @@ import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.ILabelDefinitionProvider;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
-import org.slizaa.server.service.slizaa.IStructureDatabase;
+import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
     @Autowired
     private SlizaaServiceImpl _slizaaService;
 
-    private IStructureDatabase _structureDatabase;
+    private IGraphDatabase _structureDatabase;
 
     @Before
     public void setUp() throws Exception {
@@ -36,7 +36,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
         if (!_slizaaService.hasStructureDatabase(STRUCTURE_DATABASE_NAME)) {
 
             // create a new database
-            _structureDatabase = _slizaaService.newStructureDatabase(STRUCTURE_DATABASE_NAME);
+            _structureDatabase = _slizaaService.newGraphDatabase(STRUCTURE_DATABASE_NAME);
 
             // configure
             MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
@@ -49,7 +49,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
         }
         //
         else {
-            _structureDatabase = _slizaaService.getStructureDatabase(STRUCTURE_DATABASE_NAME);
+            _structureDatabase = _slizaaService.getGraphDatabase(STRUCTURE_DATABASE_NAME);
             _structureDatabase.start();
         }
     }

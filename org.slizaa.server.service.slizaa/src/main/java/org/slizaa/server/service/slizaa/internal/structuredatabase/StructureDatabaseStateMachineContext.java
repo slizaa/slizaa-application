@@ -32,7 +32,7 @@ public class StructureDatabaseStateMachineContext {
 
 	/** the database directory */
 	private File _databaseDirectory;
-	private StructureDatabaseImpl _structureDatabase;
+	private GraphDatabaseImpl _structureDatabase;
 	private SlizaaServiceImpl _slizaaService;
 
 	private IContentDefinitionProvider _contentDefinitionProvider;
@@ -51,7 +51,7 @@ public class StructureDatabaseStateMachineContext {
 		_map = new HashMap<>();
 	}
 
-	void setStructureDatabase(StructureDatabaseImpl structureDatabase) {
+	void setStructureDatabase(GraphDatabaseImpl structureDatabase) {
 		_structureDatabase = structureDatabase;
 	}
 

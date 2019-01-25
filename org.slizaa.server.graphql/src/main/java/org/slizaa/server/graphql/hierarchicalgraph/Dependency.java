@@ -26,6 +26,20 @@ public class Dependency {
     this.weight = weight;
   }
 
+/*
+  public String getId() {
+    return id;
+  }
+*/
+
+  public Node getSourceNode() {
+    return sourceNode;
+  }
+
+  public Node getTargetNode() {
+    return targetNode;
+  }
+
   public int getWeight() {
     return weight;
   }

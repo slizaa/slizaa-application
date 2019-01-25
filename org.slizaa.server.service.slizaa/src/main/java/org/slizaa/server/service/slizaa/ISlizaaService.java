@@ -19,9 +19,9 @@ public interface ISlizaaService {
 
 	boolean hasStructureDatabases();
 
-	List<? extends IStructureDatabase> getStructureDatabases();
+	List<? extends IGraphDatabase> getGraphDatabases();
 
-	IStructureDatabase getStructureDatabase(String identifier);
+	IGraphDatabase getGraphDatabase(String identifier);
 	
-	IStructureDatabase newStructureDatabase(String identifier);
+	IGraphDatabase newGraphDatabase(String identifier);
 }

@@ -18,6 +18,13 @@ public interface IHierarchicalGraphContainer {
    /**
     *
     * @param identifier
+    * @return
+    */
+   IHierarchicalGraph getHierarchicalGraph(String identifier);
+
+   /**
+    *
+    * @param identifier
     */
    void disposeHierarchicalGraph(String identifier);
 
