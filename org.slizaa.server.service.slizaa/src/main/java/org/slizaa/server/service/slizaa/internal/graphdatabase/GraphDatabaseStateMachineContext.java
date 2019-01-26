@@ -1,4 +1,4 @@
-package org.slizaa.server.service.slizaa.internal.structuredatabase;
+package org.slizaa.server.service.slizaa.internal.graphdatabase;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -25,7 +25,7 @@ import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.slizaa.server.service.slizaa.internal.hierarchicalgraph.HierarchicalGraph;
 
-public class StructureDatabaseStateMachineContext {
+public class GraphDatabaseStateMachineContext {
 
 	/** the id of the structure database */
 	private String _id;
@@ -39,16 +39,19 @@ public class StructureDatabaseStateMachineContext {
 	private IGraphDb _graphDb;
 	private IBoltClient _boltClient;
 
-	private Map<String, HierarchicalGraph> _map;
+	private Map<String, HierarchicalGraph> _hierarchicalGraphs;
+	
+	private int _port = -1;
 
-	StructureDatabaseStateMachineContext(String id, File databaseDirectory, SlizaaServiceImpl slizaaService) {
+	GraphDatabaseStateMachineContext(String id, File databaseDirectory, int port, SlizaaServiceImpl slizaaService) {
 
 		this._id = checkNotNull(id);
 		this._databaseDirectory = checkNotNull(databaseDirectory);
 		this._slizaaService = checkNotNull(slizaaService);
 
 		//
-		_map = new HashMap<>();
+		_hierarchicalGraphs = new HashMap<>();
+		_port = SlizaaSocketUtils.available(port) ? port : SlizaaSocketUtils.findAvailableTcpPort();
 	}
 
 	void setStructureDatabase(GraphDatabaseImpl structureDatabase) {
@@ -57,6 +60,10 @@ public class StructureDatabaseStateMachineContext {
 
 	public String getIdentifier() {
 		return _id;
+	}
+
+	public int getPort() {
+		return _port;
 	}
 
 	public void setContentDefinitionProvider(IContentDefinitionProvider contentDefinitionProvider) {
@@ -75,13 +82,18 @@ public class StructureDatabaseStateMachineContext {
 	}
 
 	public void start() {
-		// TODO: PORT
-		_graphDb = _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(5001, _databaseDirectory)
-				.create();
+		
+		if (_port == -1 || !SlizaaSocketUtils.available(_port)) {
+			_port = SlizaaSocketUtils.findAvailableTcpPort();
+		}
+		
+		_graphDb = executeWithCtxClassLoader(() -> {
+			return _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(_port, _databaseDirectory)
+					.create();
+		});
 	}
 
 	public void stop() {
-
 		if (this._boltClient != null) {
 			this._boltClient.disconnect();
 			this._boltClient = null;
@@ -106,39 +118,40 @@ public class StructureDatabaseStateMachineContext {
 		// delete all contained files
 		clearDatabaseDirectory();
 
-		// FUCK ME!
-		Thread.currentThread()
-				.setContextClassLoader(_slizaaService.getInstanceProvider().getCurrentExtensionClassLoader());
+		// create the graph database
+		_graphDb = executeWithCtxClassLoader(() -> {
 
-		IModelImporter modelImporter = _slizaaService.getInstanceProvider().getModelImporterFactory()
-				.createModelImporter(_contentDefinitionProvider, _databaseDirectory,
-						_slizaaService.getInstanceProvider().getParserFactories(),
-						_slizaaService.getInstanceProvider().getCypherStatementRegistry().getAllStatements());
+			IModelImporter modelImporter = _slizaaService.getInstanceProvider().getModelImporterFactory()
+					.createModelImporter(_contentDefinitionProvider, _databaseDirectory,
+							_slizaaService.getInstanceProvider().getParserFactories(),
+							_slizaaService.getInstanceProvider().getCypherStatementRegistry().getAllStatements());
 
-		// parse the model
-		if (startDatabase) {
+			// parse the model
+			if (startDatabase) {
 
+				//
+				modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),
+
+						// TODO: Configure Port!
+						() -> _slizaaService.getInstanceProvider().getGraphDbFactory()
+								.newGraphDb(5001, _databaseDirectory).create());
+
+				return modelImporter.getGraphDb();
+			}
 			//
-			modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),
-					// TODO
-					() -> _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(5001, _databaseDirectory)
-							.create());
-
-			_graphDb = modelImporter.getGraphDb();
-
-			System.out.println("******************* DONE ***********************");
-			return true;
-		}
-		//
-		else {
-			modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()));
-			System.out.println("******************* DONE ***********************");
-			return false;
-		}
-
-
+			else {
+				modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()));
+				return null;
+			}
+		});
+		
+		return isRunning();
 	}
 
+	public void storeConfiguration() {
+		_slizaaService.storeConfig();
+	}
+	
 	private void clearDatabaseDirectory() {
 		try {
 			Files.walk(_databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
@@ -161,7 +174,7 @@ public class StructureDatabaseStateMachineContext {
 
 		if (_boltClient == null) {
 			// TODO!
-			this._boltClient = _slizaaService.getBoltClientFactory().createBoltClient("bolt://localhost:5001");
+			this._boltClient = _slizaaService.getBoltClientFactory().createBoltClient("bolt://localhost:" + _port);
 			this._boltClient.connect();
 		}
 
@@ -180,7 +193,7 @@ public class StructureDatabaseStateMachineContext {
 
 		HierarchicalGraph hierarchicalGraph = new HierarchicalGraph(identifier, rootNode, _structureDatabase);
 
-		_map.put(identifier, hierarchicalGraph);
+		_hierarchicalGraphs.put(identifier, hierarchicalGraph);
 
 		return hierarchicalGraph;
 	}
@@ -190,6 +203,57 @@ public class StructureDatabaseStateMachineContext {
 	}
 
 	public List<IHierarchicalGraph> getHierarchicalGraphs() {
-		return new ArrayList<>(_map.values());
+		return new ArrayList<>(_hierarchicalGraphs.values());
+	}
+
+	public IHierarchicalGraph getHierarchicalGraph(String identifier) {
+		return _hierarchicalGraphs.get(identifier);
+	}
+
+	/**
+	 * 
+	 * @param action
+	 * @return
+	 * @throws Exception
+	 */
+	private <T> T executeWithCtxClassLoader(Action<T> action) {
+
+		//
+		checkNotNull(action);
+
+		// store the current ctx class loader
+		ClassLoader currentContextClassLoader = Thread.currentThread().getContextClassLoader();
+
+		try {
+
+			// set the extension class loader as the context class loader
+			Thread.currentThread()
+					.setContextClassLoader(_slizaaService.getInstanceProvider().getCurrentExtensionClassLoader());
+
+			// execute the action
+			try {
+				return action.execute();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+		} finally {
+
+			// reset the current ctx class loader
+			Thread.currentThread().setContextClassLoader(currentContextClassLoader);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @author Gerd W&uuml;therich (gw@code-kontor.io)
+	 *
+	 * @param <T>
+	 */
+	@FunctionalInterface
+	private interface Action<T> {
+
+		T execute() throws Exception;
 	}
 }

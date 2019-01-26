@@ -1,4 +1,4 @@
-package org.slizaa.server.service.slizaa.internal.structuredatabase;
+package org.slizaa.server.service.slizaa.internal.graphdatabase;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.slizaa.server.service.slizaa.IGraphDatabase;
+import org.slizaa.server.service.slizaa.GraphDatabaseState;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
@@ -14,17 +15,17 @@ import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StructureDatabaseFactory {
+public class GraphDatabaseFactory {
 
 	/**
 	 * the spring generated state machine
 	 */
 	@Autowired
-	private StateMachineFactory<StructureDatabaseState, StructureDatabaseTrigger> _stateMachineFactory;
+	private StateMachineFactory<GraphDatabaseState, GraphDatabaseTrigger> _stateMachineFactory;
 
-	private Map<StateMachine<StructureDatabaseState, StructureDatabaseTrigger>, StructureDatabaseStateMachineContext> _stateMachine2StructureDatabaseContext = new HashMap<>();
+	private Map<StateMachine<GraphDatabaseState, GraphDatabaseTrigger>, GraphDatabaseStateMachineContext> _stateMachine2StructureDatabaseContext = new HashMap<>();
 
-	public IGraphDatabase newInstance(String id, File databaseDirectory, SlizaaServiceImpl slizaaService) {
+	public IGraphDatabase newInstance(String id, File databaseDirectory, int port, SlizaaServiceImpl slizaaService) {
 
 		checkNotNull(id);
 		checkNotNull(databaseDirectory);
@@ -36,12 +37,12 @@ public class StructureDatabaseFactory {
 		}
 
 		// create the new state machine
-		StateMachine<StructureDatabaseState, StructureDatabaseTrigger> statemachine = _stateMachineFactory
+		StateMachine<GraphDatabaseState, GraphDatabaseTrigger> statemachine = _stateMachineFactory
 				.getStateMachine();
 
 		// create the state machine context
-		StructureDatabaseStateMachineContext stateMachineContext = new StructureDatabaseStateMachineContext(id,
-				databaseDirectory, slizaaService);
+		GraphDatabaseStateMachineContext stateMachineContext = new GraphDatabaseStateMachineContext(id,
+				databaseDirectory, port,  slizaaService);
 
 		// create the structure database
 		GraphDatabaseImpl structureDatabase = new GraphDatabaseImpl(statemachine, stateMachineContext);
@@ -56,8 +57,8 @@ public class StructureDatabaseFactory {
 		return structureDatabase;
 	}
 
-	StructureDatabaseStateMachineContext context(
-			StateMachine<StructureDatabaseState, StructureDatabaseTrigger> stateMachine) {
+	GraphDatabaseStateMachineContext context(
+			StateMachine<GraphDatabaseState, GraphDatabaseTrigger> stateMachine) {
 		return _stateMachine2StructureDatabaseContext.get(stateMachine);
 	}
 }

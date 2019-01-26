@@ -1,5 +1,5 @@
-query stuctureDatabases {
-    structureDatabases {
+query graphDatabases {
+    graphDatabases {
         identifier
     }
 }

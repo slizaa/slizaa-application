@@ -7,31 +7,38 @@ import java.util.List;
  * @author Gerd W&uuml;therich (gw@code-kontor.io)
  */
 public interface IHierarchicalGraphContainer {
-		
-   /**
-    *
-    * @param identifier
-    * @return
-    */
-   IHierarchicalGraph createNewHierarchicalGraph(String identifier);
 
-   /**
-    *
-    * @param identifier
-    * @return
-    */
-   IHierarchicalGraph getHierarchicalGraph(String identifier);
+	/**
+	 * 
+	 *
+	 * @return
+	 */
+	String getIdentifier();
 
-   /**
-    *
-    * @param identifier
-    */
-   void disposeHierarchicalGraph(String identifier);
+	/**
+	 *
+	 * @param identifier
+	 * @return
+	 */
+	IHierarchicalGraph createNewHierarchicalGraph(String identifier);
 
-   /**
-    *
-    * @return
-    */
-   List<IHierarchicalGraph> getHierarchicalGraphs();
+	/**
+	 *
+	 * @param identifier
+	 * @return
+	 */
+	IHierarchicalGraph getHierarchicalGraph(String identifier);
+
+	/**
+	 *
+	 * @param identifier
+	 */
+	void disposeHierarchicalGraph(String identifier);
+
+	/**
+	 *
+	 * @return
+	 */
+	List<IHierarchicalGraph> getHierarchicalGraphs();
 
 }

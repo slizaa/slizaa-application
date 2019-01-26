@@ -1,5 +1,11 @@
 extend type HierarchicalGraph {
 
+    # Returns the identifier
+    identifier: ID!
+
+	# Returns the identifier
+    globalIdentifier: ID!
+
     # Returns the root node
     rootNode: Node!
 

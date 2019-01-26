@@ -3,6 +3,7 @@ package org.slizaa.server.service.slizaa.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,9 +22,12 @@ import org.slizaa.server.service.backend.IBackendService;
 import org.slizaa.server.service.backend.IBackendServiceInstanceProvider;
 import org.slizaa.server.service.configuration.IConfigurationService;
 import org.slizaa.server.service.extensions.IExtensionService;
-import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
-import org.slizaa.server.service.slizaa.internal.structuredatabase.StructureDatabaseFactory;
+import org.slizaa.server.service.slizaa.ISlizaaService;
+import org.slizaa.server.service.slizaa.internal.SlizaaServiceConfiguration.GraphDbCfg;
+import org.slizaa.server.service.slizaa.internal.SlizaaServiceConfiguration.HierarchicalGraphCfg;
+import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseFactory;
+import org.slizaa.server.service.slizaa.internal.graphdatabase.SlizaaSocketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,15 +63,13 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	private IConfigurationService _configurationService;
 
 	@Autowired
-	private StructureDatabaseFactory _structureDatabaseFactory;
+	private GraphDatabaseFactory _graphDatabaseFactory;
 
 	private ExecutorService _executorService;
 
 	private ConcurrentHashMap<String, IGraphDatabase> _structureDatabases = new ConcurrentHashMap<>();
 
 	private IBoltClientFactory _boltClientFactory;
-
-	private SlizaaServiceConfiguration _configuration;
 
 	/**
 	 * <p>
@@ -80,13 +82,26 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		this._executorService = Executors.newFixedThreadPool(20);
 		_boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
 
-		_configuration = _configurationService.load(CONFIG_ID, SlizaaServiceConfiguration.class);
-		if (_configuration == null) {
-			_configuration = new SlizaaServiceConfiguration();
-		}
+		SlizaaServiceConfiguration configuration = _configurationService.load(CONFIG_ID,
+				SlizaaServiceConfiguration.class);
 
-		for (String identifier : _configuration.getStructureDatabases()) {
-			createStructureDatabaseIfAbsent(identifier);
+		if (configuration != null) {
+
+			for (GraphDbCfg dbConfig : configuration.getGraphDatabases()) {
+
+				// create
+				IGraphDatabase graphDatabase = createStructureDatabaseIfAbsent(dbConfig.getIdentifier(), dbConfig.getPort());
+
+				// and start
+				if (dbConfig.isRunning()) {
+					graphDatabase.start();
+				}
+				
+				// 
+				for (HierarchicalGraphCfg hierarchicalGraphCfg : dbConfig.getHierarchicalGraphs()) {
+					graphDatabase.createNewHierarchicalGraph(hierarchicalGraphCfg.getIdentifier());
+				}
+			}
 		}
 	}
 
@@ -140,17 +155,29 @@ public class SlizaaServiceImpl implements ISlizaaService {
 			throw new RuntimeException();
 		}
 
-		// save the config
-//		_configuration.getGraphDatabases().add(identifier);
-//		try {
-//			_configurationService.store(CONFIG_ID, _configuration);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//
+		storeConfig();
 
 		//
-		return createStructureDatabaseIfAbsent(identifier);
+		return createStructureDatabaseIfAbsent(identifier, SlizaaSocketUtils.findAvailableTcpPort());
+	}
+
+	public void storeConfig() {
+
+		SlizaaServiceConfiguration configuration = new SlizaaServiceConfiguration();
+		
+		for (IGraphDatabase graphDatabase : _structureDatabases.values()) {
+			configuration.getGraphDatabases()
+					.add(new GraphDbCfg(graphDatabase));
+		}
+
+		// save the config
+		try {
+			_configurationService.store(CONFIG_ID, configuration);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean hasStructureDatabase(String identifier) {
@@ -177,8 +204,8 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		return _structureDatabases;
 	}
 
-	private IGraphDatabase createStructureDatabaseIfAbsent(String identifier) {
-		return _structureDatabases.computeIfAbsent(identifier, id -> _structureDatabaseFactory.newInstance(id,
-				new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), this));
+	private IGraphDatabase createStructureDatabaseIfAbsent(String identifier, int port) {
+		return _structureDatabases.computeIfAbsent(identifier, id -> _graphDatabaseFactory.newInstance(id,
+				new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), port, this));
 	}
 }

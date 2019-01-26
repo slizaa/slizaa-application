@@ -1,0 +1,5 @@
+mutation newGraphDatabase($identifier: ID!) {
+    newGraphDatabase(identifier: $identifier) {
+        identifier
+    }
+}

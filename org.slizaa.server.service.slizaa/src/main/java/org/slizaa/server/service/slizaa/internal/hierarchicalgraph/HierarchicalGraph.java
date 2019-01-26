@@ -19,7 +19,7 @@ public class HierarchicalGraph implements IHierarchicalGraph {
 		_rootNode = checkNotNull(rootNode);
 		_identifier = checkNotNull(identifier);
 	}
-
+	
 	public HGRootNode getRootNode() {
 		return this._rootNode;
 	}

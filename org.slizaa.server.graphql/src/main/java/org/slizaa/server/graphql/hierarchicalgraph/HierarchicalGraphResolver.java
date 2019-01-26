@@ -78,7 +78,7 @@ public class HierarchicalGraphResolver implements GraphQLResolver<HierarchicalGr
         // lookup the root node
         IGraphDatabase graphDatabase = slizaaService.getGraphDatabase(hierarchicalGraph.getDatabaseIdentifier());
         if (graphDatabase != null) {
-            IHierarchicalGraph hg = graphDatabase.getHierarchicalGraph(hierarchicalGraph.getHierarchicalGraphIdentifier());
+            IHierarchicalGraph hg = graphDatabase.getHierarchicalGraph(hierarchicalGraph.getIdentifier());
             if (hg != null) {
                 HGRootNode rootNode = hg.getRootNode();
                 if (rootNode != null) {

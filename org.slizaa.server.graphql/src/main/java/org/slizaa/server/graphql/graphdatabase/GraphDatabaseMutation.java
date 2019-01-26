@@ -29,7 +29,7 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		IGraphDatabase structureDatabase = slizaaService.newGraphDatabase(identifier);
 
 		// return the result
-		return new GraphDatabase(structureDatabase.getIdentifier());
+		return GraphDatabase.convert(structureDatabase);
 	}
 
 	public GraphDatabase startGraphDatabase(String identifier) {
@@ -37,12 +37,15 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		// get the structure database
 		// TODO: check exists
 		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-		
-		// TODO: check state
-		structureDatabase.start();
+
+		try {
+			structureDatabase.start();
+		} catch (IllegalStateException exception) {
+			// TODO: log
+		}
 
 		// return the result
-		return new GraphDatabase(structureDatabase.getIdentifier());
+		return GraphDatabase.convert(structureDatabase);
 	}
 
 	public GraphDatabase stopGraphDatabase(String identifier) {
@@ -50,14 +53,17 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		// get the structure database
 		// TODO: check exists
 		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-		
-		// TODO: check state
-		structureDatabase.stop();
+
+		try {
+			structureDatabase.stop();
+		} catch (IllegalStateException exception) {
+			// TODO: log
+		}
 
 		// return the result
-		return new GraphDatabase(structureDatabase.getIdentifier());
+		return GraphDatabase.convert(structureDatabase);
 	}
-	
+
 	public GraphDatabase populateGraphDatabase(String identifier) {
 
 		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
@@ -65,12 +71,14 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		//
 		try {
 			structureDatabase.parse(true);
+		} catch (IllegalStateException exception) {
+			// TODO: log
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
 		// return the result
-		return new GraphDatabase(structureDatabase.getIdentifier());
+		return GraphDatabase.convert(structureDatabase);
 	}
 
 	public List<MvnCoordinate> setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
@@ -94,18 +102,18 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		return result;
 	}
 
-	public GraphDatabase mapSystem(String databaseId, String mappedSystemId) {
+	public GraphDatabase createHierarchicalGraph(String databaseId, String hierarchicalGraphId) {
 
 		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(databaseId);
 
 		//
 		try {
-			structureDatabase.createNewHierarchicalGraph(mappedSystemId);
+			structureDatabase.createNewHierarchicalGraph(hierarchicalGraphId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		// return the result
-		return new GraphDatabase(structureDatabase.getIdentifier());
+		return GraphDatabase.convert(structureDatabase);
 	}
 }

@@ -1,11 +1,17 @@
 type GraphDatabase {
 
     identifier: ID!
+ 
+    state: String!
+    
+    port: Int!
     
     hierarchicalGraphs: [HierarchicalGraph]!
+    
+    hierarchicalGraph(identifier: ID!): HierarchicalGraph
 }
 
-type HierarchicalGraph{
+type HierarchicalGraph {
 
 }
 
@@ -28,6 +34,8 @@ extend type Query {
     graphDatabases: [GraphDatabase]!
 
     graphDatabase(identifier: ID!): GraphDatabase
+    
+    hierarchicalGraph(databaseIdentifier: ID!, hierarchicalGraphIdentifier: ID!): HierarchicalGraph
 }
 
 # The Mutation type
@@ -43,5 +51,5 @@ extend type Mutation {
 
     setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): [MvnCoordinate]!
 
-    mapSystem(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase
+    createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase
 }

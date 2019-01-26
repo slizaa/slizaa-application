@@ -17,6 +17,18 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
     String getIdentifier();
 
     /**
+     * 
+     * @return
+     */
+	GraphDatabaseState getState();
+    
+    /**
+     * 
+     * @return
+     */
+	int getPort();
+	
+    /**
      *
      * @return
      */
@@ -56,4 +68,6 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
      *
      */
     void dispose();
+
+
 }
