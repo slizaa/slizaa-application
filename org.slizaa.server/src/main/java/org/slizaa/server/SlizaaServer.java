@@ -20,10 +20,6 @@ import org.springframework.context.annotation.PropertySources;
 @EnableSlizaaServiceModule
 @EnableGraphqlModule
 @EnableConfigurationModule
-@PropertySources({
-        @PropertySource("application.properties"),
-        @PropertySource(value="classpath:application-dev-local.properties", ignoreResourceNotFound=true)
-})
 public class SlizaaServer {
 
   /**
