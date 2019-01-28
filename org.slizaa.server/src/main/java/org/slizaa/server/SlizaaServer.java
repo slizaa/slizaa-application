@@ -7,6 +7,8 @@ import org.slizaa.server.service.extensions.EnableExtensionsModule;
 import org.slizaa.server.service.slizaa.EnableSlizaaServiceModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 /**
  *
@@ -18,6 +20,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableSlizaaServiceModule
 @EnableGraphqlModule
 @EnableConfigurationModule
+@PropertySources({
+        @PropertySource("application.properties"),
+        @PropertySource(value="classpath:application-dev-local.properties", ignoreResourceNotFound=true)
+})
 public class SlizaaServer {
 
   /**

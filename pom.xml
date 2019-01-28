@@ -32,10 +32,18 @@
         <version-spring-statemachine>2.0.2.RELEASE</version-spring-statemachine>
         <version-classgraph>4.1.7</version-classgraph>
         <version-spring-boot>2.1.1.RELEASE</version-spring-boot>
+        <version-hibernate-validator>5.4.1.Final</version-hibernate-validator>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- hibernate-validator -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${version-hibernate-validator}</version>
+            </dependency>
 
             <!-- guava -->
             <dependency>
