@@ -2,20 +2,23 @@ package org.slizaa.server.graphql.hierarchicalgraph;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DependencyMatrix {
 
-    private List<Node> nodes;
+    private List<Node> orderedNodes;
+    
+    private int[][] matrix;
 
-    private List<List<Dependency>> dependencies;
-
-    private List<List<Integer>> matrix;
-
-    public DependencyMatrix(List<Node> nodes, List<List<Dependency>> dependencies) {
-        this.nodes = nodes;
-        this.dependencies = dependencies;
-
-        matrix = dependencies.stream().map(row -> row.stream().map(dep -> dep.getWeight()).collect(Collectors.toList())).collect(Collectors.toList());
+    public DependencyMatrix(List<Node> orderedNodes, int[][] matrix) {
+        this.orderedNodes = orderedNodes;
+        this.matrix = matrix;
+    }
+    
+    public List<Node> orderedNodes() {
+    	return orderedNodes;
+    }
+    
+    public int[][] matrix() {
+    	return matrix;
     }
 }
