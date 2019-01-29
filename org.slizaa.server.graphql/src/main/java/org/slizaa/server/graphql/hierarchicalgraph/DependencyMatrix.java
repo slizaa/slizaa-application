@@ -1,6 +1,7 @@
 package org.slizaa.server.graphql.hierarchicalgraph;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DependencyMatrix {
@@ -17,8 +18,14 @@ public class DependencyMatrix {
     public List<Node> orderedNodes() {
     	return orderedNodes;
     }
-    
-    public int[][] matrix() {
-    	return matrix;
+
+    public List<Cell> getCells() {
+        List<Cell> result = new ArrayList<>();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                result.add(new Cell(i, j, matrix[i][j]));
+            }
+        }
+        return result;
     }
 }

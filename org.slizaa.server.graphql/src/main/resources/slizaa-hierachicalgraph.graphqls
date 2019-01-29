@@ -63,9 +63,22 @@ type ImageDescription {
 type MapEntry { key: String!, value: String }
 
 type DependencyMatrix {
-    orderedNodes: [ Node ]
-    matrix: [[ Int ]]
+    orderedNodes: [ Node ]!
+    cells: [Cell]!
+#    matrix: [[ Int ]]
 #    dependencies: [[ Dependency ]]
 }
 
+type DependencyMatrix {
+    orderedNodes: [ Node ]!
+    cells: [Cell]!
+    #    matrix: [[ Int ]]
+    #    dependencies: [[ Dependency ]]
+}
+
+type Cell {
+    row: Int!
+    column: Int!
+    value: Int!
+}
 
