@@ -1,6 +1,9 @@
 package org.slizaa.server.service.backend;
 
 import org.junit.runner.RunWith;
+import org.slizaa.server.service.configuration.EnableConfigurationModule;
+import org.slizaa.server.service.configuration.IConfigurationService;
+import org.slizaa.server.service.configuration.impl.NullConfigurationService;
 import org.slizaa.server.service.extensions.IExtension;
 import org.slizaa.server.service.extensions.IExtensionIdentifier;
 import org.slizaa.server.service.extensions.IExtensionService;
@@ -25,6 +28,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @TestConfiguration
 @ComponentScan(basePackageClasses = AbstractServerBackendTest.class)
 public abstract class AbstractServerBackendTest {
+
+  @Bean
+  public IConfigurationService configurationService() {
+    return new NullConfigurationService();
+  }
 
   @Autowired
   protected ApplicationContext applicationContext;

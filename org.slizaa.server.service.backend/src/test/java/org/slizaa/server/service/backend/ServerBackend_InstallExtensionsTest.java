@@ -1,5 +1,6 @@
 package org.slizaa.server.service.backend;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slizaa.server.service.backend.impl.ServerBackendStateMachine;
 import org.slizaa.server.service.backend.impl.SlizaaServerBackendImpl;
@@ -31,7 +32,7 @@ public class ServerBackend_InstallExtensionsTest extends AbstractServerBackendTe
    *
    */
   @Test
-  @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+  @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
   public void installExtensions_Success() {
 
     // prepare
@@ -51,7 +52,7 @@ public class ServerBackend_InstallExtensionsTest extends AbstractServerBackendTe
   }
 
   @Test
-  @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+  @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
   public void installExtensions_Failure() {
 
     // prepare

@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
+public class HierarchicalGraphTest extends AbstractSlizaaServiceTest {
 
     @Autowired
     private SlizaaServiceImpl _slizaaService;

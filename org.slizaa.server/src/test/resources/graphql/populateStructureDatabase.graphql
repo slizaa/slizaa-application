@@ -1,5 +1,0 @@
-mutation populateStructureDatabase($identifier: ID!) {
-    populateStructureDatabase(identifier: $identifier) {
-        identifier
-    }
-}
