@@ -40,7 +40,7 @@ public class HierarchicalGraphResolver implements GraphQLResolver<HierarchicalGr
      */
     public Node node(HierarchicalGraph hierarchicalGraph, String id) {
         return nullSafe(hierarchicalGraph, hgRootNode -> {
-            HGNode hgNode = hgRootNode.lookupNode(Long.parseLong(id));
+            HGNode hgNode = "-1".equals(id) ? hgRootNode : hgRootNode.lookupNode(Long.parseLong(id));
             return hgNode != null ? new Node(hgNode) : null;
         });
     }
