@@ -43,7 +43,7 @@ public class StaticContentController {
 		// TODO
 		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
 		// TODO
-		headers.setContentType(MediaType.IMAGE_PNG);
+		headers.setContentType(MediaType.APPLICATION_XML);
 		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(getByte(requestPath), headers, HttpStatus.OK);
 		return responseEntity;
 	}

@@ -23,6 +23,7 @@
         <module>org.slizaa.server</module>
         <module>org.slizaa.server.staticcontent</module>
         <module>org.slizaa.server.service.configuration</module>
+        <module>org.slizaa.server.service.svg</module>
     </modules>
 
     <properties>
