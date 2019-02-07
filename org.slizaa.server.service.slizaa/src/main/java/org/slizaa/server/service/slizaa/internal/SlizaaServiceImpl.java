@@ -28,6 +28,7 @@ import org.slizaa.server.service.slizaa.internal.SlizaaServiceConfiguration.Grap
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceConfiguration.HierarchicalGraphCfg;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseFactory;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.SlizaaSocketUtils;
+import org.slizaa.server.service.svg.ISvgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,6 +63,9 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	@Autowired
 	private IConfigurationService _configurationService;
 
+	@Autowired
+	private ISvgService _svgService;
+	
 	@Autowired
 	private GraphDatabaseFactory _graphDatabaseFactory;
 
@@ -123,6 +127,11 @@ public class SlizaaServiceImpl implements ISlizaaService {
 	}
 
 	@Override
+  public ISvgService getSvgService() {
+    return _svgService;
+  }
+
+  @Override
 	public boolean hasStructureDatabases() {
 		return _structureDatabases != null;
 	}

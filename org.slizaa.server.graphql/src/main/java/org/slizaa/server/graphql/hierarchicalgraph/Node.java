@@ -1,9 +1,9 @@
 package org.slizaa.server.graphql.hierarchicalgraph;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.slizaa.hierarchicalgraph.core.model.HGNode;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.ILabelDefinitionProvider;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  *
@@ -46,18 +46,13 @@ public class Node {
         return labelDefinitionProvider.getLabelDefinition(hgNode).getText();
     }
 
-    public ImageDescription getImageDescription() {
-        ILabelDefinitionProvider.ILabelDefinition labelDefinition = labelDefinitionProvider.getLabelDefinition(hgNode);
-
-        return new ImageDescription(
-                labelDefinition.getBaseImagePath(),
-                labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.TOP_LEFT),
-                labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.TOP_RIGHT),
-                labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.BOTTOM_LEFT),
-                labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.BOTTOM_RIGHT)
-        );
+    /**
+     * @return
+     */
+    ILabelDefinitionProvider labelDefinitionProvider() {
+      return labelDefinitionProvider;
     }
-
+    
     /**
      * @return
      */

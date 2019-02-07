@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ImageKey {
 	
-	public static String key(String main, String upperLeft, String upperRight, String lowerLeft, String lowerRight) {
+	public static String longKey(String main, String upperLeft, String upperRight, String lowerLeft, String lowerRight) {
 
 		StringBuilder result = new StringBuilder(checkNotNull(main));
 
@@ -20,7 +20,7 @@ public class ImageKey {
 		return result.toString();
 	}
 
-	public static String shortedKey(String key) {
+	public static String shortKey(String key) {
 		byte[] bytes = checkNotNull(key).getBytes();
 		long k = 7;
 		for (int i = 0; i < bytes.length; i++) {

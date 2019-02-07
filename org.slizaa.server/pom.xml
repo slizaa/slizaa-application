@@ -36,6 +36,11 @@
 			<artifactId>org.slizaa.server.service.configuration</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slizaa.server</groupId>
+			<artifactId>org.slizaa.server.service.svg</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
 		<!-- test -->
 		<dependency>

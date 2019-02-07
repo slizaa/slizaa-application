@@ -26,7 +26,7 @@ type Node {
 
     # The text label
     text: String!
-    imageDescription: ImageDescription
+    imageUrl: String!
 
     # The parent node
     parent: Node
@@ -52,13 +52,6 @@ type Dependency {
     weight: Int
 }
 
-type ImageDescription {
-    baseImagePath: String
-    topLeftImagePath: String
-    topRightImagePath: String
-    bottomLeftImagePath: String
-    bottomRightImagePath: String
-}
 
 type MapEntry { key: String!, value: String }
 
