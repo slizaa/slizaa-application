@@ -2,7 +2,9 @@ package org.slizaa.server.service.svg;
 
 public interface ISvgService {
 
-	String getMergedSvg(String identifer);
+	String getSvg(String identifier);
 	
-	String getKey(String main, String upperLeft, String upperRight, String lowerLeft, String lowerRight);
+	String createSvgAndReturnShortKey(String main, String upperLeft, String upperRight, String lowerLeft, String lowerRight);
+
+	String createSvgAndReturnShortKey(String main);
 }

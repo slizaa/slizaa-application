@@ -52,7 +52,7 @@ public class SvgContentController {
     headers.setCacheControl(CacheControl.noCache().getHeaderValue());
     // TODO
     headers.setContentType(MediaType.TEXT_XML);
-    String svgXml = _slizaaService.getSvgService().getMergedSvg(shortKey);
+    String svgXml = _slizaaService.getSvgService().getSvg(shortKey);
     ResponseEntity<String> responseEntity = new ResponseEntity<>(svgXml, headers, HttpStatus.OK);
     return responseEntity;
   }

@@ -47,17 +47,17 @@ public class SvgServiceTest {
 //    assertThat(map.get(key)).isEqualTo(shortendKey);
 
     //
-    OverlaySvgIcon overlaySvgIcon = new OverlaySvgIcon();
+    OverlaySvgIcon overlaySvgIcon = new OverlaySvgIcon(true);
 
     //
     Document document = XMLWriterDOM.read(_backendService.loadResourceFromExtensions("icons/class_obj.svg"));
-    overlaySvgIcon._mainNodes = document.getDocumentElement().getChildNodes();
+    overlaySvgIcon.setMainNodes(document.getDocumentElement().getChildNodes());
 
     document = XMLWriterDOM.read(_backendService.loadResourceFromExtensions("icons/abstract_ovr.svg"));
-    overlaySvgIcon._urNodes = document.getDocumentElement().getChildNodes();
+    overlaySvgIcon.setUpperRightNodes(document.getDocumentElement().getChildNodes());
 
     document = XMLWriterDOM.read(_backendService.loadResourceFromExtensions("icons/private_ovr.svg"));
-    overlaySvgIcon._lrNodes = document.getDocumentElement().getChildNodes();
+    overlaySvgIcon.setUpperLeftNodes(document.getDocumentElement().getChildNodes());
 
     System.out.println();
     System.out.println(overlaySvgIcon.create());

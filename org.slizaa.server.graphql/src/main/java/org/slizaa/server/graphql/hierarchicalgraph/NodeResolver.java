@@ -34,11 +34,16 @@ public class NodeResolver implements GraphQLResolver<Node> {
     ILabelDefinitionProvider.ILabelDefinition labelDefinition = node.labelDefinitionProvider()
         .getLabelDefinition(node.getHgNode());
 
-    return nullSafeWithBaseLink(slizaaService.getSvgService().getKey(labelDefinition.getBaseImagePath(),
-        labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.TOP_LEFT),
-        labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.TOP_RIGHT),
-        labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.BOTTOM_LEFT),
-        labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.BOTTOM_RIGHT)));
+    if (labelDefinition.isOverlayImage()) {
+      return nullSafeWithBaseLink(slizaaService.getSvgService().createSvgAndReturnShortKey(labelDefinition.getBaseImagePath(),
+              labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.TOP_LEFT),
+              labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.TOP_RIGHT),
+              labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.BOTTOM_LEFT),
+              labelDefinition.getOverlayImagePath(ILabelDefinitionProvider.OverlayPosition.BOTTOM_RIGHT)));
+    }
+    else {
+      return nullSafeWithBaseLink(slizaaService.getSvgService().createSvgAndReturnShortKey(labelDefinition.getBaseImagePath()));
+    }
   }
 
   /**
