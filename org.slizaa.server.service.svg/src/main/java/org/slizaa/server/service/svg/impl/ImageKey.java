@@ -91,7 +91,7 @@ public class ImageKey {
             k *= 13;
             k %= 1000000009;
         }
-        return k + ".svg";
+        return k + "";
     }
 
     private static boolean append(String key, String value, boolean prependAmpersand, StringBuilder builder) {
