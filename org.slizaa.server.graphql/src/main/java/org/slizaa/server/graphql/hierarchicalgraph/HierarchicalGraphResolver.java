@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slizaa.hierarchicalgraph.core.algorithms.GraphUtils;
 import org.slizaa.hierarchicalgraph.core.algorithms.IDependencyStructureMatrix;
@@ -51,6 +52,14 @@ public class HierarchicalGraphResolver implements GraphQLResolver<HierarchicalGr
         return ids.stream().map(id -> node(hierarchicalGraph, id)).filter(node -> node != null).collect(Collectors.toList());
     }
 
+    public List<Node> referencedNodes(HierarchicalGraph hierarchicalGraph, List<String> ids, boolean includePredecessors) {
+        return computeReferencedNode(hierarchicalGraph, ids, includePredecessors, hgNode -> new Node(hgNode));
+    }
+
+    public List<String> referencedNodeIds(HierarchicalGraph hierarchicalGraph, List<String> ids, boolean includePredecessors) {
+        return computeReferencedNode(hierarchicalGraph, ids, includePredecessors, hgNode -> hgNode.getIdentifier().toString());
+    }
+
     /**
      * @param ids
      * @return
@@ -74,6 +83,21 @@ public class HierarchicalGraphResolver implements GraphQLResolver<HierarchicalGr
         //
         return new DependencyMatrix(orderedNodes, dependencyStructureMatrix.getMatrix());
     }
+
+    private <T> List<T> computeReferencedNode(HierarchicalGraph hierarchicalGraph, List<String> ids, boolean includePredecessors, Function<HGNode, T> mappingFunction) {
+
+        //
+        Stream<HGNode> nodeStream = ids.stream().map(id -> node(hierarchicalGraph, id)).
+                flatMap(node -> node.getHgNode().getAccumulatedOutgoingCoreDependencies().stream()).
+                map(dep -> dep.getTo());
+
+        if (includePredecessors) {
+            nodeStream = nodeStream.flatMap(node -> Stream.concat(node.getPredecessors().stream(), Stream.of(node)));
+        }
+
+        return  nodeStream.distinct().map(hgNode -> mappingFunction.apply(hgNode)).collect(Collectors.toList());
+    }
+
 
     /**
      * @param function

@@ -17,6 +17,12 @@ extend type HierarchicalGraph {
 
     #
     dependencyMatrix(ids: [ID]!): DependencyMatrix!
+
+    # Return the referenced nodes
+    referencedNodes(sourceNodes: [ID]!, includePredecessors: Boolean): [Node]!;
+
+    # Return the referenced node ids
+    referencedNodeIds(sourceNodes: [ID]!, includePredecessors: Boolean): [String]!;
 }
 
 type Node {
@@ -60,13 +66,6 @@ type DependencyMatrix {
     cells: [Cell]!
 #    matrix: [[ Int ]]
 #    dependencies: [[ Dependency ]]
-}
-
-type DependencyMatrix {
-    orderedNodes: [ Node ]!
-    cells: [Cell]!
-    #    matrix: [[ Int ]]
-    #    dependencies: [[ Dependency ]]
 }
 
 type Cell {
