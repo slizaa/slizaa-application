@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slizaa.hierarchicalgraph.core.model.HGNode;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.ILabelDefinitionProvider;
 import org.slizaa.hierarchicalgraph.graphdb.model.GraphDbNodeSource;
 import org.slizaa.server.service.slizaa.ISlizaaService;
@@ -53,8 +54,9 @@ public class NodeResolver implements GraphQLResolver<Node> {
    * @param node
    * @return
    */
-  public List<Node> getChildren(Node node) {
-    return node.getHgNode().getChildren().stream().map(hgNode -> new Node(hgNode)).collect(Collectors.toList());
+  public NodeSet getChildren(Node node) {
+    List<HGNode> hgNodes = node.getHgNode().getChildren().stream().collect(Collectors.toList());
+    return new NodeSet(hgNodes);
   }
 
   public boolean hasChildren(Node node) {

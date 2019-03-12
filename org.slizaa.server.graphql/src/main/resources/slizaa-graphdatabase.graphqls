@@ -6,7 +6,7 @@ type GraphDatabase {
     
     port: Int!
     
-    hierarchicalGraphs: [HierarchicalGraph]!
+    hierarchicalGraphs: [HierarchicalGraph!]!
     
     hierarchicalGraph(identifier: ID!): HierarchicalGraph
 }
@@ -31,7 +31,7 @@ type MvnCoordinate {
 # The Query type
 extend type Query {
 
-    graphDatabases: [GraphDatabase]!
+    graphDatabases: [GraphDatabase!]!
 
     graphDatabase(identifier: ID!): GraphDatabase
     
