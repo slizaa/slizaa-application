@@ -70,14 +70,25 @@ type MapEntry { key: String!, value: String }
 type DependencyMatrix {
     orderedNodes: [Node!]!
     cells: [Cell!]!
-#    matrix: [[ Int! ]]
-#    dependencies: [[ Dependency!]]
+    stronglyConnectedComponents: [StronglyConnectedComponent!]!
 }
 
 type Cell {
     row: Int!
     column: Int!
     value: Int!
+}
+
+type StronglyConnectedComponent {
+
+	# contained nodes as node array
+	nodes: [Node!]!
+	
+	# the node ids as an array
+	nodeIds: [ID!]!
+	
+	#
+	nodePositions: [Int!]!
 }
 
 # The Query type

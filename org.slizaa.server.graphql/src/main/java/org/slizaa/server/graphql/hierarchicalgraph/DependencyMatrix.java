@@ -1,31 +1,58 @@
 package org.slizaa.server.graphql.hierarchicalgraph;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slizaa.hierarchicalgraph.core.algorithms.IDependencyStructureMatrix;
 
 public class DependencyMatrix {
 
-    private List<Node> orderedNodes;
-    
-    private int[][] matrix;
+  private List<Node>                       _orderedNodes;
 
-    public DependencyMatrix(List<Node> orderedNodes, int[][] matrix) {
-        this.orderedNodes = orderedNodes;
-        this.matrix = matrix;
-    }
-    
-    public List<Node> orderedNodes() {
-    	return orderedNodes;
-    }
+  private int[][]                          _matrix;
 
-    public List<Cell> getCells() {
-        List<Cell> result = new ArrayList<>();
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                result.add(new Cell(i, j, matrix[i][j]));
-            }
-        }
-        return result;
+  private List<StronglyConnectedComponent> _stronglyConnectedComponents;
+
+  /**
+   * 
+   * @param dependencyStructureMatrix
+   */
+  public DependencyMatrix(IDependencyStructureMatrix dependencyStructureMatrix) {
+
+    //
+    this._orderedNodes = dependencyStructureMatrix.getOrderedNodes().stream().map(hgNode -> new Node(hgNode))
+        .collect(Collectors.toList());
+
+    //
+    this._matrix = dependencyStructureMatrix.getMatrix();
+    
+    //
+    this._stronglyConnectedComponents = dependencyStructureMatrix.getCycles().stream()
+        .map(hgNodes -> new StronglyConnectedComponent(hgNodes, dependencyStructureMatrix.getOrderedNodes())).collect(Collectors.toList());
+
+
+  }
+
+  public List<Node> orderedNodes() {
+    return this._orderedNodes;
+  }
+
+  public List<Cell> getCells() {
+    List<Cell> result = new ArrayList<>();
+    for (int i = 0; i < this._matrix.length; i++) {
+      for (int j = 0; j < this._matrix[i].length; j++) {
+        result.add(new Cell(i, j, this._matrix[i][j]));
+      }
     }
+    return result;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public List<StronglyConnectedComponent> getStronglyConnectedComponents() {
+    return _stronglyConnectedComponents;
+  }
 }
