@@ -33,7 +33,12 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
      * @return
      */
     boolean hasContentDefinitionProvider();
-
+    
+    /**
+     * @return
+     */
+    IContentDefinitionProvider getContentDefinitionProvider();
+    
     /**
      *
      * @param contentDefinitionProvider

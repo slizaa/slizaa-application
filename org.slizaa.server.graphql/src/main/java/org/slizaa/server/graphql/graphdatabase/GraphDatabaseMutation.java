@@ -81,7 +81,7 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		return GraphDatabase.convert(structureDatabase);
 	}
 
-	public MvnBasedContentDefinition setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
+	public GraphDatabase setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
 
 		//
 		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
@@ -98,8 +98,8 @@ public class GraphDatabaseMutation implements GraphQLMutationResolver {
 		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
 		structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
 
-		//
-		return new MvnBasedContentDefinition(result);
+    // return the result
+    return GraphDatabase.convert(structureDatabase);
 	}
 
 	public GraphDatabase createHierarchicalGraph(String databaseId, String hierarchicalGraphId) {

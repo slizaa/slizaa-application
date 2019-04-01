@@ -68,7 +68,15 @@ public class GraphDatabaseImpl implements IGraphDatabase {
 		return _stateMachineContext.hasContentDefinitionProvider();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
+  public IContentDefinitionProvider getContentDefinitionProvider() {
+    return _stateMachineContext.getContentDefinitionProvider();
+  }
+
+  @Override
 	public IHierarchicalGraph createNewHierarchicalGraph(String identifier) {
 
 		checkState(GraphDatabaseState.RUNNING.equals(this._stateMachine.getState().getId()),

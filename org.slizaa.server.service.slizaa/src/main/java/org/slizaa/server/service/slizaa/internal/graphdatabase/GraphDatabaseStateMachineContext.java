@@ -76,6 +76,15 @@ public class GraphDatabaseStateMachineContext {
     public boolean hasContentDefinitionProvider() {
         return _contentDefinitionProvider != null;
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public IContentDefinitionProvider getContentDefinitionProvider() {
+      return _contentDefinitionProvider;
+  }
+
 
     public boolean isRunning() {
         return _graphDb != null;

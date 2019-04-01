@@ -1,8 +1,12 @@
 package org.slizaa.server.graphql.graphdatabase;
 
+import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinition;
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GraphDatabase {
 	
@@ -38,6 +42,16 @@ public class GraphDatabase {
 	}
 
 	public static GraphDatabase convert(IGraphDatabase database) {
-		return new GraphDatabase(database.getIdentifier(), database.getState().name(), database.getPort());
+	  
+	  
+	  IContentDefinitionProvider contentDefinitionProvider = database.getContentDefinitionProvider();
+	  
+	  ContentDefinition contentDefinition = null;
+	  if (contentDefinitionProvider instanceof MvnBasedContentDefinitionProvider) {
+	    MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = (MvnBasedContentDefinitionProvider) contentDefinitionProvider;
+	    contentDefinition = new MvnBasedContentDefinition(mvnBasedContentDefinitionProvider.getMavenCoordinates().stream().map(coord -> new MvnCoordinate(coord)).collect(Collectors.toList()));
+	  }
+	  
+	  return new GraphDatabase(database.getIdentifier(), database.getState().name(), database.getPort(), contentDefinition);
 	}
 }
