@@ -5,6 +5,8 @@ type GraphDatabase {
     state: String!
     
     port: Int!
+
+    contentDefinition: ContentDefinition
     
     hierarchicalGraphs: [HierarchicalGraph!]!
     
@@ -15,6 +17,12 @@ type HierarchicalGraph {
 
 }
 
+type MvnBasedContentDefinition {
+
+    coordinates: [MvnCoordinate!]!
+}
+
+union ContentDefinition = MvnBasedContentDefinition
 
 type MvnCoordinate {
 
@@ -49,7 +57,7 @@ extend type Mutation {
     
     stopGraphDatabase(identifier: ID!): GraphDatabase
 
-    setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): [MvnCoordinate]!
+    setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): GraphDatabase
 
     createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase
 }

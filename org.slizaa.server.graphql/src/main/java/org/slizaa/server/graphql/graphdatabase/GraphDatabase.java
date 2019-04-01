@@ -2,6 +2,8 @@ package org.slizaa.server.graphql.graphdatabase;
 
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 
+import java.util.List;
+
 public class GraphDatabase {
 	
 	private String _identifier;
@@ -10,10 +12,13 @@ public class GraphDatabase {
 	
 	private int _port;
 
-	private GraphDatabase(String identifier, String state, int port) {
+	private ContentDefinition _contentDefinition;
+
+	private GraphDatabase(String identifier, String state, int port, ContentDefinition contentDefinition) {
 		this._identifier = identifier;
 		this._state = state;
 		this._port = port;
+		this._contentDefinition = contentDefinition;
 	}
 
 	public String getIdentifier() {
@@ -27,7 +32,11 @@ public class GraphDatabase {
 	public int getPort() {
 		return _port;
 	}
-	
+
+	public ContentDefinition getContentDefinition() {
+		return _contentDefinition;
+	}
+
 	public static GraphDatabase convert(IGraphDatabase database) {
 		return new GraphDatabase(database.getIdentifier(), database.getState().name(), database.getPort());
 	}
