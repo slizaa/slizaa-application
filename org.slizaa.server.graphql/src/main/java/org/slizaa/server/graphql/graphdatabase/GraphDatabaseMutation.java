@@ -15,105 +15,124 @@ import java.util.List;
 @Component
 public class GraphDatabaseMutation implements GraphQLMutationResolver {
 
-	//
-	@Autowired
-	private ISlizaaService slizaaService;
+  //
+  @Autowired
+  private ISlizaaService slizaaService;
 
-	/**
-	 * @param identifier
-	 * @return
-	 */
-	public GraphDatabase newGraphDatabase(String identifier) {
+  /**
+   * @param identifier
+   * @return
+   */
+  public GraphDatabase newGraphDatabase(String identifier) {
 
-		// create the structure database
-		IGraphDatabase structureDatabase = slizaaService.newGraphDatabase(identifier);
-
-		// return the result
-		return GraphDatabase.convert(structureDatabase);
-	}
-
-	public GraphDatabase startGraphDatabase(String identifier) {
-
-		// get the structure database
-		// TODO: check exists
-		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-
-		try {
-			structureDatabase.start();
-		} catch (IllegalStateException exception) {
-			// TODO: log
-		}
-
-		// return the result
-		return GraphDatabase.convert(structureDatabase);
-	}
-
-	public GraphDatabase stopGraphDatabase(String identifier) {
-
-		// get the structure database
-		// TODO: check exists
-		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-
-		try {
-			structureDatabase.stop();
-		} catch (IllegalStateException exception) {
-			// TODO: log
-		}
-
-		// return the result
-		return GraphDatabase.convert(structureDatabase);
-	}
-
-	public GraphDatabase populateGraphDatabase(String identifier) {
-
-		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-
-		//
-		try {
-			structureDatabase.parse(true);
-		} catch (IllegalStateException exception) {
-			// TODO: log
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
-		// return the result
-		return GraphDatabase.convert(structureDatabase);
-	}
-
-	public GraphDatabase setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
-
-		//
-		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
-
-		List<MvnCoordinate> result = new ArrayList<>();
-
-		//
-		for (String artifactID : artifactIDs) {
-			IMvnCoordinate mvnCoordinate = mvnBasedContentDefinitionProvider.addArtifact(artifactID);
-			result.add(new MvnCoordinate(mvnCoordinate));
-		}
-
-		//
-		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-		structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+    // create the structure database
+    IGraphDatabase structureDatabase = slizaaService.newGraphDatabase(identifier);
 
     // return the result
     return GraphDatabase.convert(structureDatabase);
-	}
+  }
 
-	public GraphDatabase createHierarchicalGraph(String databaseId, String hierarchicalGraphId) {
+  public GraphDatabase startGraphDatabase(String identifier) {
 
-		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(databaseId);
+    // get the structure database
+    // TODO: check exists
+    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
 
-		//
-		try {
-			structureDatabase.createNewHierarchicalGraph(hierarchicalGraphId);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+    try {
+      structureDatabase.start();
+    } catch (IllegalStateException exception) {
+      // TODO: log
+    }
 
-		// return the result
-		return GraphDatabase.convert(structureDatabase);
-	}
+    // return the result
+    return GraphDatabase.convert(structureDatabase);
+  }
+
+  public GraphDatabase stopGraphDatabase(String identifier) {
+
+    // get the structure database
+    // TODO: check exists
+    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
+
+    try {
+      structureDatabase.stop();
+    } catch (IllegalStateException exception) {
+      // TODO: log
+    }
+
+    // return the result
+    return GraphDatabase.convert(structureDatabase);
+  }
+
+  public GraphDatabase populateGraphDatabase(String identifier) {
+
+    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
+
+    //
+    try {
+      structureDatabase.parse(true);
+    } catch (IllegalStateException exception) {
+      // TODO: log
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    // return the result
+    return GraphDatabase.convert(structureDatabase);
+  }
+
+  /**
+   * 
+   * @param databaseId
+   * @param contentDefinitionFactoryId
+   * @param contentDefinition
+   * @return
+   */
+  public GraphDatabase setContentDefinition(String databaseId, String contentDefinitionFactoryId,
+      String contentDefinition) {
+
+    //
+    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(databaseId);
+    
+    // TODO!
+
+    // return the result
+    return GraphDatabase.convert(structureDatabase);
+  }
+
+//	public GraphDatabase setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
+//
+//		//
+//		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
+//
+//		List<MvnCoordinate> result = new ArrayList<>();
+//
+//		//
+//		for (String artifactID : artifactIDs) {
+//			IMvnCoordinate mvnCoordinate = mvnBasedContentDefinitionProvider.addArtifact(artifactID);
+//			result.add(new MvnCoordinate(mvnCoordinate));
+//		}
+//
+//		//
+//		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
+//		structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
+//
+//    // return the result
+//    return GraphDatabase.convert(structureDatabase);
+//	}
+
+  public GraphDatabase createHierarchicalGraph(String databaseId, String hierarchicalGraphId) {
+
+    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(databaseId);
+
+    //
+    try {
+      structureDatabase.createNewHierarchicalGraph(hierarchicalGraphId);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    // return the result
+    return GraphDatabase.convert(structureDatabase);
+  }
 }

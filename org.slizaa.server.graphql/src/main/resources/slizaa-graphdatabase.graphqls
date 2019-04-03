@@ -17,24 +17,17 @@ type HierarchicalGraph {
 
 }
 
-type MvnBasedContentDefinition {
+type ContentDefinition {
 
-    coordinates: [MvnCoordinate!]!
+	factoryId: ID!
+	
+	name: string!
+	
+	description: string
+	
+	definition: string!
 }
 
-union ContentDefinition = MvnBasedContentDefinition
-
-type MvnCoordinate {
-
-    # the group id
-    groupId: String!
-
-    # the artifact id
-    artifactId: String!
-
-    # the version
-    version: String!
-}
 
 # The Query type
 extend type Query {
@@ -49,15 +42,15 @@ extend type Query {
 # The Mutation type
 extend type Mutation {
 
-    newGraphDatabase(identifier: ID!): GraphDatabase
+    newGraphDatabase(databaseId: ID!): GraphDatabase!
     
-	populateGraphDatabase(identifier: ID!): GraphDatabase
+	populateGraphDatabase(databaseId: ID!): GraphDatabase!
     
-    startGraphDatabase(identifier: ID!): GraphDatabase
+    startGraphDatabase(databaseId: ID!): GraphDatabase!
     
-    stopGraphDatabase(identifier: ID!): GraphDatabase
+    stopGraphDatabase(databaseId: ID!): GraphDatabase!
 
-    setMvnBasedContentDefinition(identifier: ID!, coords: [String]!): GraphDatabase
+    setContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition!: string): GraphDatabase!
 
-    createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase
+    createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase!
 }
