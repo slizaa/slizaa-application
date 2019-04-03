@@ -105,6 +105,12 @@ public class SlizaaServiceImpl implements ISlizaaService {
 				for (HierarchicalGraphCfg hierarchicalGraphCfg : dbConfig.getHierarchicalGraphs()) {
 					graphDatabase.createNewHierarchicalGraph(hierarchicalGraphCfg.getIdentifier());
 				}
+				
+				//
+				System.out.println("****************************************************************");
+				System.out.println(dbConfig.getContentDefinitionCfg().getContentDefinitionFactoryId());
+				System.out.println(dbConfig.getContentDefinitionCfg().getExternalRepresentation());
+        System.out.println("****************************************************************");
 			}
 		}
 	}
