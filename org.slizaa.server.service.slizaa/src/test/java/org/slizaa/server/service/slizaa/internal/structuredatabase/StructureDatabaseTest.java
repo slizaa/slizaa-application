@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
+import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
 
@@ -97,7 +98,7 @@ public class StructureDatabaseTest extends AbstractSlizaaServiceTest {
 	 * @return
 	 */
 	private MvnBasedContentDefinitionProvider createContentDefinitionProvider() {
-		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
+		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProviderFactory().emptyContentDefinitionProvider();
 		mvnBasedContentDefinitionProvider
 				.addArtifact("org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
 		return mvnBasedContentDefinitionProvider;

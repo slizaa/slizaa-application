@@ -17,15 +17,20 @@ type HierarchicalGraph {
 
 }
 
+type ContentDefinitionType {
+
+    factoryId: ID!
+
+    name: String!
+
+    description: String
+}
+
 type ContentDefinition {
 
-	factoryId: ID!
-	
-	name: string!
-	
-	description: string
-	
-	definition: string!
+    contentDefinitionType: ContentDefinitionType!
+
+	definition: String!
 }
 
 
@@ -50,7 +55,7 @@ extend type Mutation {
     
     stopGraphDatabase(databaseId: ID!): GraphDatabase!
 
-    setContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition!: string): GraphDatabase!
+    setContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition: String!): GraphDatabase!
 
     createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase!
 }

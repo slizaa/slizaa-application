@@ -10,6 +10,7 @@ import org.slizaa.server.service.backend.EnableBackendServiceModule;
 import org.slizaa.server.service.configuration.EnableConfigurationModule;
 import org.slizaa.server.service.extensions.EnableExtensionsModule;
 import org.slizaa.server.service.slizaa.EnableSlizaaServiceModule;
+import org.slizaa.server.service.svg.EnableSvgServiceModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @EnableExtensionsModule
 @EnableConfigurationModule
 @EnableSlizaaServiceModule
+@EnableSvgServiceModule
 public abstract class AbstractSlizaaServiceTest {
 
 	@ClassRule
