@@ -24,8 +24,9 @@ import org.slizaa.server.service.configuration.IConfigurationService;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.ISlizaaService;
-import org.slizaa.server.service.slizaa.internal.SlizaaServiceConfiguration.GraphDbCfg;
-import org.slizaa.server.service.slizaa.internal.SlizaaServiceConfiguration.HierarchicalGraphCfg;
+import org.slizaa.server.service.slizaa.internal.configuration.SlizaaServiceConfiguration;
+import org.slizaa.server.service.slizaa.internal.configuration.GraphDatabaseConfiguration;
+import org.slizaa.server.service.slizaa.internal.configuration.GraphDatabaseHierarchicalGraphConfiguration;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseFactory;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.SlizaaSocketUtils;
 import org.slizaa.server.service.svg.ISvgService;
@@ -91,10 +92,16 @@ public class SlizaaServiceImpl implements ISlizaaService {
 
 		if (configuration != null) {
 
-			for (GraphDbCfg dbConfig : configuration.getGraphDatabases()) {
+			for (GraphDatabaseConfiguration dbConfig : configuration.getGraphDatabases()) {
 
 				// create
 				IGraphDatabase graphDatabase = createStructureDatabaseIfAbsent(dbConfig.getIdentifier(), dbConfig.getPort());
+
+				//
+				System.out.println("****************************************************************");
+				System.out.println(dbConfig.getContentDefinitionCfg().getContentDefinitionFactoryId());
+				System.out.println(dbConfig.getContentDefinitionCfg().getExternalRepresentation());
+				System.out.println("****************************************************************");
 
 				// and start
 				if (dbConfig.isRunning()) {
@@ -102,15 +109,11 @@ public class SlizaaServiceImpl implements ISlizaaService {
 				}
 				
 				// 
-				for (HierarchicalGraphCfg hierarchicalGraphCfg : dbConfig.getHierarchicalGraphs()) {
+				for (GraphDatabaseHierarchicalGraphConfiguration hierarchicalGraphCfg : dbConfig.getHierarchicalGraphs()) {
 					graphDatabase.createNewHierarchicalGraph(hierarchicalGraphCfg.getIdentifier());
 				}
 				
-				//
-				System.out.println("****************************************************************");
-				System.out.println(dbConfig.getContentDefinitionCfg().getContentDefinitionFactoryId());
-				System.out.println(dbConfig.getContentDefinitionCfg().getExternalRepresentation());
-        System.out.println("****************************************************************");
+
 			}
 		}
 	}
@@ -183,7 +186,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 		
 		for (IGraphDatabase graphDatabase : _structureDatabases.values()) {
 			configuration.getGraphDatabases()
-					.add(new GraphDbCfg(graphDatabase));
+					.add(new GraphDatabaseConfiguration(graphDatabase));
 		}
 
 		// save the config
