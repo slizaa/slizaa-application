@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Component
 public class ConfigurationServiceImpl implements IConfigurationService {
@@ -44,7 +45,9 @@ public class ConfigurationServiceImpl implements IConfigurationService {
 
     //
     ObjectMapper objectMapper = new ObjectMapper();
+    // TODO: Replace with @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
     objectMapper.enableDefaultTyping();
+    objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     objectMapper.writeValue(file, configuration);
     
   }

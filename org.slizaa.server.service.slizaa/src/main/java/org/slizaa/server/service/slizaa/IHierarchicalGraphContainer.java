@@ -20,7 +20,7 @@ public interface IHierarchicalGraphContainer {
 	 * @param identifier
 	 * @return
 	 */
-	IHierarchicalGraph createNewHierarchicalGraph(String identifier);
+	IHierarchicalGraph newHierarchicalGraph(String identifier);
 
 	/**
 	 *
@@ -33,7 +33,7 @@ public interface IHierarchicalGraphContainer {
 	 *
 	 * @param identifier
 	 */
-	void disposeHierarchicalGraph(String identifier);
+	void removeHierarchicalGraph(String identifier);
 
 	/**
 	 *

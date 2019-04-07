@@ -7,7 +7,7 @@ public class ContentDefinition {
   private String _definition;
 
   public ContentDefinition(ContentDefinitionType contentDefinitionType, String definition) {
-    this._contentDefinitionType = _contentDefinitionType;
+    this._contentDefinitionType = contentDefinitionType;
     this._definition = definition;
   }
 

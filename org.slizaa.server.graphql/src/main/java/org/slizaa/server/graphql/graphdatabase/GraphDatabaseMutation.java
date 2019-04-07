@@ -1,138 +1,50 @@
 package org.slizaa.server.graphql.graphdatabase;
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver;
-import org.slizaa.core.mvnresolver.api.IMvnCoordinate;
-import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
-import org.slizaa.server.service.slizaa.ISlizaaService;
-import org.slizaa.server.service.slizaa.IGraphDatabase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 
 @Component
-public class GraphDatabaseMutation implements GraphQLMutationResolver {
+public class GraphDatabaseMutation extends AbstractDatabaseAwareComponent implements GraphQLMutationResolver {
 
-  //
-  @Autowired
-  private ISlizaaService slizaaService;
-
-  /**
-   * @param identifier
-   * @return
-   */
   public GraphDatabase newGraphDatabase(String identifier) {
-
-    // create the structure database
-    IGraphDatabase structureDatabase = slizaaService.newGraphDatabase(identifier);
-
-    // return the result
-    return GraphDatabase.convert(structureDatabase);
+    
+    return GraphDatabase.convert(slizaaService().newGraphDatabase(identifier));
   }
 
-  public GraphDatabase startGraphDatabase(String identifier) {
+  public GraphDatabase startGraphDatabase(String databaseId) {
 
-    // get the structure database
-    // TODO: check exists
-    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-
-    try {
-      structureDatabase.start();
-    } catch (IllegalStateException exception) {
-      // TODO: log
-    }
-
-    // return the result
-    return GraphDatabase.convert(structureDatabase);
+    return executeOnDatabase(databaseId, database -> {
+      database.start();
+    });
   }
 
-  public GraphDatabase stopGraphDatabase(String identifier) {
+  public GraphDatabase stopGraphDatabase(String databaseId) {
 
-    // get the structure database
-    // TODO: check exists
-    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-
-    try {
-      structureDatabase.stop();
-    } catch (IllegalStateException exception) {
-      // TODO: log
-    }
-
-    // return the result
-    return GraphDatabase.convert(structureDatabase);
+    return executeOnDatabase(databaseId, database -> {
+      database.stop();
+    });
   }
 
-  public GraphDatabase populateGraphDatabase(String identifier) {
+  public GraphDatabase populateGraphDatabase(String databaseId) {
 
-    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-
-    //
-    try {
-      structureDatabase.parse(true);
-    } catch (IllegalStateException exception) {
-      // TODO: log
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    // return the result
-    return GraphDatabase.convert(structureDatabase);
+    return executeOnDatabase(databaseId, database -> {
+      database.parse(true);
+    });
   }
 
-  /**
-   * 
-   * @param databaseId
-   * @param contentDefinitionFactoryId
-   * @param contentDefinition
-   * @return
-   */
   public GraphDatabase setContentDefinition(String databaseId, String contentDefinitionFactoryId,
       String contentDefinition) {
 
-    //
-    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(databaseId);
-    
-    // TODO!
-
-    // return the result
-    return GraphDatabase.convert(structureDatabase);
+    return executeOnDatabase(databaseId, database -> {
+      database.setContentDefinitionProvider(contentDefinitionFactoryId, contentDefinition);
+    });
   }
-
-//	public GraphDatabase setMvnBasedContentDefinition(String identifier, List<String> artifactIDs) {
-//
-//		//
-//		MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProvider();
-//
-//		List<MvnCoordinate> result = new ArrayList<>();
-//
-//		//
-//		for (String artifactID : artifactIDs) {
-//			IMvnCoordinate mvnCoordinate = mvnBasedContentDefinitionProvider.addArtifact(artifactID);
-//			result.add(new MvnCoordinate(mvnCoordinate));
-//		}
-//
-//		//
-//		IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(identifier);
-//		structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
-//
-//    // return the result
-//    return GraphDatabase.convert(structureDatabase);
-//	}
 
   public GraphDatabase createHierarchicalGraph(String databaseId, String hierarchicalGraphId) {
 
-    IGraphDatabase structureDatabase = slizaaService.getGraphDatabase(databaseId);
-
-    //
-    try {
-      structureDatabase.createNewHierarchicalGraph(hierarchicalGraphId);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-    // return the result
-    return GraphDatabase.convert(structureDatabase);
+    return executeOnDatabase(databaseId, database -> {
+      database.newHierarchicalGraph(hierarchicalGraphId);
+    });
   }
 }

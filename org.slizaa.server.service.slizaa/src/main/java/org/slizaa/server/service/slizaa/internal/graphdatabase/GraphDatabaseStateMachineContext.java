@@ -8,9 +8,11 @@ import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.IMappingProvider;
 import org.slizaa.scanner.api.graphdb.IGraphDb;
 import org.slizaa.scanner.api.importer.IModelImporter;
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProviderFactory;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.slizaa.server.service.slizaa.internal.hierarchicalgraph.HierarchicalGraph;
+import org.slizaa.server.service.slizaa.internal.hierarchicalgraph.HierarchicalGraphDefinition;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,74 +25,83 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GraphDatabaseStateMachineContext {
 
-    /**
-     * the id of the structure database
-     */
-    private String _id;
+  /**
+   * the id of the structure database
+   */
+  private String                         _id;
 
-    /**
-     * the database directory
-     */
-    private File _databaseDirectory;
-    private GraphDatabaseImpl _structureDatabase;
-    private SlizaaServiceImpl _slizaaService;
+  /**
+   * the database directory
+   */
+  private File                           _databaseDirectory;
 
-    private IContentDefinitionProvider _contentDefinitionProvider;
-    private IGraphDb _graphDb;
-    private IBoltClient _boltClient;
+  private GraphDatabaseImpl              _structureDatabase;
 
-    private Map<String, HierarchicalGraph> _hierarchicalGraphs;
+  private SlizaaServiceImpl              _slizaaService;
 
-    private int _port = -1;
+  private IContentDefinitionProvider     _contentDefinitionProvider;
 
-    GraphDatabaseStateMachineContext(String id, File databaseDirectory, int port, SlizaaServiceImpl slizaaService) {
+  private IGraphDb                       _graphDb;
 
-        this._id = checkNotNull(id);
-        this._databaseDirectory = checkNotNull(databaseDirectory);
-        this._slizaaService = checkNotNull(slizaaService);
+  private IBoltClient                    _boltClient;
 
-        //
-        _hierarchicalGraphs = new HashMap<>();
-        _port = SlizaaSocketUtils.available(port) ? port : SlizaaSocketUtils.findAvailableTcpPort();
-    }
+  private Map<String, HierarchicalGraph> _hierarchicalGraphs;
 
-    void setStructureDatabase(GraphDatabaseImpl structureDatabase) {
-        _structureDatabase = structureDatabase;
-    }
+  private int                            _port = -1;
 
-    public String getIdentifier() {
-        return _id;
-    }
+  GraphDatabaseStateMachineContext(String id, File databaseDirectory, int port, SlizaaServiceImpl slizaaService) {
 
-    public int getPort() {
-        return _port;
-    }
+    this._id = checkNotNull(id);
+    this._databaseDirectory = checkNotNull(databaseDirectory);
+    this._slizaaService = checkNotNull(slizaaService);
 
-    public void setContentDefinitionProvider(IContentDefinitionProvider contentDefinitionProvider) {
-        this._contentDefinitionProvider = contentDefinitionProvider;
-    }
-
-    /**
-     * @return
-     */
-    public boolean hasContentDefinitionProvider() {
-        return _contentDefinitionProvider != null;
-    }
-    
-    /**
-     * 
-     * @return
-     */
-    public IContentDefinitionProvider getContentDefinitionProvider() {
-      return _contentDefinitionProvider;
+    //
+    _hierarchicalGraphs = new HashMap<>();
+    _port = SlizaaSocketUtils.available(port) ? port : SlizaaSocketUtils.findAvailableTcpPort();
   }
 
+  void setStructureDatabase(GraphDatabaseImpl structureDatabase) {
+    _structureDatabase = structureDatabase;
+  }
 
-    public boolean isRunning() {
-        return _graphDb != null;
-    }
+  public String getIdentifier() {
+    return _id;
+  }
 
-    public void start() {
+  public int getPort() {
+    return _port;
+  }
+
+  public void setContentDefinitionProvider(String contentDefinitionFactoryId, String contentDefinition) {
+
+    IContentDefinitionProviderFactory<?> factory = _slizaaService
+        .getContentDefinitionProviderFactory(contentDefinitionFactoryId);
+
+    IContentDefinitionProvider<?> contentDefinitionProvider = factory.fromExternalRepresentation(contentDefinition);
+
+    this._contentDefinitionProvider = contentDefinitionProvider;
+  }
+
+  /**
+   * @return
+   */
+  public boolean hasContentDefinitionProvider() {
+    return _contentDefinitionProvider != null;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public IContentDefinitionProvider getContentDefinitionProvider() {
+    return _contentDefinitionProvider;
+  }
+
+  public boolean isRunning() {
+    return _graphDb != null;
+  }
+
+  public void start() {
 
         if (_port == -1 || !SlizaaSocketUtils.available(_port)) {
             _port = SlizaaSocketUtils.findAvailableTcpPort();
@@ -100,169 +111,172 @@ public class GraphDatabaseStateMachineContext {
             return _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(_port, _databaseDirectory)
                     .create();
         });
+        
+        //
+        connectBoltClient();
     }
 
-    public void stop() {
-        if (this._boltClient != null) {
-            this._boltClient.disconnect();
-            this._boltClient = null;
-        }
-        if (this._graphDb != null) {
-            this._graphDb.shutdown();
-            this._graphDb = null;
-        }
+  public void stop() {
+    if (this._boltClient != null) {
+      this._boltClient.disconnect();
+      this._boltClient = null;
     }
-
-    public void terminate() {
-        stop();
-        _slizaaService.structureDatabases().remove(_id);
-        clearDatabaseDirectory();
+    if (this._graphDb != null) {
+      this._graphDb.shutdown();
+      this._graphDb = null;
     }
+  }
 
-    /**
-     * @throws Exception
-     */
-    public boolean parse(boolean startDatabase) {
+  public void terminate() {
+    stop();
+    _slizaaService.structureDatabases().remove(_id);
+    clearDatabaseDirectory();
+  }
 
-        // delete all contained files
-        clearDatabaseDirectory();
+  /**
+   * @throws Exception
+   */
+  public boolean parse(boolean startDatabase) {
 
-        // create the graph database
-        _graphDb = executeWithCtxClassLoader(() -> {
+    // delete all contained files
+    clearDatabaseDirectory();
 
-            IModelImporter modelImporter = _slizaaService.getInstanceProvider().getModelImporterFactory()
-                    .createModelImporter(_contentDefinitionProvider, _databaseDirectory,
-                            _slizaaService.getInstanceProvider().getParserFactories(),
-                            _slizaaService.getInstanceProvider().getCypherStatementRegistry().getAllStatements());
+    // create the graph database
+    _graphDb = executeWithCtxClassLoader(() -> {
 
-            // parse the model
-            if (startDatabase) {
+      IModelImporter modelImporter = _slizaaService.getInstanceProvider().getModelImporterFactory().createModelImporter(
+          _contentDefinitionProvider, _databaseDirectory, _slizaaService.getInstanceProvider().getParserFactories(),
+          _slizaaService.getInstanceProvider().getCypherStatementRegistry().getAllStatements());
 
-                //
-                modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()),
-                        () -> {
+      // parse the model
+      if (startDatabase) {
 
-                            // recompute port if necessary
-                            if (_port == -1 || !SlizaaSocketUtils.available(_port)) {
-                                _port = SlizaaSocketUtils.findAvailableTcpPort();
-                            }
-                            return _slizaaService.getInstanceProvider().getGraphDbFactory()
-                                    .newGraphDb(_port, _databaseDirectory).create();
-                        });
-                return modelImporter.getGraphDb();
-            }
-            //
-            else {
-                modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()));
-                return null;
-            }
+        //
+        modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()), () -> {
+
+          // recompute port if necessary
+          if (_port == -1 || !SlizaaSocketUtils.available(_port)) {
+            _port = SlizaaSocketUtils.findAvailableTcpPort();
+          }
+          return _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(_port, _databaseDirectory)
+              .create();
+        });
+        return modelImporter.getGraphDb();
+      }
+      //
+      else {
+        modelImporter.parse(new DefaultProgressMonitor("Parse", 100, DefaultProgressMonitor.consoleLogger()));
+        return null;
+      }
+    });
+
+    return isRunning();
+  }
+
+  public void storeConfiguration() {
+    _slizaaService.storeConfig();
+  }
+
+  private void clearDatabaseDirectory() {
+    try {
+      Files.walk(_databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
+          .map(Path::toFile).forEach(File::delete);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public boolean hasPopulatedDatabaseDirectory() {
+    return _databaseDirectory.isDirectory() && _databaseDirectory.list().length > 0;
+  }
+
+  /**
+   * @param identifier
+   * @return
+   */
+  public IHierarchicalGraph createHierarchicalGraph(String identifier) {
+
+    // TODO: move to start/stop
+    connectBoltClient();
+
+    //
+    HierarchicalGraph hierarchicalGraph = new HierarchicalGraph(new HierarchicalGraphDefinition(identifier),
+        _structureDatabase, (def) -> {
+          
+          IMappingProvider mappingProvider = _slizaaService.getInstanceProvider().getMappingProviders().get(0);
+          
+          return _slizaaService.getMappingService().convert(mappingProvider, this._boltClient,
+              new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
         });
 
-        return isRunning();
+    hierarchicalGraph.initialize();
+    
+    _hierarchicalGraphs.put(identifier, hierarchicalGraph);
+
+    return hierarchicalGraph;
+  }
+
+  public void disposeHierarchicalGraph(String identifier) {
+
+  }
+
+  public List<IHierarchicalGraph> getHierarchicalGraphs() {
+    return new ArrayList<>(_hierarchicalGraphs.values());
+  }
+
+  public IHierarchicalGraph getHierarchicalGraph(String identifier) {
+    return _hierarchicalGraphs.get(identifier);
+  }
+
+  /**
+   * @param action
+   * @return
+   * @throws Exception
+   */
+  private <T> T executeWithCtxClassLoader(Action<T> action) {
+
+    //
+    checkNotNull(action);
+
+    // store the current ctx class loader
+    ClassLoader currentContextClassLoader = Thread.currentThread().getContextClassLoader();
+
+    try {
+
+      // set the extension class loader as the context class loader
+      Thread.currentThread()
+          .setContextClassLoader(_slizaaService.getInstanceProvider().getCurrentExtensionClassLoader());
+
+      // execute the action
+      try {
+        return action.execute();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
+    } finally {
+
+      // reset the current ctx class loader
+      Thread.currentThread().setContextClassLoader(currentContextClassLoader);
     }
 
-    public void storeConfiguration() {
-        _slizaaService.storeConfig();
+  }
+
+  private void connectBoltClient() {
+    if (_boltClient == null) {
+      // TODO!
+      this._boltClient = _slizaaService.getBoltClientFactory().createBoltClient("bolt://localhost:" + _port);
+      this._boltClient.connect();
     }
+  }
 
-    private void clearDatabaseDirectory() {
-        try {
-            Files.walk(_databaseDirectory.toPath(), FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder())
-                    .map(Path::toFile).forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  /**
+   * @param <T>
+   * @author Gerd W&uuml;therich (gw@code-kontor.io)
+   */
+  @FunctionalInterface
+  private interface Action<T> {
 
-    public boolean hasPopulatedDatabaseDirectory() {
-        return _databaseDirectory.isDirectory() && _databaseDirectory.list().length > 0;
-    }
-
-    /**
-     * @param identifier
-     * @return
-     */
-    public IHierarchicalGraph createHierarchicalGraph(String identifier) {
-
-        if (_boltClient == null) {
-            // TODO!
-            this._boltClient = _slizaaService.getBoltClientFactory().createBoltClient("bolt://localhost:" + _port);
-            this._boltClient.connect();
-        }
-
-        // TODO: Spring?
-        IMappingService mappingService = IMappingService.createHierarchicalgraphMappingService();
-
-        // TODO!
-        IMappingProvider mappingProvider = _slizaaService.getInstanceProvider().getMappingProviders().get(0);
-
-        //
-        HGRootNode rootNode = mappingService.convert(mappingProvider, this._boltClient,
-                new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
-
-//		//
-//		_labelDefinitionProvider = mappingProvider.getLabelDefinitionProvider();
-
-        HierarchicalGraph hierarchicalGraph = new HierarchicalGraph(identifier, rootNode, _structureDatabase);
-
-        _hierarchicalGraphs.put(identifier, hierarchicalGraph);
-
-        return hierarchicalGraph;
-    }
-
-    public void disposeHierarchicalGraph(String identifier) {
-
-    }
-
-    public List<IHierarchicalGraph> getHierarchicalGraphs() {
-        return new ArrayList<>(_hierarchicalGraphs.values());
-    }
-
-    public IHierarchicalGraph getHierarchicalGraph(String identifier) {
-        return _hierarchicalGraphs.get(identifier);
-    }
-
-    /**
-     * @param action
-     * @return
-     * @throws Exception
-     */
-    private <T> T executeWithCtxClassLoader(Action<T> action) {
-
-        //
-        checkNotNull(action);
-
-        // store the current ctx class loader
-        ClassLoader currentContextClassLoader = Thread.currentThread().getContextClassLoader();
-
-        try {
-
-            // set the extension class loader as the context class loader
-            Thread.currentThread()
-                    .setContextClassLoader(_slizaaService.getInstanceProvider().getCurrentExtensionClassLoader());
-
-            // execute the action
-            try {
-                return action.execute();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-        } finally {
-
-            // reset the current ctx class loader
-            Thread.currentThread().setContextClassLoader(currentContextClassLoader);
-        }
-
-    }
-
-    /**
-     * @param <T>
-     * @author Gerd W&uuml;therich (gw@code-kontor.io)
-     */
-    @FunctionalInterface
-    private interface Action<T> {
-
-        T execute() throws Exception;
-    }
+    T execute() throws Exception;
+  }
 }

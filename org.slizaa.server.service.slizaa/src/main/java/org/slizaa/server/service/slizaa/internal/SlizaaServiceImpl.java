@@ -18,15 +18,17 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slizaa.core.boltclient.IBoltClientFactory;
+import org.slizaa.hierarchicalgraph.graphdb.mapping.service.IMappingService;
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProviderFactory;
 import org.slizaa.server.service.backend.IBackendService;
 import org.slizaa.server.service.backend.IBackendServiceInstanceProvider;
 import org.slizaa.server.service.configuration.IConfigurationService;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.ISlizaaService;
-import org.slizaa.server.service.slizaa.internal.configuration.SlizaaServiceConfiguration;
 import org.slizaa.server.service.slizaa.internal.configuration.GraphDatabaseConfiguration;
 import org.slizaa.server.service.slizaa.internal.configuration.GraphDatabaseHierarchicalGraphConfiguration;
+import org.slizaa.server.service.slizaa.internal.configuration.SlizaaServiceConfiguration;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseFactory;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.SlizaaSocketUtils;
 import org.slizaa.server.service.svg.ISvgService;
@@ -42,188 +44,213 @@ import org.springframework.stereotype.Component;
 @Component
 public class SlizaaServiceImpl implements ISlizaaService {
 
-	{
-		org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
-		org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport
-				.registerCustomHierarchicalgraphFactory();
-	}
+  {
+    org.slizaa.hierarchicalgraph.core.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+    org.slizaa.hierarchicalgraph.graphdb.model.CustomFactoryStandaloneSupport.registerCustomHierarchicalgraphFactory();
+  }
 
-	private static final String CONFIG_ID = "org.slizaa.server.service.slizaa";
+  private static final String                       CONFIG_ID           = "org.slizaa.server.service.slizaa";
 
-	private static final Logger logger = LoggerFactory.getLogger(SlizaaServiceImpl.class);
+  private static final Logger                       logger              = LoggerFactory
+      .getLogger(SlizaaServiceImpl.class);
 
-	@Autowired
-	private SlizaaServiceDatabaseProperties _serviceProperties;
+  @Autowired
+  private SlizaaServiceDatabaseProperties           _serviceProperties;
 
-	@Autowired
-	private IBackendServiceInstanceProvider _backendService;
+  @Autowired
+  private IBackendServiceInstanceProvider           _backendService;
 
-	@Autowired
-	private IExtensionService _extensionService;
+  @Autowired
+  private IExtensionService                         _extensionService;
 
-	@Autowired
-	private IConfigurationService _configurationService;
+  @Autowired
+  private IConfigurationService                     _configurationService;
 
-	@Autowired
-	private ISvgService _svgService;
-	
-	@Autowired
-	private GraphDatabaseFactory _graphDatabaseFactory;
+  @Autowired
+  private ISvgService                               _svgService;
 
-	private ExecutorService _executorService;
+  @Autowired
+  private GraphDatabaseFactory                      _graphDatabaseFactory;
 
-	private ConcurrentHashMap<String, IGraphDatabase> _structureDatabases = new ConcurrentHashMap<>();
+  @Autowired
+  private ContentDefinitionProviderFactoryService   _contentDefinitionProviderFactoryService;
 
-	private IBoltClientFactory _boltClientFactory;
+  @Autowired
+  private IMappingService                           _mappingService;
 
-	/**
-	 * <p>
-	 * </p>
-	 */
-	@PostConstruct
-	public void initialize() throws Exception {
+  private ExecutorService                           _executorService;
 
-		// TODO: config!
-		this._executorService = Executors.newFixedThreadPool(20);
-		_boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
+  private ConcurrentHashMap<String, IGraphDatabase> _structureDatabases = new ConcurrentHashMap<>();
 
-		SlizaaServiceConfiguration configuration = _configurationService.load(CONFIG_ID,
-				SlizaaServiceConfiguration.class);
+  private IBoltClientFactory                        _boltClientFactory;
 
-		if (configuration != null) {
+  /**
+   * <p>
+   * </p>
+   */
+  @PostConstruct
+  public void initialize() throws Exception {
 
-			for (GraphDatabaseConfiguration dbConfig : configuration.getGraphDatabases()) {
+    // TODO: config!
+    this._executorService = Executors.newFixedThreadPool(20);
+    _boltClientFactory = IBoltClientFactory.newInstance(this._executorService);
 
-				// create
-				IGraphDatabase graphDatabase = createStructureDatabaseIfAbsent(dbConfig.getIdentifier(), dbConfig.getPort());
+    SlizaaServiceConfiguration configuration = _configurationService.load(CONFIG_ID, SlizaaServiceConfiguration.class);
 
-				//
-				System.out.println("****************************************************************");
-				System.out.println(dbConfig.getContentDefinitionCfg().getContentDefinitionFactoryId());
-				System.out.println(dbConfig.getContentDefinitionCfg().getExternalRepresentation());
-				System.out.println("****************************************************************");
+    if (configuration != null) {
 
-				// and start
-				if (dbConfig.isRunning()) {
-					graphDatabase.start();
-				}
-				
-				// 
-				for (GraphDatabaseHierarchicalGraphConfiguration hierarchicalGraphCfg : dbConfig.getHierarchicalGraphs()) {
-					graphDatabase.createNewHierarchicalGraph(hierarchicalGraphCfg.getIdentifier());
-				}
-				
+      for (GraphDatabaseConfiguration dbConfig : configuration.getGraphDatabases()) {
 
-			}
-		}
-	}
+        try {
 
-	@PreDestroy
-	public void dispose() throws InterruptedException {
+          // create
+          IGraphDatabase graphDatabase = createStructureDatabaseIfAbsent(dbConfig.getIdentifier(), dbConfig.getPort());
 
-		this._executorService.shutdown();
-		this._executorService.awaitTermination(5, TimeUnit.SECONDS);
-	}
+          //
+          if (dbConfig.getContentDefinition() != null) {
+            graphDatabase.setContentDefinitionProvider(dbConfig.getContentDefinition().getFactoryId(),
+                dbConfig.getContentDefinition().getContentDefinition());
+          }
 
-	@Override
-	public IExtensionService getExtensionService() {
-		return _extensionService;
-	}
+          // and start
+          if (dbConfig.isRunning()) {
+            graphDatabase.start();
+          }
 
-	@Override
-	public IBackendService getBackendService() {
-		return _backendService;
-	}
+          //
+          for (GraphDatabaseHierarchicalGraphConfiguration hierarchicalGraphCfg : dbConfig.getHierarchicalGraphs()) {
+            graphDatabase.newHierarchicalGraph(hierarchicalGraphCfg.getIdentifier());
+          }
 
-	@Override
+        } catch (Exception e) {
+
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+          _structureDatabases.remove(dbConfig.getIdentifier());
+        }
+
+      }
+    }
+  }
+
+  @PreDestroy
+  public void dispose() throws InterruptedException {
+
+    this._executorService.shutdown();
+    this._executorService.awaitTermination(5, TimeUnit.SECONDS);
+  }
+
+  @Override
+  public IExtensionService getExtensionService() {
+    return _extensionService;
+  }
+
+  @Override
+  public IBackendService getBackendService() {
+    return _backendService;
+  }
+
+  @Override
   public ISvgService getSvgService() {
     return _svgService;
   }
 
   @Override
-	public boolean hasStructureDatabases() {
-		return _structureDatabases != null;
-	}
+  public boolean hasStructureDatabases() {
+    return _structureDatabases != null;
+  }
 
-	@Override
-	public List<? extends IGraphDatabase> getGraphDatabases() {
+  @Override
+  public List<? extends IGraphDatabase> getGraphDatabases() {
 
-		//
-		List<? extends IGraphDatabase> result = new ArrayList<>(_structureDatabases.values());
-		result.sort(new Comparator<IGraphDatabase>() {
-			@Override
-			public int compare(IGraphDatabase o1, IGraphDatabase o2) {
-				return o1.getIdentifier().compareTo(o2.getIdentifier());
-			}
-		});
-		return result;
-	}
+    //
+    List<? extends IGraphDatabase> result = new ArrayList<>(_structureDatabases.values());
+    result.sort(new Comparator<IGraphDatabase>() {
+      @Override
+      public int compare(IGraphDatabase o1, IGraphDatabase o2) {
+        return o1.getIdentifier().compareTo(o2.getIdentifier());
+      }
+    });
+    return result;
+  }
 
-	@Override
-	public IGraphDatabase getGraphDatabase(String identifier) {
-		return _structureDatabases.get(identifier);
-	}
+  @Override
+  public IGraphDatabase getGraphDatabase(String identifier) {
+    return _structureDatabases.get(identifier);
+  }
 
-	@Override
-	public IGraphDatabase newGraphDatabase(String identifier) {
+  @Override
+  public IGraphDatabase newGraphDatabase(String identifier) {
 
-		//
-		if (_structureDatabases.containsKey(identifier)) {
-			// TODO
-			throw new RuntimeException();
-		}
+    //
+    if (_structureDatabases.containsKey(identifier)) {
+      // TODO
+      throw new RuntimeException();
+    }
 
-		//
-		storeConfig();
+    //
+    storeConfig();
 
-		//
-		return createStructureDatabaseIfAbsent(identifier, SlizaaSocketUtils.findAvailableTcpPort());
-	}
+    //
+    return createStructureDatabaseIfAbsent(identifier, SlizaaSocketUtils.findAvailableTcpPort());
+  }
 
-	public void storeConfig() {
+  public void storeConfig() {
 
-		SlizaaServiceConfiguration configuration = new SlizaaServiceConfiguration();
-		
-		for (IGraphDatabase graphDatabase : _structureDatabases.values()) {
-			configuration.getGraphDatabases()
-					.add(new GraphDatabaseConfiguration(graphDatabase));
-		}
+    SlizaaServiceConfiguration configuration = new SlizaaServiceConfiguration();
 
-		// save the config
-		try {
-			_configurationService.store(CONFIG_ID, configuration);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    for (IGraphDatabase graphDatabase : _structureDatabases.values()) {
+      configuration.getGraphDatabases().add(new GraphDatabaseConfiguration(graphDatabase));
+    }
 
-	public boolean hasStructureDatabase(String identifier) {
-		return _structureDatabases.containsKey(checkNotNull(identifier));
-	}
+    // save the config
+    try {
+      _configurationService.store(CONFIG_ID, configuration);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public IBackendServiceInstanceProvider getInstanceProvider() {
-		return _backendService;
-	}
+  public boolean hasStructureDatabase(String identifier) {
+    return _structureDatabases.containsKey(checkNotNull(identifier));
+  }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public IBoltClientFactory getBoltClientFactory() {
-		return _boltClientFactory;
-	}
+  /**
+   * 
+   * @return
+   */
+  public IBackendServiceInstanceProvider getInstanceProvider() {
+    return _backendService;
+  }
 
-	public ConcurrentHashMap<String, IGraphDatabase> structureDatabases() {
-		return _structureDatabases;
-	}
+  /**
+   * 
+   * @return
+   */
+  public IBoltClientFactory getBoltClientFactory() {
+    return _boltClientFactory;
+  }
 
-	private IGraphDatabase createStructureDatabaseIfAbsent(String identifier, int port) {
-		return _structureDatabases.computeIfAbsent(identifier, id -> _graphDatabaseFactory.newInstance(id,
-				new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), port, this));
-	}
+  /**
+   * 
+   * @return
+   */
+  public IMappingService getMappingService() {
+    return _mappingService;
+  }
+
+  public ConcurrentHashMap<String, IGraphDatabase> structureDatabases() {
+    return _structureDatabases;
+  }
+
+  private IGraphDatabase createStructureDatabaseIfAbsent(String identifier, int port) {
+    return _structureDatabases.computeIfAbsent(identifier, id -> _graphDatabaseFactory.newInstance(id,
+        new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), port, this));
+  }
+
+  public IContentDefinitionProviderFactory<?> getContentDefinitionProviderFactory(String contentDefinitionFactoryId) {
+    return _contentDefinitionProviderFactoryService
+        .getContentDefinitionProviderFactory(checkNotNull(contentDefinitionFactoryId));
+  }
 }

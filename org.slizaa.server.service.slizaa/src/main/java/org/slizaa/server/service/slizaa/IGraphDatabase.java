@@ -1,8 +1,10 @@
 package org.slizaa.server.service.slizaa;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
+import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseTrigger;
 
 /**
  * <p>
@@ -44,7 +46,7 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
    *
    * @param contentDefinitionProvider
    */
-  void setContentDefinitionProvider(IContentDefinitionProvider<?> contentDefinitionProvider);
+  void setContentDefinitionProvider(String contentDefinitionFactoryId, String contentDefinition);
 
   /**
    * <p>
@@ -74,5 +76,10 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
    *
    */
   void dispose();
-
+  
+  /**
+   * 
+   * @return
+   */
+  List<GraphDatabaseTrigger> getAllowedTrigger();
 }

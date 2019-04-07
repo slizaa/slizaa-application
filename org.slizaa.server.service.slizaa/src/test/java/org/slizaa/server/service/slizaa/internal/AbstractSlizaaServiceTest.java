@@ -48,5 +48,11 @@ public abstract class AbstractSlizaaServiceTest {
 		return _slizaaService;
 	}
 
-	
+  public static File getConfigurationRootDirectory() {
+    return configurationRootDirectory;
+  }
+
+  public static File getDatabaseRootDirectory() {
+    return databaseRootDirectory;
+  }	
 }

@@ -9,25 +9,25 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class GraphDatabaseContentDefinitionConfiguration {
 
-    @JsonProperty("factoryId")
-    private String _contentDefinitionFactoryId;
+  @JsonProperty("factoryId")
+  private String _factoryId;
 
-    @JsonProperty("contentDefinition")
-    private String _externalRepresentation;
+  @JsonProperty("contentDefinition")
+  private String _contentDefinition;
 
-    public GraphDatabaseContentDefinitionConfiguration() {
-    }
+  public GraphDatabaseContentDefinitionConfiguration() {
+  }
 
-    public GraphDatabaseContentDefinitionConfiguration(String contentDefinitionFactoryId, String externalRepresenation) {
-        _contentDefinitionFactoryId = checkNotNull(contentDefinitionFactoryId);
-        _externalRepresentation = checkNotNull(externalRepresenation);
-    }
+  public GraphDatabaseContentDefinitionConfiguration(String factoryId, String contentDefinition) {
+    _factoryId = checkNotNull(factoryId);
+    _contentDefinition = checkNotNull(contentDefinition);
+  }
 
-    public String getContentDefinitionFactoryId() {
-        return _contentDefinitionFactoryId;
-    }
+  public String getFactoryId() {
+    return _factoryId;
+  }
 
-    public String getExternalRepresentation() {
-        return _externalRepresentation;
-    }
+  public String getContentDefinition() {
+    return _contentDefinition;
+  }
 }

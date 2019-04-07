@@ -20,61 +20,61 @@ import java.util.List;
 
 public class HierarchicalGraphTest extends AbstractSlizaaServiceTest {
 
-    @Autowired
-    private SlizaaServiceImpl _slizaaService;
+  @Autowired
+  private SlizaaServiceImpl _slizaaService;
 
-    private IGraphDatabase _structureDatabase;
+  private IGraphDatabase    _structureDatabase;
 
-    @Before
-    public void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
 
-        String STRUCTURE_DATABASE_NAME = "HURZ";
+    String STRUCTURE_DATABASE_NAME = "HURZ";
 
-        if (!_slizaaService.getBackendService().hasInstalledExtensions()) {
-            _slizaaService.getBackendService().installExtensions(_slizaaService.getExtensionService().getExtensions());
-        }
-
-        if (!_slizaaService.hasStructureDatabase(STRUCTURE_DATABASE_NAME)) {
-
-            // create a new database
-            _structureDatabase = _slizaaService.newGraphDatabase(STRUCTURE_DATABASE_NAME);
-
-            // configure
-            MvnBasedContentDefinitionProvider mvnBasedContentDefinitionProvider = new MvnBasedContentDefinitionProviderFactory().emptyContentDefinitionProvider();
-            mvnBasedContentDefinitionProvider
-                    .addArtifact("org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
-            _structureDatabase.setContentDefinitionProvider(mvnBasedContentDefinitionProvider);
-
-            // and parse
-            _structureDatabase.parse(true);
-        }
-        //
-        else {
-            _structureDatabase = _slizaaService.getGraphDatabase(STRUCTURE_DATABASE_NAME);
-            _structureDatabase.start();
-        }
+    if (!_slizaaService.getBackendService().hasInstalledExtensions()) {
+      _slizaaService.getBackendService().installExtensions(_slizaaService.getExtensionService().getExtensions());
     }
 
-    @After
-    public void tearDown() throws Exception {
+    if (!_slizaaService.hasStructureDatabase(STRUCTURE_DATABASE_NAME)) {
+
+      // create a new database
+      _structureDatabase = _slizaaService.newGraphDatabase(STRUCTURE_DATABASE_NAME);
+
+      // configure
+      _structureDatabase.setContentDefinitionProvider(
+          "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
+          "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
+
+      // and parse
+      _structureDatabase.parse(true);
     }
-
-    @Test
-    public void hierarchicalGraphTest() {
-
-        IHierarchicalGraph hierarchicalGraph = _structureDatabase.createNewHierarchicalGraph("HG");
-
-        HGRootNode rootNode = hierarchicalGraph.getRootNode();
-
-        ILabelDefinitionProvider labelDefinitionProvider = rootNode.getExtension(ILabelDefinitionProvider.class);
-
-        List<HGNode> nodes = rootNode.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren();
-
-        IDependencyStructureMatrix dependencyStructureMatrix = GraphUtils.createDependencyStructureMatrix(nodes);
-        for (int i = 0; i < nodes.size(); i++) {
-            for (int j = 0; j < nodes.size(); j++) {
-                System.out.println(i + " -> " + j + " :" + dependencyStructureMatrix.getWeight(i, j));
-            }
-        }
+    //
+    else {
+      _structureDatabase = _slizaaService.getGraphDatabase(STRUCTURE_DATABASE_NAME);
+      _structureDatabase.start();
     }
+  }
+
+  @After
+  public void tearDown() throws Exception {
+  }
+
+  @Test
+  public void hierarchicalGraphTest() {
+
+    IHierarchicalGraph hierarchicalGraph = _structureDatabase.newHierarchicalGraph("HG");
+
+    HGRootNode rootNode = hierarchicalGraph.getRootNode();
+
+    ILabelDefinitionProvider labelDefinitionProvider = rootNode.getExtension(ILabelDefinitionProvider.class);
+
+    List<HGNode> nodes = rootNode.getChildren().get(0).getChildren().get(0).getChildren().get(0).getChildren().get(0)
+        .getChildren();
+
+    IDependencyStructureMatrix dependencyStructureMatrix = GraphUtils.createDependencyStructureMatrix(nodes);
+    for (int i = 0; i < nodes.size(); i++) {
+      for (int j = 0; j < nodes.size(); j++) {
+        System.out.println(i + " -> " + j + " :" + dependencyStructureMatrix.getWeight(i, j));
+      }
+    }
+  }
 }
