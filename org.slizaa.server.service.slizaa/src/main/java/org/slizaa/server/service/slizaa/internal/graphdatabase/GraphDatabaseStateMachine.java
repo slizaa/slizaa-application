@@ -58,10 +58,8 @@ public class GraphDatabaseStateMachine
         .source(GraphDatabaseState.INITIAL)
         .target(GraphDatabaseState.CONFIGURED)
         .event(GraphDatabaseTrigger.SET_CONTENT_DEFINITION)
-        .action(actionWithCtx((stateCtx, ctx) -> {         
-          String contentDefinitionFactoryId = stateCtx.getMessageHeaders().get(GraphDatabaseImpl.CONTENT_DEFINITION_FACTORY_ID, String.class);
-          String contentDefinition =   stateCtx.getMessageHeaders().get(GraphDatabaseImpl.CONTENT_DEFINITION, String.class);
-          ctx.setContentDefinitionProvider(contentDefinitionFactoryId, contentDefinition);
+        .action(actionWithCtx((stateCtx, ctx) -> {
+          setContentDefinition(stateCtx, ctx);
         }))
         .and()
       // CONFIGURED  
@@ -71,7 +69,15 @@ public class GraphDatabaseStateMachine
         .event(GraphDatabaseTrigger.PARSE)
         .action(actionWithCtx((stateCtx, ctx) -> ctx.parse(stateCtx.getMessageHeaders().get(GraphDatabaseImpl.START_DATABASE_AFTER_PARSING, Boolean.class))))
         .and()
-      // PARSING  
+      .withExternal()
+        .source(GraphDatabaseState.CONFIGURED)
+        .target(GraphDatabaseState.CONFIGURED)
+        .event(GraphDatabaseTrigger.SET_CONTENT_DEFINITION)
+        .action(actionWithCtx((stateCtx, ctx) -> {
+          setContentDefinition(stateCtx, ctx);
+        }))
+        .and()
+      // PARSING
       .withChoice()
         .source(GraphDatabaseState.PARSING)
         .first(GraphDatabaseState.RUNNING, guardWithCtx(ctx -> ctx.isRunning()))
@@ -82,10 +88,8 @@ public class GraphDatabaseStateMachine
         .source(GraphDatabaseState.NOT_RUNNING)
         .target(GraphDatabaseState.CONFIGURED)
         .event(GraphDatabaseTrigger.SET_CONTENT_DEFINITION)
-        .action(actionWithCtx((stateCtx, ctx) -> {         
-          String contentDefinitionFactoryId = stateCtx.getMessageHeaders().get(GraphDatabaseImpl.CONTENT_DEFINITION_FACTORY_ID, String.class);
-          String contentDefinition =   stateCtx.getMessageHeaders().get(GraphDatabaseImpl.CONTENT_DEFINITION, String.class);
-          ctx.setContentDefinitionProvider(contentDefinitionFactoryId, contentDefinition);
+        .action(actionWithCtx((stateCtx, ctx) -> {
+          setContentDefinition(stateCtx, ctx);
         }))
         .and()
       .withExternal()
@@ -99,12 +103,6 @@ public class GraphDatabaseStateMachine
         .target(GraphDatabaseState.RUNNING)
         .event(GraphDatabaseTrigger.START)
         .action(actionWithCtx(ctx -> ctx.start()))
-        .and()
-      .withExternal()
-        .source(GraphDatabaseState.NOT_RUNNING)
-        .target(GraphDatabaseState.TERMINATED)
-        .event(GraphDatabaseTrigger.TERMINATE)
-        .action(actionWithCtx(ctx -> ctx.terminate()))
         .and()
       // RUNNING  
       .withExternal()
@@ -138,6 +136,12 @@ public class GraphDatabaseStateMachine
         .event(GraphDatabaseTrigger.TERMINATE)
         .action(actionWithCtx(ctx -> ctx.terminate()));
       // @formatter:on
+  }
+
+  private void setContentDefinition(StateContext<GraphDatabaseState, GraphDatabaseTrigger> stateCtx, GraphDatabaseStateMachineContext ctx) {
+    String contentDefinitionFactoryId = stateCtx.getMessageHeaders().get(GraphDatabaseImpl.CONTENT_DEFINITION_FACTORY_ID, String.class);
+    String contentDefinition = stateCtx.getMessageHeaders().get(GraphDatabaseImpl.CONTENT_DEFINITION, String.class);
+    ctx.setContentDefinition(contentDefinitionFactoryId, contentDefinition);
   }
 
   private Action<GraphDatabaseState, GraphDatabaseTrigger> actionWithCtx(

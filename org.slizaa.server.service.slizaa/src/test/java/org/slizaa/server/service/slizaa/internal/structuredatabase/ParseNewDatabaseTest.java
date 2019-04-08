@@ -31,7 +31,7 @@ public class ParseNewDatabaseTest extends AbstractSlizaaServiceTest {
 
   @After
   public void after() {
-    structureDatabase.dispose();
+    structureDatabase.terminate();
     assertThat(slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)).isFalse();
   }
 
@@ -40,7 +40,7 @@ public class ParseNewDatabaseTest extends AbstractSlizaaServiceTest {
 
     // create a new database and parse with start
     structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
-    structureDatabase.setContentDefinitionProvider(
+    structureDatabase.setContentDefinition(
         "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
         "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
     structureDatabase.parse(true);
@@ -54,7 +54,7 @@ public class ParseNewDatabaseTest extends AbstractSlizaaServiceTest {
 
     // create a new database and parse without start
     structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
-    structureDatabase.setContentDefinitionProvider(
+    structureDatabase.setContentDefinition(
         "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
         "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
     structureDatabase.parse(false);
@@ -68,7 +68,7 @@ public class ParseNewDatabaseTest extends AbstractSlizaaServiceTest {
 
     // create a new database and parse without start
     structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
-    structureDatabase.setContentDefinitionProvider(
+    structureDatabase.setContentDefinition(
         "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
         "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
     structureDatabase.parse(true);
@@ -84,7 +84,7 @@ public class ParseNewDatabaseTest extends AbstractSlizaaServiceTest {
 
     // create a new database and parse without start
     structureDatabase = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
-    structureDatabase.setContentDefinitionProvider(
+    structureDatabase.setContentDefinition(
         "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
         "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
     structureDatabase.parse(true);

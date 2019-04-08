@@ -72,7 +72,7 @@ public class GraphDatabaseStateMachineContext {
     return _port;
   }
 
-  public void setContentDefinitionProvider(String contentDefinitionFactoryId, String contentDefinition) {
+  public void setContentDefinition(String contentDefinitionFactoryId, String contentDefinition) {
 
     IContentDefinitionProviderFactory<?> factory = _slizaaService
         .getContentDefinitionProviderFactory(contentDefinitionFactoryId);

@@ -37,7 +37,7 @@ public class GraphDatabaseMutation extends AbstractDatabaseAwareComponent implem
       String contentDefinition) {
 
     return executeOnDatabase(databaseId, database -> {
-      database.setContentDefinitionProvider(contentDefinitionFactoryId, contentDefinition);
+      database.setContentDefinition(contentDefinitionFactoryId, contentDefinition);
     });
   }
 

@@ -108,7 +108,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
 
           //
           if (dbConfig.getContentDefinition() != null) {
-            graphDatabase.setContentDefinitionProvider(dbConfig.getContentDefinition().getFactoryId(),
+            graphDatabase.setContentDefinition(dbConfig.getContentDefinition().getFactoryId(),
                 dbConfig.getContentDefinition().getContentDefinition());
           }
 

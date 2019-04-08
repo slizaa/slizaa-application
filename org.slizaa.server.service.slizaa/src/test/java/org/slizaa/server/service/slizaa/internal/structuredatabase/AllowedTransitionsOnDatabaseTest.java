@@ -9,8 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
-import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory;
+import org.slizaa.server.service.slizaa.GraphDatabaseState;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseTrigger;
@@ -36,7 +35,11 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
 
   @After
   public void after() {
-    database.dispose();
+
+    if (GraphDatabaseState.TERMINATED.equals(database.getState())) {
+      database.terminate();
+    }
+
     assertThat(slizaaService().hasStructureDatabase(STRUCTURE_DATABASE_NAME)).isFalse();
   }
 
@@ -56,9 +59,9 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
     // create a new database and parse with start
     database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
     
-    database.setContentDefinitionProvider(
+    database.setContentDefinition(
         "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
-        "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
+        "ant4eclipse:ant4eclipse:0.5.0.rc1");
 
     assertThat(database.getAllowedTrigger())
         .containsExactlyInAnyOrder(GraphDatabaseTrigger.PARSE, GraphDatabaseTrigger.TERMINATE);
@@ -70,9 +73,9 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
     // create a new database and parse with start
     database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
     
-    database.setContentDefinitionProvider(
+    database.setContentDefinition(
         "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
-        "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
+        "ant4eclipse:ant4eclipse:0.5.0.rc1");
     
     database.parse(true);
     
@@ -80,5 +83,34 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
 
     assertThat(database.getAllowedTrigger())
         .containsExactlyInAnyOrder(GraphDatabaseTrigger.STOP, GraphDatabaseTrigger.TERMINATE);
+  }
+
+  @Test
+  public void test_NOT_RUNNING() throws IOException {
+
+    // create a new database and parse with start
+    database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
+
+    database.setContentDefinition(
+            "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
+            "ant4eclipse:ant4eclipse:0.5.0.rc1");
+
+    database.parse(false);
+    await().atMost(60, TimeUnit.SECONDS).until(() ->  GraphDatabaseState.NOT_RUNNING.equals(database.getState()));
+
+    assertThat(database.getAllowedTrigger())
+            .containsExactlyInAnyOrder(GraphDatabaseTrigger.START, GraphDatabaseTrigger.PARSE, GraphDatabaseTrigger.SET_CONTENT_DEFINITION, GraphDatabaseTrigger.TERMINATE);
+  }
+
+  @Test
+  public void test_TERMINATED() throws IOException {
+
+    // create a new database and parse with start
+    database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
+
+    database.terminate();
+
+    assertThat(database.getAllowedTrigger())
+            .containsExactlyInAnyOrder();
   }
 }

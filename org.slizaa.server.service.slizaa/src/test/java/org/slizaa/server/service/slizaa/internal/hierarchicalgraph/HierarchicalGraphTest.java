@@ -8,8 +8,6 @@ import org.slizaa.hierarchicalgraph.core.algorithms.IDependencyStructureMatrix;
 import org.slizaa.hierarchicalgraph.core.model.HGNode;
 import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.ILabelDefinitionProvider;
-import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProvider;
-import org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
@@ -40,7 +38,7 @@ public class HierarchicalGraphTest extends AbstractSlizaaServiceTest {
       _structureDatabase = _slizaaService.newGraphDatabase(STRUCTURE_DATABASE_NAME);
 
       // configure
-      _structureDatabase.setContentDefinitionProvider(
+      _structureDatabase.setContentDefinition(
           "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
           "org.springframework.statemachine:spring-statemachine-core:2.0.3.RELEASE");
 

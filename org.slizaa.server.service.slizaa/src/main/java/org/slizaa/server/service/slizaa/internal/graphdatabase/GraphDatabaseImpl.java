@@ -58,7 +58,7 @@ public class GraphDatabaseImpl implements IGraphDatabase {
   }
 
   @Override
-  public void setContentDefinitionProvider(String contentDefinitionFactoryId, String contentDefinition) {
+  public void setContentDefinition(String contentDefinitionFactoryId, String contentDefinition) {
 
     //
     Message<GraphDatabaseTrigger> triggerMessage = MessageBuilder
@@ -152,7 +152,7 @@ public class GraphDatabaseImpl implements IGraphDatabase {
   }
 
   @Override
-  public void dispose() {
+  public void terminate() {
     if (!GraphDatabaseState.TERMINATED.equals(this._stateMachine.getState().getId())) {
       trigger(GraphDatabaseTrigger.TERMINATE);
     }

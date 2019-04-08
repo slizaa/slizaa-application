@@ -42,11 +42,7 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
    */
   IContentDefinitionProvider<?> getContentDefinitionProvider();
 
-  /**
-   *
-   * @param contentDefinitionProvider
-   */
-  void setContentDefinitionProvider(String contentDefinitionFactoryId, String contentDefinition);
+  void setContentDefinition(String contentDefinitionFactoryId, String contentDefinition);
 
   /**
    * <p>
@@ -75,7 +71,7 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
   /**
    *
    */
-  void dispose();
+  void terminate();
   
   /**
    * 
