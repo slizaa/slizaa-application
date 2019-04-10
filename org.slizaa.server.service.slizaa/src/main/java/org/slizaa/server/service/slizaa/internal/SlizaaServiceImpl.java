@@ -30,6 +30,7 @@ import org.slizaa.server.service.slizaa.internal.configuration.GraphDatabaseConf
 import org.slizaa.server.service.slizaa.internal.configuration.GraphDatabaseHierarchicalGraphConfiguration;
 import org.slizaa.server.service.slizaa.internal.configuration.SlizaaServiceConfiguration;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseFactory;
+import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseImpl;
 import org.slizaa.server.service.slizaa.internal.graphdatabase.SlizaaSocketUtils;
 import org.slizaa.server.service.svg.ISvgService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,11 +105,11 @@ public class SlizaaServiceImpl implements ISlizaaService {
         try {
 
           // create
-          IGraphDatabase graphDatabase = createStructureDatabaseIfAbsent(dbConfig.getIdentifier(), dbConfig.getPort());
+          GraphDatabaseImpl graphDatabase = createStructureDatabaseIfAbsent(dbConfig.getIdentifier(), dbConfig.getPort());
 
           //
           if (dbConfig.getContentDefinition() != null) {
-            graphDatabase.setContentDefinition(dbConfig.getContentDefinition().getFactoryId(),
+            graphDatabase.stateMachineContext().setContentDefinition(dbConfig.getContentDefinition().getFactoryId(),
                 dbConfig.getContentDefinition().getContentDefinition());
           }
 
@@ -244,8 +245,8 @@ public class SlizaaServiceImpl implements ISlizaaService {
     return _structureDatabases;
   }
 
-  private IGraphDatabase createStructureDatabaseIfAbsent(String identifier, int port) {
-    return _structureDatabases.computeIfAbsent(identifier, id -> _graphDatabaseFactory.newInstance(id,
+  private GraphDatabaseImpl createStructureDatabaseIfAbsent(String identifier, int port) {
+    return (GraphDatabaseImpl) _structureDatabases.computeIfAbsent(identifier, id -> _graphDatabaseFactory.newInstance(id,
         new File(_serviceProperties.getDatabaseRootDirectoryAsFile(), identifier), port, this));
   }
 

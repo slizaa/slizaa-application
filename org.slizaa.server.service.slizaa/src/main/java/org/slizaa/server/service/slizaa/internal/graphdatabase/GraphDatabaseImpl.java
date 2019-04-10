@@ -171,6 +171,10 @@ public class GraphDatabaseImpl implements IGraphDatabase {
         .map(trigger -> trigger.getEvent()).collect(Collectors.toList());
   }
 
+  public GraphDatabaseStateMachineContext stateMachineContext() {
+    return _stateMachineContext;
+  }
+  
   private void trigger(Message<GraphDatabaseTrigger> triggerMessage) {
 
     if (!this._stateMachine.sendEvent(triggerMessage)) {

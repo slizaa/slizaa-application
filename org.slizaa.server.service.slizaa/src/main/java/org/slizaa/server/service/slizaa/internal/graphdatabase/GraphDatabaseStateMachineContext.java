@@ -114,13 +114,20 @@ public class GraphDatabaseStateMachineContext {
         
         //
         connectBoltClient();
+        
+        //
+        _hierarchicalGraphs.values().forEach(hierarchicalGraph -> hierarchicalGraph.initialize());
     }
 
   public void stop() {
+    
+    _hierarchicalGraphs.values().forEach(hierarchicalGraph -> hierarchicalGraph.dispose());
+    
     if (this._boltClient != null) {
       this._boltClient.disconnect();
       this._boltClient = null;
     }
+    
     if (this._graphDb != null) {
       this._graphDb.shutdown();
       this._graphDb = null;
@@ -161,6 +168,13 @@ public class GraphDatabaseStateMachineContext {
           return _slizaaService.getInstanceProvider().getGraphDbFactory().newGraphDb(_port, _databaseDirectory)
               .create();
         });
+        
+        //
+        connectBoltClient();
+        
+        //
+        _hierarchicalGraphs.values().forEach(hierarchicalGraph -> hierarchicalGraph.initialize());
+        
         return modelImporter.getGraphDb();
       }
       //

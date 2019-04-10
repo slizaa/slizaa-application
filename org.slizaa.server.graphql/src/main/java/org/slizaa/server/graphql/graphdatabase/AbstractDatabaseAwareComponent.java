@@ -1,8 +1,11 @@
 package org.slizaa.server.graphql.graphdatabase;
 
+import org.slizaa.server.graphql.SlizaaGraphQLError;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.ISlizaaService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import graphql.schema.DataFetchingEnvironment;
 
 public abstract class AbstractDatabaseAwareComponent {
 
@@ -24,8 +27,8 @@ public abstract class AbstractDatabaseAwareComponent {
    * @param consumer
    * @return
    */
-  protected GraphDatabase executeOnDatabase(String databaseId, DatabaseConsumer consumer) {
-
+  protected GraphDatabase executeOnDatabase(DataFetchingEnvironment environment, String databaseId, DatabaseConsumer consumer) {
+  
     // get the database
     IGraphDatabase database = _slizaaService.getGraphDatabase(databaseId);
 
@@ -38,9 +41,7 @@ public abstract class AbstractDatabaseAwareComponent {
     try {
       consumer.accept(database);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      environment.getExecutionContext().addError(new SlizaaGraphQLError(e.getMessage(), null, null));
     }
 
     // return the result
