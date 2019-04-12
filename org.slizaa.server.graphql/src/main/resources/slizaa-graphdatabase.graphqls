@@ -39,6 +39,8 @@ type ContentDefinition {
 # The Query type
 extend type Query {
 
+    contentDefinitionFactories: [ContentDefinitionType!]!
+
     graphDatabases: [GraphDatabase!]!
 
     graphDatabase(identifier: ID!): GraphDatabase
@@ -49,9 +51,9 @@ extend type Query {
 # The Mutation type
 extend type Mutation {
 
-    newGraphDatabase(databaseId: ID!): GraphDatabase!
+    createGraphDatabase(databaseId: ID!): GraphDatabase!
     
-	populateGraphDatabase(databaseId: ID!): GraphDatabase!
+	parseGraphDatabase(databaseId: ID!): GraphDatabase!
     
     startGraphDatabase(databaseId: ID!): GraphDatabase!
     
@@ -59,7 +61,7 @@ extend type Mutation {
     
 	terminateGraphDatabase(databaseId: ID!): GraphDatabase!
 
-    setContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition: String!): GraphDatabase!
+    setGraphDatabaseContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition: String!): GraphDatabase!
 
     createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase!
 }

@@ -1,5 +1,6 @@
 package org.slizaa.server.graphql.graphdatabase;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,14 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver;
  */
 @Component
 public class GraphDatabaseQuery extends AbstractDatabaseAwareComponent implements GraphQLQueryResolver {
+
+  /**
+   *
+   * @return
+   */
+  public List<ContentDefinitionType> contentDefinitionFactories() {
+    return Collections.emptyList();
+  }
 
   /**
    *

@@ -9,7 +9,7 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class GraphDatabaseMutation extends AbstractDatabaseAwareComponent implements GraphQLMutationResolver {
 
-  public GraphDatabase newGraphDatabase(String identifier, DataFetchingEnvironment environment) {
+  public GraphDatabase createGraphDatabase(String identifier, DataFetchingEnvironment environment) {
     
     return GraphDatabase.convert(slizaaService().newGraphDatabase(identifier));
   }
@@ -35,14 +35,14 @@ public class GraphDatabaseMutation extends AbstractDatabaseAwareComponent implem
     });
   }
   
-  public GraphDatabase populateGraphDatabase(String databaseId, DataFetchingEnvironment environment) {
+  public GraphDatabase parseGraphDatabase(String databaseId, DataFetchingEnvironment environment) {
 
     return executeOnDatabase(environment, databaseId, database -> {
       database.parse(true);
     });
   }
 
-  public GraphDatabase setContentDefinition(String databaseId, String contentDefinitionFactoryId,
+  public GraphDatabase setGraphDatabaseContentDefinition(String databaseId, String contentDefinitionFactoryId,
       String contentDefinition, DataFetchingEnvironment environment) {
 
     return executeOnDatabase(environment, databaseId, database -> {
