@@ -35,13 +35,18 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
    *
    * @return
    */
-  boolean hasContentDefinitionProvider();
+  boolean hasContentDefinition();
 
   /**
    * @return
    */
-  IContentDefinitionProvider<?> getContentDefinitionProvider();
+  IContentDefinitionProvider<?> getContentDefinition();
 
+  /**
+   * 
+   * @param contentDefinitionFactoryId
+   * @param contentDefinition
+   */
   void setContentDefinition(String contentDefinitionFactoryId, String contentDefinition);
 
   /**
@@ -72,10 +77,31 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
    *
    */
   void terminate();
-  
+
   /**
    * 
    * @return
    */
-  List<GraphDatabaseTrigger> getAllowedTrigger();
+  List<GraphDatabaseAction> getAvailableActions();
+
+  /**
+   * Possible actions that can executed.
+   * 
+   * @author Gerd W&uuml;therich (gw@code-kontor.io)
+   */
+  public enum GraphDatabaseAction {
+
+    SET_CONTENT_DEFINITION("setContentDefinition"), PARSE("parse"), START("start"), STOP("stop"), TERMINATE(
+        "terminate");
+
+    public String getName() {
+      return _name;
+    }
+
+    private GraphDatabaseAction(String name) {
+      _name = name;
+    }
+
+    private String _name;
+  }
 }

@@ -4,6 +4,8 @@ type GraphDatabase {
  
     state: String!
     
+    availableActions: [String!]!
+    
     port: Int!
 
     contentDefinition: ContentDefinition
@@ -54,6 +56,8 @@ extend type Mutation {
     startGraphDatabase(databaseId: ID!): GraphDatabase!
     
     stopGraphDatabase(databaseId: ID!): GraphDatabase!
+    
+	terminateGraphDatabase(databaseId: ID!): GraphDatabase!
 
     setContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition: String!): GraphDatabase!
 

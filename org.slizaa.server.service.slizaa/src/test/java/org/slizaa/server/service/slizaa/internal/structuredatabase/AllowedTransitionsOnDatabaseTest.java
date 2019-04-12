@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.slizaa.server.service.slizaa.GraphDatabaseState;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.internal.AbstractSlizaaServiceTest;
-import org.slizaa.server.service.slizaa.internal.graphdatabase.GraphDatabaseTrigger;
 
 /**
  * 
@@ -36,7 +35,7 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
   @After
   public void after() {
 
-    if (GraphDatabaseState.TERMINATED.equals(database.getState())) {
+    if (!GraphDatabaseState.TERMINATED.equals(database.getState())) {
       database.terminate();
     }
 
@@ -49,40 +48,38 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
     // create a new database and parse with start
     database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
 
-    assertThat(database.getAllowedTrigger())
-        .containsExactlyInAnyOrder(GraphDatabaseTrigger.SET_CONTENT_DEFINITION, GraphDatabaseTrigger.TERMINATE);
+    assertThat(database.getAvailableActions()).containsExactlyInAnyOrder(
+        IGraphDatabase.GraphDatabaseAction.SET_CONTENT_DEFINITION, IGraphDatabase.GraphDatabaseAction.TERMINATE);
   }
-  
+
   @Test
   public void test_SET_CONTENT_DEFINITION() throws IOException {
 
     // create a new database and parse with start
     database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
-    
-    database.setContentDefinition(
-        "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
+
+    database.setContentDefinition("org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
         "ant4eclipse:ant4eclipse:0.5.0.rc1");
 
-    assertThat(database.getAllowedTrigger())
-        .containsExactlyInAnyOrder(GraphDatabaseTrigger.PARSE, GraphDatabaseTrigger.TERMINATE);
+    assertThat(database.getAvailableActions()).containsExactlyInAnyOrder(IGraphDatabase.GraphDatabaseAction.PARSE, IGraphDatabase.GraphDatabaseAction.SET_CONTENT_DEFINITION,
+        IGraphDatabase.GraphDatabaseAction.TERMINATE);
   }
-  
+
   @Test
   public void test_RUNNING() throws IOException {
 
     // create a new database and parse with start
     database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
-    
-    database.setContentDefinition(
-        "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
-        "ant4eclipse:ant4eclipse:0.5.0.rc1");
-    
-    database.parse(true);
-    
-    await().atMost(60, TimeUnit.SECONDS).until(() -> database.isRunning()); 
 
-    assertThat(database.getAllowedTrigger())
-        .containsExactlyInAnyOrder(GraphDatabaseTrigger.STOP, GraphDatabaseTrigger.TERMINATE);
+    database.setContentDefinition("org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
+        "ant4eclipse:ant4eclipse:0.5.0.rc1");
+
+    database.parse(true);
+
+    await().atMost(60, TimeUnit.SECONDS).until(() -> database.isRunning());
+
+    assertThat(database.getAvailableActions()).containsExactlyInAnyOrder(IGraphDatabase.GraphDatabaseAction.STOP,
+        IGraphDatabase.GraphDatabaseAction.TERMINATE);
   }
 
   @Test
@@ -91,15 +88,15 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
     // create a new database and parse with start
     database = slizaaService().newGraphDatabase(STRUCTURE_DATABASE_NAME);
 
-    database.setContentDefinition(
-            "org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
-            "ant4eclipse:ant4eclipse:0.5.0.rc1");
+    database.setContentDefinition("org.slizaa.scanner.contentdefinition.MvnBasedContentDefinitionProviderFactory",
+        "ant4eclipse:ant4eclipse:0.5.0.rc1");
 
     database.parse(false);
-    await().atMost(60, TimeUnit.SECONDS).until(() ->  GraphDatabaseState.NOT_RUNNING.equals(database.getState()));
+    await().atMost(60, TimeUnit.SECONDS).until(() -> GraphDatabaseState.NOT_RUNNING.equals(database.getState()));
 
-    assertThat(database.getAllowedTrigger())
-            .containsExactlyInAnyOrder(GraphDatabaseTrigger.START, GraphDatabaseTrigger.PARSE, GraphDatabaseTrigger.SET_CONTENT_DEFINITION, GraphDatabaseTrigger.TERMINATE);
+    assertThat(database.getAvailableActions()).containsExactlyInAnyOrder(IGraphDatabase.GraphDatabaseAction.START,
+        IGraphDatabase.GraphDatabaseAction.PARSE, IGraphDatabase.GraphDatabaseAction.SET_CONTENT_DEFINITION,
+        IGraphDatabase.GraphDatabaseAction.TERMINATE);
   }
 
   @Test
@@ -110,7 +107,6 @@ public class AllowedTransitionsOnDatabaseTest extends AbstractSlizaaServiceTest 
 
     database.terminate();
 
-    assertThat(database.getAllowedTrigger())
-            .containsExactlyInAnyOrder();
+    assertThat(database.getAvailableActions()).containsExactlyInAnyOrder();
   }
 }

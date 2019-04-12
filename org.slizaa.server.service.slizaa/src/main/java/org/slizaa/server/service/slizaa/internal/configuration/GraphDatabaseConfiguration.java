@@ -44,12 +44,12 @@ public class GraphDatabaseConfiguration {
     }
 
     //
-    if (graphDatabase.getContentDefinitionProvider() != null) {
+    if (graphDatabase.getContentDefinition() != null) {
 
-      String contentDefinitionFactoryId = graphDatabase.getContentDefinitionProvider()
+      String contentDefinitionFactoryId = graphDatabase.getContentDefinition()
           .getContentDefinitionProviderFactory().getFactoryId();
 
-      String externalRepresenation = graphDatabase.getContentDefinitionProvider().toExternalRepresentation();
+      String externalRepresenation = graphDatabase.getContentDefinition().toExternalRepresentation();
 
       _contentDefinition = new GraphDatabaseContentDefinitionConfiguration(contentDefinitionFactoryId,
           externalRepresenation);

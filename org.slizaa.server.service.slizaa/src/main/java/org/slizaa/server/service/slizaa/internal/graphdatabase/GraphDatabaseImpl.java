@@ -64,8 +64,7 @@ public class GraphDatabaseImpl implements IGraphDatabase {
     Message<GraphDatabaseTrigger> triggerMessage = MessageBuilder
         .withPayload(GraphDatabaseTrigger.SET_CONTENT_DEFINITION)
         .setHeader(CONTENT_DEFINITION_FACTORY_ID, checkNotNull(contentDefinitionFactoryId))
-        .setHeader(CONTENT_DEFINITION, checkNotNull(contentDefinition))
-        .build();
+        .setHeader(CONTENT_DEFINITION, checkNotNull(contentDefinition)).build();
 
     trigger(triggerMessage);
   }
@@ -74,7 +73,7 @@ public class GraphDatabaseImpl implements IGraphDatabase {
    * @return
    */
   @Override
-  public boolean hasContentDefinitionProvider() {
+  public boolean hasContentDefinition() {
     return _stateMachineContext.hasContentDefinitionProvider();
   }
 
@@ -82,7 +81,7 @@ public class GraphDatabaseImpl implements IGraphDatabase {
    * 
    */
   @Override
-  public IContentDefinitionProvider getContentDefinitionProvider() {
+  public IContentDefinitionProvider getContentDefinition() {
     return _stateMachineContext.getContentDefinitionProvider();
   }
 
@@ -164,17 +163,17 @@ public class GraphDatabaseImpl implements IGraphDatabase {
   }
 
   @Override
-  public List<GraphDatabaseTrigger> getAllowedTrigger() {
+  public List<GraphDatabaseAction> getAvailableActions() {
     return _stateMachine.getTransitions().stream()
         .filter(transition -> transition.getSource().equals(_stateMachine.getState()))
         .map(transition -> transition.getTrigger()).filter(trigger -> trigger != null)
-        .map(trigger -> trigger.getEvent()).collect(Collectors.toList());
+        .map(trigger -> trigger.getEvent().getAction()).filter(action -> action != null).collect(Collectors.toList());
   }
 
   public GraphDatabaseStateMachineContext stateMachineContext() {
     return _stateMachineContext;
   }
-  
+
   private void trigger(Message<GraphDatabaseTrigger> triggerMessage) {
 
     if (!this._stateMachine.sendEvent(triggerMessage)) {

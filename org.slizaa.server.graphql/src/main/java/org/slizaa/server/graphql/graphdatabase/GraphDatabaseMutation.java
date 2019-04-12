@@ -28,6 +28,13 @@ public class GraphDatabaseMutation extends AbstractDatabaseAwareComponent implem
     });
   }
 
+  public GraphDatabase terminateGraphDatabase(String databaseId, DataFetchingEnvironment environment) {
+
+    return executeOnDatabase(environment, databaseId, database -> {
+      database.terminate();
+    });
+  }
+  
   public GraphDatabase populateGraphDatabase(String databaseId, DataFetchingEnvironment environment) {
 
     return executeOnDatabase(environment, databaseId, database -> {
