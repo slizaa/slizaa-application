@@ -1,7 +1,9 @@
 package org.slizaa.server.service.slizaa;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProviderFactory;
 import org.slizaa.server.service.backend.IBackendService;
 import org.slizaa.server.service.extensions.IExtensionService;
 import org.slizaa.server.service.svg.ISvgService;
@@ -20,7 +22,9 @@ public interface ISlizaaService {
 	
 	ISvgService getSvgService();
 
-	boolean hasStructureDatabases();
+	Collection<IContentDefinitionProviderFactory<?>> getContentDefinitionProviderFactories();
+
+	boolean hasGraphDatabases();
 
 	List<? extends IGraphDatabase> getGraphDatabases();
 

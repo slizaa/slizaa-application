@@ -22,7 +22,8 @@ public class GraphDatabaseQuery extends AbstractDatabaseAwareComponent implement
    * @return
    */
   public List<ContentDefinitionType> contentDefinitionFactories() {
-    return Collections.emptyList();
+    return slizaaService().getContentDefinitionProviderFactories().stream().map(factory -> new ContentDefinitionType(factory.getFactoryId(), factory.getName(), factory.getDescription()))
+            .collect(Collectors.toList());
   }
 
   /**

@@ -1,8 +1,6 @@
 package org.slizaa.server.service.slizaa.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 
@@ -18,12 +16,12 @@ import org.springframework.stereotype.Component;
 public class ContentDefinitionProviderFactoryService {
 
   /** the IContentDefinitionProviderFactories */
-  private Map<String, IContentDefinitionProviderFactory> _contentDefinitionProviderFactories;
+  private Map<String, IContentDefinitionProviderFactory<?>> _contentDefinitionProviderFactories;
 
   @PostConstruct
   public void initialize() throws Exception {
 
-    _contentDefinitionProviderFactories = new HashMap<String, IContentDefinitionProviderFactory>();
+    _contentDefinitionProviderFactories = new HashMap<String, IContentDefinitionProviderFactory<?>>();
 
     ServiceLoader<IContentDefinitionProviderFactory> serviceLoader = ServiceLoader
         .load(IContentDefinitionProviderFactory.class);
@@ -36,6 +34,10 @@ public class ContentDefinitionProviderFactoryService {
 
   public IContentDefinitionProviderFactory getContentDefinitionProviderFactory(String key) {
     return _contentDefinitionProviderFactories.get(key);
+  }
+
+  public Collection<IContentDefinitionProviderFactory<?>> getContentDefinitionProviderFactories() {
+    return _contentDefinitionProviderFactories.values();
   }
 
 }

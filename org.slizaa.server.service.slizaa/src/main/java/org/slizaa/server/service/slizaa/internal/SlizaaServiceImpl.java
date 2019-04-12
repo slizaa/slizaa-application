@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -142,6 +143,11 @@ public class SlizaaServiceImpl implements ISlizaaService {
   }
 
   @Override
+  public Collection<IContentDefinitionProviderFactory<?>> getContentDefinitionProviderFactories() {
+    return _contentDefinitionProviderFactoryService.getContentDefinitionProviderFactories();
+  }
+
+  @Override
   public IExtensionService getExtensionService() {
     return _extensionService;
   }
@@ -157,7 +163,7 @@ public class SlizaaServiceImpl implements ISlizaaService {
   }
 
   @Override
-  public boolean hasStructureDatabases() {
+  public boolean hasGraphDatabases() {
     return _structureDatabases != null;
   }
 
