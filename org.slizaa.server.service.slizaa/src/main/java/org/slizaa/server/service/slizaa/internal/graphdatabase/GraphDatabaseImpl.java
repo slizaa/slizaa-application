@@ -4,11 +4,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
+import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProviderFactory;
 import org.slizaa.server.service.slizaa.GraphDatabaseState;
 import org.slizaa.server.service.slizaa.IGraphDatabase;
 import org.slizaa.server.service.slizaa.IHierarchicalGraph;
@@ -81,9 +83,16 @@ public class GraphDatabaseImpl implements IGraphDatabase {
    * 
    */
   @Override
-  public IContentDefinitionProvider getContentDefinition() {
+  public IContentDefinitionProvider<?> getContentDefinition() {
     return _stateMachineContext.getContentDefinitionProvider();
   }
+  
+
+  @Override
+  public Collection<IContentDefinitionProviderFactory<?>> contentDefinitionFactories() {
+    return _stateMachineContext.contentDefinitionFactories();
+  }
+
 
   @Override
   public IHierarchicalGraph newHierarchicalGraph(String identifier) {

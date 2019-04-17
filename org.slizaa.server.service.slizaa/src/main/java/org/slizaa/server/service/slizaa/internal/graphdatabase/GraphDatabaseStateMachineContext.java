@@ -20,6 +20,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -97,6 +98,10 @@ public class GraphDatabaseStateMachineContext {
     return _contentDefinitionProvider;
   }
 
+  public Collection<IContentDefinitionProviderFactory<?>> contentDefinitionFactories() {
+    return _slizaaService.getContentDefinitionProviderFactories();
+  }
+  
   public boolean isRunning() {
     return _graphDb != null;
   }

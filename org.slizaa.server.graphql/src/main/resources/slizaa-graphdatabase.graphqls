@@ -8,7 +8,9 @@ type GraphDatabase {
     
     port: Int!
 
-    contentDefinition: ContentDefinition
+	availableContentDefinitionTypes: [ContentDefinitionType!]!
+
+    currentContentDefinition: ContentDefinition
     
     hierarchicalGraphs: [HierarchicalGraph!]!
     
@@ -21,7 +23,7 @@ type HierarchicalGraph {
 
 type ContentDefinitionType {
 
-    factoryId: ID!
+    identifier: ID!
 
     name: String!
 
@@ -30,7 +32,7 @@ type ContentDefinitionType {
 
 type ContentDefinition {
 
-    contentDefinitionType: ContentDefinitionType!
+    type: ContentDefinitionType!
 
 	definition: String!
 }
