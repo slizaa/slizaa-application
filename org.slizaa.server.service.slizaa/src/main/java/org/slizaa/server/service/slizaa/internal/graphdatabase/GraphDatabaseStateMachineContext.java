@@ -1,9 +1,20 @@
 package org.slizaa.server.service.slizaa.internal.graphdatabase;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slizaa.core.boltclient.IBoltClient;
 import org.slizaa.core.progressmonitor.DefaultProgressMonitor;
-import org.slizaa.hierarchicalgraph.core.model.HGRootNode;
-import org.slizaa.hierarchicalgraph.graphdb.mapping.service.IMappingService;
 import org.slizaa.hierarchicalgraph.graphdb.mapping.spi.IMappingProvider;
 import org.slizaa.scanner.api.graphdb.IGraphDb;
 import org.slizaa.scanner.api.importer.IModelImporter;
@@ -13,16 +24,6 @@ import org.slizaa.server.service.slizaa.IHierarchicalGraph;
 import org.slizaa.server.service.slizaa.internal.SlizaaServiceImpl;
 import org.slizaa.server.service.slizaa.internal.hierarchicalgraph.HierarchicalGraph;
 import org.slizaa.server.service.slizaa.internal.hierarchicalgraph.HierarchicalGraphDefinition;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GraphDatabaseStateMachineContext {
 
@@ -40,7 +41,7 @@ public class GraphDatabaseStateMachineContext {
 
   private SlizaaServiceImpl              _slizaaService;
 
-  private IContentDefinitionProvider     _contentDefinitionProvider;
+  private IContentDefinitionProvider<?>     _contentDefinitionProvider;
 
   private IGraphDb                       _graphDb;
 
@@ -94,14 +95,10 @@ public class GraphDatabaseStateMachineContext {
    * 
    * @return
    */
-  public IContentDefinitionProvider getContentDefinitionProvider() {
+  public IContentDefinitionProvider<?> getContentDefinitionProvider() {
     return _contentDefinitionProvider;
   }
 
-  public Collection<IContentDefinitionProviderFactory<?>> contentDefinitionFactories() {
-    return _slizaaService.getContentDefinitionProviderFactories();
-  }
-  
   public boolean isRunning() {
     return _graphDb != null;
   }

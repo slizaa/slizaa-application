@@ -1,6 +1,5 @@
 package org.slizaa.server.graphql.graphdatabase;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,7 @@ public class GraphDatabaseQuery extends AbstractDatabaseAwareComponent implement
    *
    * @return
    */
-  public List<ContentDefinitionType> contentDefinitionFactories() {
+  public List<ContentDefinitionType> contentDefinitionTypes() {
     return slizaaService().getContentDefinitionProviderFactories().stream().map(factory -> new ContentDefinitionType(factory.getFactoryId(), factory.getName(), factory.getDescription()))
             .collect(Collectors.toList());
   }

@@ -1,11 +1,9 @@
 package org.slizaa.server.service.slizaa;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProvider;
-import org.slizaa.scanner.spi.contentdefinition.IContentDefinitionProviderFactory;
 
 /**
  * <p>
@@ -42,9 +40,6 @@ public interface IGraphDatabase extends IHierarchicalGraphContainer {
    * @return
    */
   IContentDefinitionProvider<?> getContentDefinition();
-  
-
-  Collection<IContentDefinitionProviderFactory<?>> contentDefinitionFactories();
 
   /**
    * 

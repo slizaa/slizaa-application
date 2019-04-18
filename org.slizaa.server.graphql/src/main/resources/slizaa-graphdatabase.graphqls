@@ -8,9 +8,7 @@ type GraphDatabase {
     
     port: Int!
 
-	availableContentDefinitionTypes: [ContentDefinitionType!]!
-
-    currentContentDefinition: ContentDefinition
+    contentDefinition: ContentDefinition
     
     hierarchicalGraphs: [HierarchicalGraph!]!
     
@@ -41,7 +39,7 @@ type ContentDefinition {
 # The Query type
 extend type Query {
 
-    contentDefinitionFactories: [ContentDefinitionType!]!
+	contentDefinitionTypes: [ContentDefinitionType!]!
 
     graphDatabases: [GraphDatabase!]!
 
