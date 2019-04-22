@@ -64,4 +64,6 @@ extend type Mutation {
     setGraphDatabaseContentDefinition(databaseId: ID!, contentDefinitionFactoryId: ID!, contentDefinition: String!): GraphDatabase!
 
     createHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase!
+    
+    disposeHierarchicalGraph(databaseId: ID!, hierarchicalGraphId: ID!): GraphDatabase!
 }

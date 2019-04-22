@@ -56,4 +56,11 @@ public class GraphDatabaseMutation extends AbstractDatabaseAwareComponent implem
       database.newHierarchicalGraph(hierarchicalGraphId);
     });
   }
+  
+  public GraphDatabase disposeHierarchicalGraph(String databaseId, String hierarchicalGraphId, DataFetchingEnvironment environment) {
+
+    return executeOnDatabase(environment, databaseId, database -> {
+      database.disposeHierarchicalGraph(hierarchicalGraphId);
+    });
+  }
 }

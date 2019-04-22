@@ -225,7 +225,9 @@ public class GraphDatabaseStateMachineContext {
               new DefaultProgressMonitor("Mapping", 100, DefaultProgressMonitor.consoleLogger()));
         });
 
-    hierarchicalGraph.initialize();
+    if (this.isRunning()) {
+      hierarchicalGraph.initialize();      
+    }
     
     _hierarchicalGraphs.put(identifier, hierarchicalGraph);
 

@@ -88,20 +88,13 @@ public class GraphDatabaseImpl implements IGraphDatabase {
   @Override
   public IHierarchicalGraph newHierarchicalGraph(String identifier) {
 
-    checkState(GraphDatabaseState.RUNNING.equals(this._stateMachine.getState().getId()), "Database is not running:  %s",
-        this._stateMachine.getState().getId());
-
     IHierarchicalGraph result = _stateMachineContext.createHierarchicalGraph(identifier);
     _stateMachineContext.storeConfiguration();
     return result;
   }
 
   @Override
-  public void removeHierarchicalGraph(String identifier) {
-
-    checkState(GraphDatabaseState.RUNNING.equals(this._stateMachine.getState().getId()), "Database is not running:  %s",
-        this._stateMachine.getState().getId());
-
+  public void disposeHierarchicalGraph(String identifier) {
     _stateMachineContext.disposeHierarchicalGraph(identifier);
   }
 

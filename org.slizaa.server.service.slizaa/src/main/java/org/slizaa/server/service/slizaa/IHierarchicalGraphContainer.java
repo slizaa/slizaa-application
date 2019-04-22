@@ -17,23 +17,23 @@ public interface IHierarchicalGraphContainer {
 
 	/**
 	 *
-	 * @param identifier
+	 * @param hierarchicalGraphId
 	 * @return
 	 */
-	IHierarchicalGraph newHierarchicalGraph(String identifier);
+	IHierarchicalGraph newHierarchicalGraph(String hierarchicalGraphId);
 
 	/**
 	 *
 	 * @param identifier
 	 * @return
 	 */
-	IHierarchicalGraph getHierarchicalGraph(String identifier);
+	IHierarchicalGraph getHierarchicalGraph(String hierarchicalGraphId);
 
 	/**
 	 *
 	 * @param identifier
 	 */
-	void removeHierarchicalGraph(String identifier);
+	void disposeHierarchicalGraph(String hierarchicalGraphId);
 
 	/**
 	 *

@@ -11,5 +11,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.slizaa.server.SlizaaServer"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.slizaa.server"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dspring.profiles.active=dev"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dspring.profiles.active=dev -Xmx4096m"/>
 </launchConfiguration>
